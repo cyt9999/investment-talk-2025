@@ -12,16 +12,30 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout 檢出原始碼
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node 設定環境
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install and Build
+      - name: Install and Build 安裝與編譯
         run: |
-          cd investment-talk-2025
-          npm install
+          # 1. 偵測 package.json 的位置並進入該目錄
+          TARGET_DIR=$(find . -name "package.json" -not -path "/node_modules/" -exec dirname {} \;)
+          echo "偵測到專案目錄於: $TARGET_DIR"
+          cd "$TARGET_DIR"
+          
+          # 2. 安裝依賴 (使用 --force 避免版本衝突)
+          npm install --force
+          
+          # 3. 執行編譯
           npm run build
+
+      - name: Deploy 部署至 gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          # 自動尋找 dist 資料夾的位置
+          folder: $(find . -name "dist" -type d -not -path "/node_modules/" | head -n 1)
+          branch: gh-pages
