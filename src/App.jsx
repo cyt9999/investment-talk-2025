@@ -43,7 +43,7 @@ const App = () => {
   const screens = [
     // Screen 1: 年度戰報
     {
-      title: "年度戰報",
+      title: "投資Talk君2025年度回顧",
       content: (
         <div className="flex flex-col h-full animate-in fade-in duration-500">
           <div className="mt-8 mb-4">
@@ -88,7 +88,7 @@ const App = () => {
         <div className="flex flex-col h-full pt-4 animate-in slide-in-from-right duration-500">
           <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
             <Calendar size={24} color={colors.primary} />
-            2025 智慧軌跡
+            2025 美股重大事件回顧
           </h2>
           <p className="text-[#B0B0B0] text-sm mb-8">對齊宏觀數據發布與核心決策</p>
           
@@ -122,7 +122,7 @@ const App = () => {
               <p className="text-white font-bold text-sm">掌握即時動向</p>
             </div>
             <p className="text-[#B0B0B0] text-xs leading-relaxed">
-              每周四更新 <span className="text-white font-bold">「美股趨勢」</span>、每周五更新 <span className="text-white font-bold">「美股盤勢」</span>，不錯過關鍵進出場訊號。
+              每周二四更新 <span className="text-white font-bold">「美股趨勢」</span>、每周五更新 <span className="text-white font-bold">「美股盤勢」</span>，不錯過關鍵進出場訊號。
             </p>
           </div>
         </div>
@@ -135,9 +135,9 @@ const App = () => {
         <div className="flex flex-col h-full pt-4 animate-in fade-in duration-500">
           <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
             <Award size={24} color={colors.primary} />
-            英雄交易實錄
+            投資Talk君交易實錄
           </h2>
-          <p className="text-[#B0B0B0] text-sm mb-6">拒絕模糊，用精確數據定義 Alpha</p>
+          <p className="text-[#B0B0B0] text-sm mb-6">公開2025重點持倉</p>
           
           <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
             {[
@@ -213,7 +213,7 @@ const App = () => {
             <Rocket size={24} color={colors.primary} />
             2025 重大功能回顧
           </h2>
-          <p className="text-[#B0B0B0] text-sm mb-6">不懈疊代，打造專業投資人的首選工具</p>
+          <p className="text-[#B0B0B0] text-sm mb-6">不懈疊代，打造實用的投資工具</p>
           
           <div className="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar">
             <div className="space-y-4">
@@ -255,7 +255,7 @@ const App = () => {
               <div className="p-3 bg-[#95B1FF]/20 rounded-xl border border-[#95B1FF]/30 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                    <PlayCircle size={14} className="text-[#95B1FF]" />
-                   <p className="text-white text-xs font-bold">1/9 直播預告：2026 戰略佈局</p>
+                   <p className="text-white text-xs font-bold">1/9 直播預告：非農就業報告剖析</p>
                 </div>
                 <ChevronRight size={14} className="text-[#95B1FF]" />
               </div>
@@ -356,8 +356,8 @@ const App = () => {
               <div className="flex gap-5">
                 <div className="w-10 h-10 rounded-full bg-[#404040] flex items-center justify-center text-sm font-black text-white shrink-0">3</div>
                 <div>
-                  <h4 className="text-white text-base font-bold mb-1">策略性壓降 Beta</h4>
-                  <p className="text-[#B0B0B0] text-sm leading-relaxed">計畫將組合 Beta 回歸 1.0，以高防禦姿態等待市場方向明朗。</p>
+                  <h4 className="text-white text-base font-bold mb-1">持續關注與控管 Beta</h4>
+                  <p className="text-[#B0B0B0] text-sm leading-relaxed">關注組合 Beta，以高防禦姿態等待市場方向明朗。</p>
                 </div>
               </div>
             </div>
