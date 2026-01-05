@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # 監控 main 分支的變動
+      - main
 
 permissions:
   contents: write
@@ -12,24 +12,16 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 檢出原始碼
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node 設定環境
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: investment-talk-2025/package-lock.json
 
-      - name: Install and Build 安裝與編譯
+      - name: Install and Build
         run: |
           cd investment-talk-2025
           npm install
           npm run build
-
-      - name: Deploy 部署至 gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: investment-talk-2025/dist # Vite 編譯後的資料夾
-          branch: gh-pages
