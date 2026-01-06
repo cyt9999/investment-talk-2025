@@ -96,14 +96,14 @@ const App = () => {
         <div className="flex flex-col min-h-full pb-10 fade-in">
           <div className="mt-12 mb-6">
             <span className="text-sm font-bold px-4 py-2 rounded-full border border-[#404040] text-white tracking-widest uppercase bg-[#282828] shadow-sm">
-              2025 Performance Review
+              2025 投資 Talk 君年度回顧
             </span>
           </div>
           <h1 className="text-5xl font-black mb-2 text-white leading-tight">超越大盤的</h1>
           <h1 className="text-5xl font-black mb-10" style={{ background: colors.primaryGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             邏輯勝利
           </h1>
-
+          <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">+27.78% 不是終點 而是 5 次關鍵進化</p>
           {/* Talk ROI */}
           <div className="bg-[#242424] rounded-[40px] p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
             <div className="absolute -top-10 -right-10 opacity-5">
@@ -125,11 +125,13 @@ const App = () => {
                 </div>
                 <BarChart3 size={40} className="text-[#404040] mb-2" />
              </div>
+          
              <div className="w-full h-1.5 bg-[#404040] rounded-full mt-2 overflow-hidden">
                 {/* 17.88 / 27.78 approx 64% width relative to Talk */}
                <div className="h-full bg-[#808080]" style={{ width: '64%' }}></div>
             </div>
           </div>
+          <p className="text-[#B0B0B0] text-base font-small mb-1">績效統計自 2025/05 至 2025/12，為APP內實際交易紀錄，過往表現不保證未來收益，投資有風險。</p>
         </div>
       )
     },
@@ -140,11 +142,11 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Calendar size={32} color={colors.primary} />
-              2025 智慧軌跡
+              時機抓對了，執行力讓數字說話
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">對齊宏觀數據發布與核心決策</p>
+            
           </div>
           <div className="space-y-12 pl-4 relative">
             <div className="absolute left-[15px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
@@ -178,11 +180,11 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
-              英雄交易實錄
+              致勝交易背後，是全年持續升級的引擎
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-8">數據定義 Alpha，邏輯驅動獲利</p>
+           
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
@@ -250,7 +252,7 @@ const App = () => {
               <Rocket size={32} color={colors.primary} />
               2025 功能回顧
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">工欲善其事，必先利其器</p>
+            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從核心觀點到量化監測，全面到位</p>
           </div>
           <div className="space-y-8 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
@@ -301,7 +303,7 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
                <Activity size={32} color={colors.primary} />
-               2026 關鍵時刻
+               2026宏觀巨變在即，APP功能讓你快一步
             </h2>
             <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從「盈餘驅動」轉向「政策驅動」的行事曆</p>
           </div>
@@ -333,11 +335,11 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <ShieldCheck size={32} color={colors.primary} />
-              Beta 風險控管
+              政策驅動時代，誰先控風險誰贏
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-8 leading-relaxed">你的帳戶準備好迎接 2026 了嗎？</p>
+            
           </div>
 
           {/* Gauge Visualization */}
