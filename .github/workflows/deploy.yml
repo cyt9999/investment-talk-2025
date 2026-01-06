@@ -21,21 +21,43 @@ jobs:
           node-version: 20
 
       - name: Install and Build 安裝與編譯
+        # 給這個步驟一個 ID (可選，但有助於除錯)，並在此處計算路徑
         run: |
-          # 1. 偵測 package.json 的位置並進入該目錄
-          TARGET_DIR=$(find . -name "package.json" -not -path "/node_modules/" -exec dirname {} \;)
+          # 1. 偵測 package.json 的位置
+          # 使用 head -n 1 確保只抓到一個路徑
+          TARGET_DIR=$(find . -name "package.json" -not -path "*/node_modules/*" -exec dirname {} \; | head -n 1)
+          
+          # 如果找不到，預設為當前目錄
+          if [ -z "$TARGET_DIR" ]; then
+            TARGET_DIR="."
+          fi
+
           echo "偵測到專案目錄於: $TARGET_DIR"
           cd "$TARGET_DIR"
           
-          # 2. 安裝依賴 (使用 --force 避免版本衝突)
+          # 2. 安裝依賴
           npm install --force
           
           # 3. 執行編譯
           npm run build
+          
+          # 4. 【修正關鍵】設定部署路徑變數
+          # 組合出 dist 的完整路徑或相對路徑
+          # 如果 TARGET_DIR 是 "."，路徑就是 "dist"；如果是子目錄，就是 "子目錄/dist"
+          if [ "$TARGET_DIR" = "." ]; then
+            DEPLOY_PATH="dist"
+          else
+            DEPLOY_PATH="$TARGET_DIR/dist"
+          fi
+          
+          echo "預計部署路徑: $DEPLOY_PATH"
+          
+          # 將路徑寫入 GitHub 環境變數，供後續步驟使用
+          echo "Yz_DIST_FOLDER=$DEPLOY_PATH" >> $GITHUB_ENV
 
       - name: Deploy 部署至 gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          # 自動尋找 dist 資料夾的位置
-          folder: $(find . -name "dist" -type d -not -path "/node_modules/" | head -n 1)
+          # 這裡改用環境變數
+          folder: ${{ env.Yz_DIST_FOLDER }}
           branch: gh-pages
