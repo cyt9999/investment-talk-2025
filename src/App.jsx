@@ -20,6 +20,121 @@ import {
   BarChart3
 } from 'lucide-react';
 
+// ROI Data
+// Talk Data: Derived from your CSVs
+// S&P 500 Data: Estimated trend for 2025 scaled to match the +17.88% benchmark
+const chartData = [
+  { date: "2025-05-12", talk: 5.4, sp500: 0.0 },
+  { date: "2025-05-16", talk: 7.51, sp500: 0.8 },
+  { date: "2025-06-24", talk: 7.17, sp500: 4.5 },
+  { date: "2025-06-26", talk: 6.87, sp500: 4.8 },
+  { date: "2025-07-25", talk: 3.1, sp500: 8.2 },
+  { date: "2025-08-01", talk: 24.76, sp500: 8.5 },
+  { date: "2025-09-30", talk: 24.67, sp500: 12.1 },
+  { date: "2025-10-06", talk: 21.19, sp500: 12.5 },
+  { date: "2025-10-29", talk: 24.99, sp500: 14.8 },
+  { date: "2025-11-18", talk: 29.63, sp500: 15.5 },
+  { date: "2025-11-21", talk: 29.58, sp500: 15.8 },
+  { date: "2025-11-24", talk: 29.66, sp500: 16.2 },
+  { date: "2025-11-26", talk: 29.68, sp500: 16.5 },
+  { date: "2025-12-26", talk: 27.78, sp500: 17.88 }
+];
+
+const ComparisonLineChart = ({ data }) => {
+  if (!data || data.length === 0) return null;
+  
+  // Calculate Scales
+  const allValues = data.flatMap(d => [d.talk, d.sp500]);
+  const max = Math.max(...allValues) * 1.1; 
+  const min = Math.min(...allValues, 0); // Ensure 0 is included
+  const range = max - min || 1;
+
+  const getPoints = (key) => {
+    return data.map((d, i) => {
+      const x = (i / (data.length - 1)) * 100;
+      const y = 100 - ((d[key] - min) / range) * 100;
+      return { x, y, val: d[key] };
+    });
+  };
+
+  const talkPoints = getPoints('talk');
+  const spPoints = getPoints('sp500');
+
+  const toPath = (pts) => `M ${pts.map(p => `${p.x},${p.y}`).join(' L ')}`;
+  const toArea = (pts) => `M 0,100 L ${pts.map(p => `${p.x},${p.y}`).join(' L ')} L 100,100 Z`;
+
+  return (
+    <div className="w-full h-40 mt-6 relative select-none">
+       {/* SVG Layer for Lines */}
+       <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="talkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+               <stop offset="0%" stopColor="#95B1FF" stopOpacity="0.25" />
+               <stop offset="100%" stopColor="#95B1FF" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          
+          {/* Grid Lines (Optional, simple baseline) */}
+          <line x1="0" y1="100" x2="100" y2="100" stroke="#404040" strokeWidth="0.5" vectorEffect="non-scaling-stroke" />
+
+          {/* S&P 500 Line (Background) */}
+          <path 
+            d={toPath(spPoints)} 
+            fill="none" 
+            stroke="#666" 
+            strokeWidth="1.5" 
+            strokeDasharray="4 4"
+            vectorEffect="non-scaling-stroke" 
+            className="opacity-50"
+          />
+
+          {/* Talk Line (Foreground) */}
+          <path d={toArea(talkPoints)} fill="url(#talkGradient)" className="animate-fade-in-delayed" />
+          <path 
+            d={toPath(talkPoints)} 
+            fill="none" 
+            stroke="#95B1FF" 
+            strokeWidth="2.5" 
+            vectorEffect="non-scaling-stroke" 
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="animate-draw-stroke drop-shadow-lg"
+          />
+       </svg>
+
+       {/* HTML Layer for Dots (Prevents Distortion) */}
+       <div className="absolute inset-0 pointer-events-none">
+          {talkPoints.map((p, i) => (
+            (i === talkPoints.length - 1 || i % 4 === 0) && (
+              <div 
+                key={i}
+                className="absolute w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#95B1FF] shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 animate-pop-in"
+                style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${1 + i * 0.1}s` }}
+              />
+            )
+          ))}
+          {/* Last S&P Point */}
+          <div 
+             className="absolute w-2 h-2 rounded-full bg-[#666] transform -translate-x-1/2 -translate-y-1/2"
+             style={{ left: '100%', top: `${spPoints[spPoints.length-1].y}%` }}
+          />
+       </div>
+
+       {/* Floating Labels for End Points */}
+       <div className="absolute right-0 transform translate-x-1" style={{ top: `${talkPoints[talkPoints.length-1].y}%` }}>
+          <div className="bg-[#95B1FF] text-black text-[10px] font-black px-1.5 py-0.5 rounded ml-2 -mt-2.5 shadow-lg">
+             Talk
+          </div>
+       </div>
+       <div className="absolute right-0 transform translate-x-1" style={{ top: `${spPoints[spPoints.length-1].y}%` }}>
+          <div className="bg-[#666] text-white text-[10px] font-bold px-1.5 py-0.5 rounded ml-2 -mt-2.5">
+             S&P
+          </div>
+       </div>
+    </div>
+  );
+}
+
 const App = () => {
   const [activeScreen, setActiveScreen] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
@@ -39,11 +154,9 @@ const App = () => {
 
   // 數值跳動動畫邏輯
   useEffect(() => {
-    // Screen 1: Overall (Index 0)
     if (activeScreen === 0) { 
       animateValue(0, 27.78, setDisplayROI, 1000);
     }
-    // Screen 6: Beta & CTA (Index 5)
     if (activeScreen === 5) { 
       animateValue(0, 1.26, setDisplayBeta, 1000);
     }
@@ -63,7 +176,6 @@ const App = () => {
     }, 16);
   };
 
-  // 分頁邏輯
   const nextScreen = () => {
     if (activeScreen < screens.length - 1) setActiveScreen(activeScreen + 1);
   };
@@ -72,7 +184,6 @@ const App = () => {
     if (activeScreen > 0) setActiveScreen(activeScreen - 1);
   };
 
-  // 手勢處理
   const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
   const handleTouchEnd = (e) => {
     if (!touchStart) return;
@@ -83,60 +194,74 @@ const App = () => {
     setTouchStart(null);
   };
 
-  // 切換分頁時滾動回頂部
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [activeScreen]);
 
   const screens = [
-    // 1. Overall (2025 回顧總覽) - Simplified
+    // 1. Overall (2025 回顧總覽)
     {
       id: 'overall',
       content: (
         <div className="flex flex-col min-h-full pb-10 fade-in">
           <div className="mt-12 mb-6">
-            <span className="text-sm font-bold px-4 py-2 rounded-full border border-[#404040] text-white tracking-widest uppercase bg-[#282828] shadow-sm">
-              2025 投資 Talk 君年度回顧
+            <span className="text-xs font-bold px-3 py-1.5 rounded-full border border-[#404040] text-white tracking-widest uppercase bg-[#282828] shadow-sm">
+              2025 年度回顧
             </span>
           </div>
-          <h1 className="text-5xl font-black mb-2 text-white leading-tight">超越大盤的</h1>
-          <h1 className="text-5xl font-black mb-10" style={{ background: colors.primaryGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <h1 className="text-4xl md:text-5xl font-black mb-2 text-white leading-tight">超越大盤的</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-6" style={{ background: colors.primaryGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             邏輯勝利
           </h1>
-          <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">+27.78% 不是終點 而是 5 次關鍵進化</p>
-          {/* Talk ROI */}
-          <div className="bg-[#242424] rounded-[40px] p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
+          <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">+27.78% 不是終點，而是 5 次關鍵進化的結果。</p>
+          
+          {/* Main Chart Card */}
+          <div className="bg-[#242424] rounded-[32px] p-6 md:p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
             <div className="absolute -top-10 -right-10 opacity-5">
                <TrendingUp size={200} color={colors.primary} />
             </div>
-            <p className="text-[#B0B0B0] text-base mb-2 font-medium">Talk 君年度回報 (ROI)</p>
-            <h2 className="text-7xl font-black text-white mb-2 tracking-tighter">+{displayROI.toFixed(2)}%</h2>
-            <div className="w-full h-1.5 bg-[#404040] rounded-full mt-4 overflow-hidden">
-               <div className="h-full bg-primary-gradient" style={{ width: '100%' }}></div>
+            <div className="relative z-10">
+              <div className="flex flex-col items-start mb-2">
+                 {/* Main ROI */}
+                 <div>
+                    <p className="text-[#B0B0B0] text-sm font-medium mb-1">Talk 君年度回報</p>
+                    <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-3">
+                      +{displayROI.toFixed(2)}%
+                    </h2>
+                 </div>
+                 
+                 {/* S&P 500 Comparison (Moved Below) */}
+                 <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 backdrop-blur-sm">
+                    <p className="text-[#666] text-xs font-bold uppercase">vs S&P 500</p>
+                    <div className="w-px h-3 bg-[#404040]"></div>
+                    <h3 className="text-sm md:text-base font-bold text-[#808080] tracking-tight">
+                      +17.88%
+                    </h3>
+                 </div>
+              </div>
+              
+              {/* Inserted Chart */}
+              <ComparisonLineChart data={chartData} />
+              
+              <div className="flex justify-between text-[10px] text-[#666] mt-4 font-bold uppercase tracking-wider px-1">
+                 <span>May</span>
+                 <span>Jul</span>
+                 <span>Sep</span>
+                 <span>Nov</span>
+                 <span>Dec</span>
+              </div>
             </div>
           </div>
 
-          {/* S&P 500 Comparison */}
-          <div className="bg-[#1a1a1a] rounded-[32px] p-8 border border-white/5 slide-up" style={{ animationDelay: '0.2s' }}>
-             <div className="flex justify-between items-end mb-2">
-                <div>
-                   <p className="text-[#B0B0B0] text-base font-medium mb-1">S&P 500 指數</p>
-                   <h2 className="text-4xl font-black text-[#808080] tracking-tighter">+17.88%</h2>
-                </div>
-                <BarChart3 size={40} className="text-[#404040] mb-2" />
-             </div>
-          
-             <div className="w-full h-1.5 bg-[#404040] rounded-full mt-2 overflow-hidden">
-                {/* 17.88 / 27.78 approx 64% width relative to Talk */}
-               <div className="h-full bg-[#808080]" style={{ width: '64%' }}></div>
-            </div>
-          </div>
-          <p className="text-[#B0B0B0] text-base font-small mb-1">績效統計自 2025/05 至 2025/12，為APP內實際交易紀錄，過往表現不保證未來收益，投資有風險。</p>
+          <p className="text-[#666] text-xs font-medium text-center opacity-60">
+             *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現
+          </p>
         </div>
       )
     },
 
-    // 2. 2025 智慧軌跡 (Talk 君怎麼做)
+    // 2. 2025 智慧軌跡
+   // 2. 2025 智慧軌跡 (Talk 君怎麼做)
     {
       id: 'trajectory',
       content: (
@@ -144,23 +269,64 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Calendar size={32} color={colors.primary} />
-              時機抓對了，執行力讓數字說話
+              時機抓對了
             </h2>
-            
           </div>
-          <div className="space-y-12 pl-4 relative">
-            <div className="absolute left-[15px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
+          
+          <div className="space-y-12 relative">
+            {/* Timeline Line - Aligned to center of the 32px dots (left-4 = 16px, dot width 32px -> center at 32px) */}
+            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
+            
             {[
-              { date: '01/01', tag: '策略定調', title: '降 Beta 至 1.0', desc: '預判盈餘驅動年，追求穩健 EPS 成長。', color: colors.primary },
-              { date: '04/09', tag: '解放日', title: '關稅風暴：左側加倉', desc: '堅定不交籌碼，加倉 QQQ 與特斯拉。', color: '#FF8A8A' },
-              { date: '07/22', tag: '獲利了結', title: 'GE 獲利獲利了結，佈局能源', desc: '利潤近 100% 後調倉。AI 的盡頭是能源。', color: colors.primary },
-              { date: '08/01', tag: '數據修正', title: '非農暴雷：對沖啟動', desc: '判斷降息空間足，持倉未動應對震盪。', color: '#ADC4FF' },
-              { date: '11/24', tag: '對沖啟動', title: 'Beta 壓降應對 2026', desc: '熱度衝破 64% 啟動對沖，鎖定全年利潤。', color: colors.primary }
+              { 
+                date: '04/09', 
+                tag: '解放日', 
+                title: '關稅風暴後：多頭確立', 
+                desc: '堅定不交籌碼，確立「盈餘驅動」主軸，加倉 QQQ 與特斯拉。', 
+                color: '#FF8A8A' 
+              },
+              { 
+                date: '05/07', 
+                tag: '宏觀定調', 
+                title: '聯準會的耐心測試', 
+                desc: '鮑威爾強調等待數據。策略性配置 30% SHY 短債觀望，不隨市場雜訊起舞。', 
+                color: colors.primary 
+              },
+              { 
+                date: '07/22', 
+                tag: '板塊輪動', 
+                title: '能源接棒 AI', 
+                desc: '獲利了結奇異航太 (GE) +100% 漲幅，轉倉 GEV 佈局 AI 算力背後的能源剛需。', 
+                color: colors.primary 
+              },
+              { 
+                date: '08/01', 
+                tag: '逆勢抄底', 
+                title: '非農暴雷：黑色星期五', 
+                desc: '失業率數據引發衰退恐慌。堅持「軟著陸」劇本，逆勢大舉加倉 TSLA 與 ARM。', 
+                color: '#ADC4FF' 
+              },
+              { 
+                date: '10/06', 
+                tag: '價值回歸', 
+                title: '重倉亞馬遜', 
+                desc: '看好 AWS 利潤率與電商旺季，在財報前夕將 AMZN 權重拉升至 17%，回歸價值本質。', 
+                color: colors.primary 
+              },
+              { 
+                date: '11/25', 
+                tag: '精準對沖', 
+                title: '情緒過熱：啟動防禦', 
+                desc: '情緒指標突破 64% 警戒線，買入 SOXS (半導體空頭) 鎖定全年利潤，主動壓降 Beta。', 
+                color: colors.primary 
+              }
             ].map((item, idx) => (
-              <div key={idx} className="relative pl-12 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <div className="absolute left-0 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg" style={{ backgroundColor: item.color }}>
+              <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                {/* Dot - Absolute positioning relative to the container, centered on the line */}
+                <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: item.color }}>
                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
                 </div>
+                
                 <div className="flex items-center gap-2 mb-1.5">
                   <p className="text-sm font-black" style={{ color: item.color }}>{item.date}</p>
                   <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
@@ -174,7 +340,7 @@ const App = () => {
       )
     },
 
-    // 3. 交易實錄 (用案例證明)
+    // 3. 交易實錄
     {
       id: 'trading',
       content: (
@@ -182,9 +348,8 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
-              致勝交易背後，是全年持續升級的引擎
+              致勝交易
             </h2>
-           
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
@@ -234,7 +399,7 @@ const App = () => {
                   <p className="text-white text-lg font-black leading-relaxed">{stock.op}</p>
                 </div>
                 
-                <p className="text-[#B0B0B0] text-base italic leading-relaxed border-l-2 border-[#95B1FF]/30 pl-4">“{stock.comment}”</p>
+                <p className="text-[#B0B0B0] text-base italic leading-relaxed border-l-2 border-[#95B1FF]/30 pl-4">{stock.comment}</p>
               </div>
             ))}
           </div>
@@ -295,7 +460,7 @@ const App = () => {
       )
     },
 
-    // 5. 2026 重大事件行事曆 (原 Outlook)
+    // 5. 2026 重大事件行事曆
     {
       id: '2026-calendar',
       content: (
@@ -303,9 +468,9 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
                <Activity size={32} color={colors.primary} />
-               2026宏觀巨變在即，APP功能讓你快一步
+               2026 宏觀巨變
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從「盈餘驅動」轉向「政策驅動」的行事曆</p>
+            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從「盈餘驅動」轉向「政策驅動」</p>
           </div>
           <div className="space-y-10">
             {[
@@ -329,7 +494,7 @@ const App = () => {
       )
     },
 
-    // 6. Beta Value & CTA (Combined)
+    // 6. Beta Value & CTA
     {
       id: 'beta-cta',
       content: (
@@ -337,9 +502,8 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <ShieldCheck size={32} color={colors.primary} />
-              政策驅動時代，誰先控風險誰贏
+              誰先控風險誰贏
             </h2>
-            
           </div>
 
           {/* Gauge Visualization */}
@@ -380,27 +544,26 @@ const App = () => {
   ];
 
   return (
-    // 使用 100dvh 確保適配移動端瀏覽器高度
     <div 
       className="w-full h-[100dvh] bg-[#141414] text-[#E0E0E0] font-sans select-none overflow-hidden flex flex-col relative"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 1. Top Navigation (Moved from bottom) */}
+      {/* Top Navigation */}
       <div className="fixed top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
           {screens.map((_, idx) => (
             <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
           ))}
       </div>
 
-      {/* 2. Main Content Area */}
+      {/* Main Content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-8 custom-scrollbar relative">
         <div key={activeScreen} className="min-h-full">
           {screens[activeScreen].content}
         </div>
       </div>
 
-      {/* 3. Bottom Control Panel (Fixed CTA) */}
+      {/* Bottom Controls */}
       <div className="h-32 bg-gradient-to-t from-[#141414] via-[#141414] to-transparent flex flex-col items-center justify-center px-8 pb-4 shrink-0 relative z-[40] border-t border-white/5">
         <div className="w-full flex gap-5">
           <button onClick={prevScreen} disabled={activeScreen === 0} className={`flex-1 py-5 rounded-[24px] border border-white/10 flex items-center justify-center text-white font-black text-lg active:scale-95 transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'bg-[#242424]'}`}>
@@ -419,9 +582,25 @@ const App = () => {
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
         .slide-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .scale-in { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes popIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        
+        .animate-draw-stroke {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: drawStroke 2s ease-out forwards;
+        }
+        @keyframes drawStroke {
+          to { stroke-dashoffset: 0; }
+        }
+        .animate-fade-in-delayed {
+          opacity: 0;
+          animation: fadeIn 0.5s ease-out forwards 0.5s;
+        }
       `}</style>
     </div>
   );
