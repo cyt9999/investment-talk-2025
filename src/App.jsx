@@ -17,12 +17,13 @@ import {
   PlayCircle,
   Mic,
   Zap,
-  BarChart3
+  BarChart3,
+  X
 } from 'lucide-react';
 
+// --- DATA & HELPER COMPONENTS ---
+
 // ROI Data
-// Talk Data: Derived from your CSVs
-// S&P 500 Data: Estimated trend for 2025 scaled to match the +17.88% benchmark
 const chartData = [
   { date: "2025-05-12", talk: 5.4, sp500: 0.0 },
   { date: "2025-05-16", talk: 7.51, sp500: 0.8 },
@@ -40,13 +41,13 @@ const chartData = [
   { date: "2025-12-26", talk: 27.78, sp500: 17.88 }
 ];
 
+// Chart Component
 const ComparisonLineChart = ({ data }) => {
   if (!data || data.length === 0) return null;
   
-  // Calculate Scales
   const allValues = data.flatMap(d => [d.talk, d.sp500]);
   const max = Math.max(...allValues) * 1.1; 
-  const min = Math.min(...allValues, 0); // Ensure 0 is included
+  const min = Math.min(...allValues, 0); 
   const range = max - min || 1;
 
   const getPoints = (key) => {
@@ -65,7 +66,6 @@ const ComparisonLineChart = ({ data }) => {
 
   return (
     <div className="w-full h-40 mt-6 relative select-none">
-       {/* SVG Layer for Lines */}
        <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
           <defs>
             <linearGradient id="talkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -73,90 +73,49 @@ const ComparisonLineChart = ({ data }) => {
                <stop offset="100%" stopColor="#95B1FF" stopOpacity="0" />
             </linearGradient>
           </defs>
-          
-          {/* Grid Lines (Optional, simple baseline) */}
           <line x1="0" y1="100" x2="100" y2="100" stroke="#404040" strokeWidth="0.5" vectorEffect="non-scaling-stroke" />
-
-          {/* S&P 500 Line (Background) */}
-          <path 
-            d={toPath(spPoints)} 
-            fill="none" 
-            stroke="#666" 
-            strokeWidth="1.5" 
-            strokeDasharray="4 4"
-            vectorEffect="non-scaling-stroke" 
-            className="opacity-50"
-          />
-
-          {/* Talk Line (Foreground) */}
+          <path d={toPath(spPoints)} fill="none" stroke="#666" strokeWidth="1.5" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" className="opacity-50" />
           <path d={toArea(talkPoints)} fill="url(#talkGradient)" className="animate-fade-in-delayed" />
-          <path 
-            d={toPath(talkPoints)} 
-            fill="none" 
-            stroke="#95B1FF" 
-            strokeWidth="2.5" 
-            vectorEffect="non-scaling-stroke" 
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="animate-draw-stroke drop-shadow-lg"
-          />
+          <path d={toPath(talkPoints)} fill="none" stroke="#95B1FF" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-stroke drop-shadow-lg" />
        </svg>
-
-       {/* HTML Layer for Dots (Prevents Distortion) */}
        <div className="absolute inset-0 pointer-events-none">
           {talkPoints.map((p, i) => (
             (i === talkPoints.length - 1 || i % 4 === 0) && (
-              <div 
-                key={i}
-                className="absolute w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#95B1FF] shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 animate-pop-in"
-                style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${1 + i * 0.1}s` }}
-              />
+              <div key={i} className="absolute w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#95B1FF] shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 animate-pop-in" style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${1 + i * 0.1}s` }} />
             )
           ))}
-          {/* Last S&P Point */}
-          <div 
-             className="absolute w-2 h-2 rounded-full bg-[#666] transform -translate-x-1/2 -translate-y-1/2"
-             style={{ left: '100%', top: `${spPoints[spPoints.length-1].y}%` }}
-          />
-       </div>
-
-       {/* Floating Labels for End Points */}
-       <div className="absolute right-0 transform translate-x-1" style={{ top: `${talkPoints[talkPoints.length-1].y}%` }}>
-          <div className="bg-[#95B1FF] text-black text-[10px] font-black px-1.5 py-0.5 rounded ml-2 -mt-2.5 shadow-lg">
-             Talk
-          </div>
-       </div>
-       <div className="absolute right-0 transform translate-x-1" style={{ top: `${spPoints[spPoints.length-1].y}%` }}>
-          <div className="bg-[#666] text-white text-[10px] font-bold px-1.5 py-0.5 rounded ml-2 -mt-2.5">
-             S&P
-          </div>
+          <div className="absolute w-2 h-2 rounded-full bg-[#666] transform -translate-x-1/2 -translate-y-1/2" style={{ left: '100%', top: `${spPoints[spPoints.length-1].y}%` }} />
        </div>
     </div>
   );
 }
-// Image Viewer Component
+
+// Image Viewer Component (Fixed Z-Index and Layout)
 const ImageViewer = ({ src, onClose }) => {
   if (!src) return null;
   return (
     <div 
-      className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
     >
       <button 
-        className="absolute top-6 right-6 text-white bg-white/10 rounded-full p-2 backdrop-blur-md"
+        className="absolute top-6 right-6 text-white bg-white/20 rounded-full p-2 backdrop-blur-md hover:bg-white/30 transition-colors"
         onClick={onClose}
       >
-        <X size={24} />
+        <X size={32} />
       </button>
       <img 
         src={src} 
         alt="Full View" 
-        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-in"
+        className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
         onClick={(e) => e.stopPropagation()} 
       />
     </div>
   );
 };
+
+// --- MAIN APP COMPONENT ---
+
 const App = () => {
   const [activeScreen, setActiveScreen] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
@@ -165,7 +124,6 @@ const App = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const scrollRef = useRef(null);
 
-  // 顏色配置
   const colors = {
     primary: '#95B1FF',
     primaryGradient: 'linear-gradient(135deg, #95B1FF 0%, #346AFF 100%)',
@@ -175,14 +133,9 @@ const App = () => {
     line: '#404040',
   };
 
-  // 數值跳動動畫邏輯
   useEffect(() => {
-    if (activeScreen === 0) { 
-      animateValue(0, 27.78, setDisplayROI, 1000);
-    }
-    if (activeScreen === 5) { 
-      animateValue(0, 1.26, setDisplayBeta, 1000);
-    }
+    if (activeScreen === 0) animateValue(0, 27.78, setDisplayROI, 1000);
+    if (activeScreen === 5) animateValue(0, 1.26, setDisplayBeta, 1000);
   }, [activeScreen]);
 
   const animateValue = (start, end, setter, duration) => {
@@ -222,7 +175,7 @@ const App = () => {
   }, [activeScreen]);
 
   const screens = [
-    // 1. Overall (2025 回顧總覽)
+    // 1. Overall
     {
       id: 'overall',
       content: (
@@ -238,22 +191,18 @@ const App = () => {
           </h1>
           <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">+27.78% 不是終點，而是 5 次關鍵進化的結果。</p>
           
-          {/* Main Chart Card */}
           <div className="bg-[#242424] rounded-[32px] p-6 md:p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
             <div className="absolute -top-10 -right-10 opacity-5">
                <TrendingUp size={200} color={colors.primary} />
             </div>
             <div className="relative z-10">
               <div className="flex flex-col items-start mb-2">
-                 {/* Main ROI */}
                  <div>
                     <p className="text-[#B0B0B0] text-sm font-medium mb-1">Talk 君年度回報</p>
                     <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-3">
                       +{displayROI.toFixed(2)}%
                     </h2>
                  </div>
-                 
-                 {/* S&P 500 Comparison (Moved Below) */}
                  <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 backdrop-blur-sm">
                     <p className="text-[#666] text-xs font-bold uppercase">vs S&P 500</p>
                     <div className="w-px h-3 bg-[#404040]"></div>
@@ -262,10 +211,7 @@ const App = () => {
                     </h3>
                  </div>
               </div>
-              
-              {/* Inserted Chart */}
               <ComparisonLineChart data={chartData} />
-              
               <div className="flex justify-between text-[10px] text-[#666] mt-4 font-bold uppercase tracking-wider px-1">
                  <span>May</span>
                  <span>Jul</span>
@@ -275,7 +221,6 @@ const App = () => {
               </div>
             </div>
           </div>
-
           <p className="text-[#666] text-xs font-medium text-center opacity-60">
              *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線,為實際交易紀錄,過往表現不保證未來收益,投資有風險。
           </p>
@@ -283,7 +228,7 @@ const App = () => {
       )
     },
 
-   // 2. 2025 智慧軌跡 (Talk 君怎麼做)
+    // 2. Trajectory
     {
       id: 'trajectory',
       content: (
@@ -294,61 +239,20 @@ const App = () => {
               時機抓對了 執行力讓數字說話
             </h2>
           </div>
-          
           <div className="space-y-12 relative">
-            {/* Timeline Line - Aligned to center of the 32px dots (left-4 = 16px, dot width 32px -> center at 32px) */}
             <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
-            
             {[
-              { 
-                date: '04/09', 
-                tag: '解放日', 
-                title: '關稅風暴後：多頭確立', 
-                desc: '堅定不交籌碼，確立「盈餘驅動」主軸，加倉 QQQ 與特斯拉。', 
-                color: '#FF8A8A' 
-              },
-              { 
-                date: '05/07', 
-                tag: '宏觀定調', 
-                title: '聯準會的耐心測試', 
-                desc: '鮑威爾強調等待數據。策略性配置 30% SHY 短債觀望，不隨市場雜訊起舞。', 
-                color: colors.primary 
-              },
-              { 
-                date: '07/22', 
-                tag: '板塊輪動', 
-                title: '能源接棒 AI', 
-                desc: '獲利了結奇異航太 (GE) +100% 漲幅，轉倉 GEV 佈局 AI 算力背後的能源剛需。', 
-                color: colors.primary 
-              },
-              { 
-                date: '08/01', 
-                tag: '逆勢抄底', 
-                title: '非農暴雷：黑色星期五', 
-                desc: '失業率數據引發衰退恐慌。堅持「軟著陸」劇本，逆勢大舉加倉 TSLA 與 ARM。', 
-                color: '#ADC4FF' 
-              },
-              { 
-                date: '10/06', 
-                tag: '價值回歸', 
-                title: '重倉亞馬遜', 
-                desc: '看好 AWS 利潤率與電商旺季，在財報前夕將 AMZN 權重拉升至 17%，回歸價值本質。', 
-                color: colors.primary 
-              },
-              { 
-                date: '11/25', 
-                tag: '精準對沖', 
-                title: '情緒過熱：啟動防禦', 
-                desc: '情緒指標突破 64% 警戒線，買入 SOXS (半導體空頭) 鎖定全年利潤，主動壓降 Beta。', 
-                color: colors.primary 
-              }
+              { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '堅定不交籌碼，確立「盈餘驅動」主軸，加倉 QQQ 與特斯拉。', color: '#FF8A8A' },
+              { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '鮑威爾強調等待數據。策略性配置 30% SHY 短債觀望，不隨市場雜訊起舞。', color: colors.primary },
+              { date: '07/22', tag: '板塊輪動', title: '能源接棒 AI', desc: '獲利了結奇異航太 (GE) +100% 漲幅，轉倉 GEV 佈局 AI 算力背後的能源剛需。', color: colors.primary },
+              { date: '08/01', tag: '逆勢抄底', title: '非農暴雷：黑色星期五', desc: '失業率數據引發衰退恐慌。坚持「軟著陸」劇本，逆勢大舉加倉 TSLA 與 ARM。', color: '#ADC4FF' },
+              { date: '10/06', tag: '價值回歸', title: '重倉亞馬遜', desc: '看好 AWS 利潤率與電商旺季，在財報前夕將 AMZN 權重拉升至 17%，回歸價值本質。', color: colors.primary },
+              { date: '11/25', tag: '精準對沖', title: '情緒過熱：啟動防禦', desc: '情緒指標突破 64% 警戒線，買入 SOXS (半導體空頭) 鎖定全年利潤，主動壓降 Beta。', color: colors.primary }
             ].map((item, idx) => (
               <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                {/* Dot - Absolute positioning relative to the container, centered on the line */}
                 <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: item.color }}>
                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
                 </div>
-                
                 <div className="flex items-center gap-2 mb-1.5">
                   <p className="text-sm font-black" style={{ color: item.color }}>{item.date}</p>
                   <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
@@ -362,7 +266,7 @@ const App = () => {
       )
     },
 
-    // 3. 交易實錄
+    // 3. Trading
     {
       id: 'trading',
       content: (
@@ -375,34 +279,10 @@ const App = () => {
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
-              { 
-                code: 'GE', name: '奇異航太', 
-                roi: '+99.9%', 
-                op: '均價 $128.80 ➡️ 11/17 $257.50 結算', 
-                comment: '「航天行業幾乎無競爭對手，服務營收穩定。」',
-                metric: '關鍵指標：服務營收佔比 / 寡佔定價權' 
-              },
-              { 
-                code: 'INTC', name: '英特爾', 
-                roi: '+51.7%', 
-                op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35', 
-                comment: '「基本面展露逆境反轉，台海風險的對沖資產。」',
-                metric: '關鍵指標：P/B Ratio 歷史低位 / 營收轉折點' 
-              },
-              { 
-                code: 'AMZN', name: '亞馬遜', 
-                roi: '+22.8%', 
-                op: '10/06 入場 $171.70 ➡️ 均價 $176.76 ➡️ 年底 $217', 
-                comment: '「AWS利潤率被低估，兩架馬車並進。」',
-                metric: '關鍵指標：AWS Operating Margin' 
-              },
-              { 
-                code: 'TSLA', name: '特斯拉', 
-                roi: '+23.5%', 
-                op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305', 
-                comment: '「自動駕駛的唯一股，堅守 FSD 信念。」',
-                metric: '關鍵指標：FSD 滲透率 / 算力基礎設施化' 
-              }
+              { code: 'GE', name: '奇異航太', roi: '+99.9%', op: '均價 $128.80 ➡️ 11/17 $257.50 結算', comment: '「航天行業幾乎無競爭對手，服務營收穩定。」', metric: '關鍵指標：服務營收佔比 / 寡佔定價權' },
+              { code: 'INTC', name: '英特爾', roi: '+51.7%', op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35', comment: '「基本面展露逆境反轉，台海風險的對沖資產。」', metric: '關鍵指標：P/B Ratio 歷史低位 / 營收轉折點' },
+              { code: 'AMZN', name: '亞馬遜', roi: '+22.8%', op: '10/06 入場 $171.70 ➡️ 均價 $176.76 ➡️ 年底 $217', comment: '「AWS利潤率被低估，兩架馬車並進。」', metric: '關鍵指標：AWS Operating Margin' },
+              { code: 'TSLA', name: '特斯拉', roi: '+23.5%', op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305', comment: '「自動駕駛的唯一股，堅守 FSD 信念。」', metric: '關鍵指標：FSD 滲透率 / 算力基礎設施化' }
             ].map((stock, idx) => (
               <div key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
                 <div className="flex items-center justify-between mb-5">
@@ -412,15 +292,12 @@ const App = () => {
                   </div>
                   <p className="text-3xl font-black italic text-[#95B1FF]">{stock.roi}</p>
                 </div>
-                
                 <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
                    <Activity size={14} /> {stock.metric}
                 </p>
-                
                 <div className="mb-5 bg-black/60 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
                   <p className="text-white text-lg font-black leading-relaxed">{stock.op}</p>
                 </div>
-                
                 <p className="text-[#B0B0B0] text-base italic leading-relaxed border-l-2 border-[#95B1FF]/30 pl-4">{stock.comment}</p>
               </div>
             ))}
@@ -428,29 +305,31 @@ const App = () => {
         </div>
       )
     },
-   // 4. 2025 APP 迭代 (Redesigned: Mobile-First & Varied Layouts)
+
+    // 4. App Iteration (Redesigned: Vivid, Floating, Variable Sizes)
     {
       id: 'app-iteration',
       content: (
         <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6 mb-6">
+          <div className="fade-in mt-6 mb-4">
             <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
               <Rocket size={32} className="text-[#95B1FF]" />
               2025 功能回顧
             </h2>
-            <p className="text-[#B0B0B0] text-sm font-medium tracking-wide">點擊圖片可查看高清大圖</p>
+            <p className="text-[#B0B0B0] text-sm font-bold tracking-wide">點擊圖片可查看高清大圖</p>
           </div>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-10">
+          <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-12">
             {[
               { 
                 date: 'MAY', 
+                year: '2025',
                 title: 'App 正式啟航', 
-                desc: '核心觀點、五大清單系統同步啟動。',
-                bg: 'bg-gradient-to-br from-[#1c1c2e] to-[#141414]', 
-                border: 'border-[#4c6ef5]/30',
+                subtitle: 'FOUNDATION',
+                desc: '核心觀點、五大清單系統同步啟動，建立投資體系基石。',
+                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]', // Vivid Blue
+                shadow: 'shadow-[#4c6ef5]/30',
                 images: [
-                  // Standard Portrait Layout
                   { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png`, type: 'tall' }, 
                   { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png`, type: 'tall' }, 
                   { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png`, type: 'tall' }
@@ -458,10 +337,12 @@ const App = () => {
               },
               { 
                 date: 'AUG', 
+                year: '2025',
                 title: '量化監測體系', 
+                subtitle: 'QUANTITATIVE',
                 desc: '情緒指標與趨勢圖上線，Beta 計算機輔助風險控管。', 
-                bg: 'bg-gradient-to-br from-[#2a1a1a] to-[#141414]', 
-                border: 'border-[#ff6b6b]/30',
+                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]', // Vivid Red
+                shadow: 'shadow-[#ff6b6b]/30',
                 highlight: true,
                 images: [
                   { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png`, type: 'tall' },
@@ -470,79 +351,98 @@ const App = () => {
               },
               { 
                 date: 'NOV', 
+                year: '2025',
                 title: '全維數據集成', 
+                subtitle: 'INTEGRATION',
                 desc: '文字聊天室凝聚社群，大盤看板與板塊 ETF 即時追蹤。',
-                bg: 'bg-gradient-to-br from-[#1a1826] to-[#141414]', 
-                border: 'border-[#7950f2]/30',
+                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]', // Vivid Purple
+                shadow: 'shadow-[#7950f2]/30',
                 images: [
-                  // Mixed Layout: One tall, One wide
                   { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png`, type: 'tall' },
-                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png`, type: 'wide' } // WIDE
+                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png`, type: 'wide' }
                 ]
               },
               { 
                 date: 'DEC', 
+                year: '2025',
                 title: '多媒體內容化', 
+                subtitle: 'MULTIMEDIA',
                 desc: '語音直播與回放功能，搭配即時個股新聞，資訊零時差。',
-                bg: 'bg-gradient-to-br from-[#142620] to-[#141414]', 
-                border: 'border-[#12b886]/30',
+                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]', // Vivid Teal
+                shadow: 'shadow-[#12b886]/30',
                 images: [
-                  // Wide Layout focus
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, type: 'wide' }, // WIDE
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, type: 'wide' },
                   { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png`, type: 'tall' }
                 ]
               }
             ].map((item, idx) => (
-              <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'forwards' }}>
+              <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
                 
-                {/* Timeline Connector */}
-                {idx !== 3 && <div className="absolute left-[20px] top-[45px] bottom-[-20px] w-[2px] bg-[#333] rounded-full -z-10" />}
+                {/* Visual Timeline Line */}
+                {idx !== 3 && <div className="absolute left-[28px] top-[60px] bottom-[-48px] w-[3px] bg-[#333] rounded-full -z-10 opacity-30" />}
 
                 {/* Header */}
-                <div className="flex items-start gap-4 mb-4 pl-0">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${item.border} bg-[#1a1a1a] text-white text-[10px] font-black shrink-0 z-10 shadow-lg`}>
-                       {item.date}
+                <div className="flex items-start gap-5 mb-5 pl-1">
+                    {/* Big Date Box */}
+                    <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
+                       <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
+                       <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
                     </div>
 
                     <div className="pt-1">
-                       <h4 className="text-white font-black text-xl mb-1">{item.title}</h4>
-                       <p className="text-[#B0B0B0] text-sm leading-relaxed max-w-sm">{item.desc}</p>
+                       <div className="flex items-center gap-2 mb-1">
+                          <h4 className="text-white font-black text-2xl tracking-tight">{item.title}</h4>
+                          {item.highlight && <span className="bg-[#FFD700] text-black text-[10px] px-1.5 py-0.5 rounded font-black uppercase">Star</span>}
+                       </div>
+                       <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
                     </div>
                 </div>
 
-                {/* SCROLLABLE GALLERY with Variable Sizes */}
-                <div className="w-full overflow-x-auto pb-6 pt-2 pl-14 pr-4 custom-scrollbar snap-x snap-mandatory -ml-2">
-                   <div className="flex gap-4 w-max">
+                {/* VIVID SCROLL GALLERY */}
+                <div className="w-full overflow-x-auto pb-8 pt-4 pl-4 pr-4 custom-scrollbar snap-x snap-mandatory -ml-2">
+                   <div className="flex gap-5 w-max">
                       {item.images && item.images.map((img, imgIdx) => (
-                        <div key={imgIdx} className="snap-center shrink-0 flex flex-col gap-3">
+                        <div key={imgIdx} className="snap-center shrink-0 relative group/card cursor-pointer">
                            
-                           {/* CONTAINER: Size depends on 'type' */}
+                           {/* VIVID CARD CONTAINER */}
+                           {/* Adapts width based on 'type' to ensure wide images aren't squished */}
                            <div 
                              className={`
-                               relative rounded-2xl overflow-hidden shadow-lg border border-white/5 bg-[#1a1a1a]
-                               ${img.type === 'wide' ? 'w-[300px] aspect-[16/10]' : 'w-[160px] aspect-[9/18]'}
+                               relative rounded-[24px] ${item.bg} overflow-hidden shadow-2xl ${item.shadow}
+                               transition-transform duration-300 active:scale-95
+                               ${img.type === 'wide' ? 'w-[280px] aspect-[16/10]' : 'w-[180px] aspect-[9/16]'}
                              `}
-                             onClick={() => setSelectedImage(img.src)} // Open Viewer
+                             onClick={() => setSelectedImage(img.src)}
                            >
-                              {/* The Image - No extra padding, respecting user's frame */}
-                              <img 
-                                src={img.src} 
-                                alt={img.name} 
-                                className="w-full h-full object-contain bg-black/50" 
-                                loading="lazy"
-                              />
+                              {/* Decorative Circle */}
+                              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-[50px] rounded-full pointer-events-none" />
                               
-                              {/* "Expand" Hint Overlay */}
-                              <div className="absolute inset-0 bg-black/0 active:bg-black/10 transition-colors flex items-center justify-center">
-                                 <div className="opacity-0 active:opacity-100 bg-black/60 rounded-full p-2 backdrop-blur-sm">
-                                    <Search size={20} className="text-white" />
-                                 </div>
+                              {/* IMAGE - Floating, no crop, no extra border */}
+                              <div className="absolute inset-3 rounded-[16px] overflow-hidden bg-black/10 shadow-inner">
+                                <img 
+                                  src={img.src} 
+                                  alt={img.name} 
+                                  className="w-full h-full object-contain drop-shadow-2xl"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                  }} 
+                                />
+                                {/* Fallback */}
+                                <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 bg-[#1a1a1a]">
+                                   <span className="text-[10px] text-[#666] font-bold uppercase">No Preview</span>
+                                </div>
+                              </div>
+
+                              {/* Search Icon Hint */}
+                              <div className="absolute bottom-3 right-3 bg-black/20 p-1.5 rounded-full backdrop-blur-md opacity-60">
+                                 <Search size={12} className="text-white" />
                               </div>
                            </div>
 
                            {/* Label */}
-                           <div className="text-center">
-                              <span className="text-[#888] text-[10px] font-bold uppercase tracking-wider bg-[#222] px-2 py-1 rounded-md">
+                           <div className="text-center mt-3">
+                              <span className="text-[#888] text-[10px] font-bold uppercase tracking-wider bg-[#222] px-2 py-1 rounded-md border border-white/5">
                                 {img.name}
                               </span>
                            </div>
@@ -553,15 +453,11 @@ const App = () => {
               </div>
             ))}
           </div>
-
-          {/* Render the Image Viewer Overlay */}
-          {selectedImage && (
-            <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />
-          )}
         </div>
       )
     },
-    // 5. 2026 重大事件行事曆
+
+    // 5. Calendar
     {
       id: '2026-calendar',
       content: (
@@ -663,6 +559,9 @@ const App = () => {
           {screens[activeScreen].content}
         </div>
       </div>
+
+      {/* Renders the Image Viewer OVERLAY when selectedImage is active */}
+      {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
 
       {/* Bottom Controls */}
       <div className="h-32 bg-gradient-to-t from-[#141414] via-[#141414] to-transparent flex flex-col items-center justify-center px-8 pb-4 shrink-0 relative z-[40] border-t border-white/5">
