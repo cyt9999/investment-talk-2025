@@ -407,6 +407,7 @@ const App = () => {
       )
     },
 
+   // 4. 2025 APP 迭代
     // 4. 2025 APP 迭代
     {
       id: 'app-iteration',
@@ -421,16 +422,96 @@ const App = () => {
           </div>
           <div className="space-y-8 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
-              { date: '2025/05', title: 'App 正式上線', desc: '核心觀點、五大清單系統同步啟動。' },
-              { date: '2025/08', title: '量化監測體系', desc: '情緒指標、趨勢圖、Beta 計算機。', highlight: true },
-              { date: '2025/11', title: '全維數據集成', desc: '文字聊天室、大盤看板、板塊 ETF。' },
-              { date: '2025/12', title: '多媒體內容化', desc: '語音直播與回放、個股即時新聞。' }
+              { 
+                date: '2025/05', 
+                title: 'App 正式上線', 
+                desc: '核心觀點、五大清單系統同步啟動。',
+                images: [
+                  // Use template literal to add the Base URL automatically
+                  { name: '觀察與持倉清單', src: `${import.meta.env.BASE_URL}public/images/holding.png` }, 
+                  { name: '三大選股策略', src: `${import.meta.env.BnASE_URL}public/images/strategy.png` }, 
+                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}public/images/marketpart.png` }
+                ]
+              },
+              { 
+                date: '2025/08', 
+                title: '量化監測體系', 
+                desc: '情緒指標、趨勢圖、Beta 計算機。', 
+                highlight: true,
+                images: [
+                  { name: '市場情緒 v2', src: `${import.meta.env.BASE_URL}public/images/marketpart2.png` },
+                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}public/images/beta.png` }
+                ]
+              },
+              { 
+                date: '2025/11', 
+                title: '全維數據集成', 
+                desc: '文字聊天室、大盤看板、板塊 ETF。',
+                images: [
+                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}public/images/chatroom.png` },
+                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}public/images/stock_overview.png` }
+                ]
+              },
+              { 
+                date: '2025/12', 
+                title: '多媒體內容化', 
+                desc: '語音直播與回放、個股即時新聞。',
+                images: [
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}public/images/live.png` },
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}public/images/news.png` }
+                ]
+              }
             ].map((item, idx) => (
               <div key={idx} className={`bg-[#242424] rounded-[32px] overflow-hidden border transition-all slide-up opacity-0 ${item.highlight ? 'border-[#95B1FF]/50' : 'border-white/5'}`} style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'forwards' }}>
                 <div className="p-6">
-                  <p className="text-[#95B1FF] text-xs font-black mb-1">{item.date}</p>
-                  <h4 className="text-white font-black text-xl mb-1">{item.title}</h4>
-                  <p className="text-[#B0B0B0] text-base">{item.desc}</p>
+                  <div className="flex justify-between items-start mb-2">
+                     <div>
+                        <p className="text-[#95B1FF] text-xs font-black mb-1">{item.date}</p>
+                        <h4 className="text-white font-black text-xl">{item.title}</h4>
+                     </div>
+                  </div>
+                  <p className="text-[#B0B0B0] text-base mb-6">{item.desc}</p>
+
+                  {/* Product Image Gallery (Horizontal Scroll) */}
+                  {item.images && (
+                    <div className="flex gap-4 overflow-x-auto pb-2 -mx-2 px-2 custom-scrollbar">
+                      {item.images.map((img, imgIdx) => (
+                        <div key={imgIdx} className="flex-shrink-0 w-40 flex flex-col gap-3 group cursor-pointer">
+                           {/* Image Container */}
+                           <div className="w-full aspect-[9/16] bg-[#1a1a1a] rounded-2xl border border-white/10 flex items-center justify-center relative overflow-hidden transition-all group-hover:border-[#95B1FF]/50 group-hover:shadow-lg group-hover:shadow-[#95B1FF]/10">
+                              
+                              {/* IMAGE ELEMENT */}
+                              <img 
+                                src={img.src} 
+                                alt={img.name} 
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                onError={(e) => {
+                                  // Fallback if image still fails
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }} 
+                              />
+
+                              {/* Fallback Placeholder (Hidden by default) */}
+                              <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 opacity-50 bg-[#242424]">
+                                 <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white flex items-center justify-center">
+                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                 </div>
+                                 <span className="text-[10px] font-bold uppercase tracking-widest">No Image</span>
+                              </div>
+                              
+                              {/* Overlay Gradient */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
+                           </div>
+                           
+                           {/* Caption */}
+                           <p className="text-[#E0E0E0] text-xs font-bold text-center group-hover:text-[#95B1FF] transition-colors">
+                              {img.name}
+                           </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
