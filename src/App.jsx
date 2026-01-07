@@ -134,12 +134,35 @@ const ComparisonLineChart = ({ data }) => {
     </div>
   );
 }
-
+// Image Viewer Component
+const ImageViewer = ({ src, onClose }) => {
+  if (!src) return null;
+  return (
+    <div 
+      className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <button 
+        className="absolute top-6 right-6 text-white bg-white/10 rounded-full p-2 backdrop-blur-md"
+        onClick={onClose}
+      >
+        <X size={24} />
+      </button>
+      <img 
+        src={src} 
+        alt="Full View" 
+        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-in"
+        onClick={(e) => e.stopPropagation()} 
+      />
+    </div>
+  );
+};
 const App = () => {
   const [activeScreen, setActiveScreen] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [displayBeta, setDisplayBeta] = useState(0);
   const [displayROI, setDisplayROI] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
   const scrollRef = useRef(null);
 
   // 顏色配置
@@ -405,184 +428,136 @@ const App = () => {
         </div>
       )
     },
-    // 4. 2025 APP 迭代 (Redesigned - Vivid & Dynamic)
+   // 4. 2025 APP 迭代 (Redesigned: Mobile-First & Varied Layouts)
     {
       id: 'app-iteration',
       content: (
         <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6 mb-4">
+          <div className="fade-in mt-6 mb-6">
             <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
               <Rocket size={32} className="text-[#95B1FF]" />
               2025 功能回顧
             </h2>
-            <p className="text-[#B0B0B0] text-sm font-bold tracking-wide">從核心觀點到量化監測，全面到位</p>
+            <p className="text-[#B0B0B0] text-sm font-medium tracking-wide">點擊圖片可查看高清大圖</p>
           </div>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-12">
+          <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-10">
             {[
               { 
                 date: 'MAY', 
-                year: '2025',
                 title: 'App 正式啟航', 
-                subtitle: 'FOUNDATION',
-                desc: '核心觀點、五大清單系統同步啟動，建立投資體系基石。',
-                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]', // Vivid Blue
-                shadow: 'shadow-[#4c6ef5]/40',
+                desc: '核心觀點、五大清單系統同步啟動。',
+                bg: 'bg-gradient-to-br from-[#1c1c2e] to-[#141414]', 
+                border: 'border-[#4c6ef5]/30',
                 images: [
-                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
-                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
-                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png` }
+                  // Standard Portrait Layout
+                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png`, type: 'tall' }, 
+                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png`, type: 'tall' }, 
+                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png`, type: 'tall' }
                 ]
               },
               { 
                 date: 'AUG', 
-                year: '2025',
                 title: '量化監測體系', 
-                subtitle: 'QUANTITATIVE',
                 desc: '情緒指標與趨勢圖上線，Beta 計算機輔助風險控管。', 
-                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]', // Vivid Red
-                shadow: 'shadow-[#ff6b6b]/40',
+                bg: 'bg-gradient-to-br from-[#2a1a1a] to-[#141414]', 
+                border: 'border-[#ff6b6b]/30',
                 highlight: true,
                 images: [
-                  { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
-                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png` }
+                  { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png`, type: 'tall' },
+                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png`, type: 'tall' }
                 ]
               },
               { 
                 date: 'NOV', 
-                year: '2025',
                 title: '全維數據集成', 
-                subtitle: 'INTEGRATION',
                 desc: '文字聊天室凝聚社群，大盤看板與板塊 ETF 即時追蹤。',
-                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]', // Vivid Purple
-                shadow: 'shadow-[#7950f2]/40',
+                bg: 'bg-gradient-to-br from-[#1a1826] to-[#141414]', 
+                border: 'border-[#7950f2]/30',
                 images: [
-                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
-                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
+                  // Mixed Layout: One tall, One wide
+                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png`, type: 'tall' },
+                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png`, type: 'wide' } // WIDE
                 ]
               },
               { 
                 date: 'DEC', 
-                year: '2025',
                 title: '多媒體內容化', 
-                subtitle: 'MULTIMEDIA',
                 desc: '語音直播與回放功能，搭配即時個股新聞，資訊零時差。',
-                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]', // Vivid Teal
-                shadow: 'shadow-[#12b886]/40',
+                bg: 'bg-gradient-to-br from-[#142620] to-[#141414]', 
+                border: 'border-[#12b886]/30',
                 images: [
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png` },
-                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
+                  // Wide Layout focus
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, type: 'wide' }, // WIDE
+                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png`, type: 'tall' }
                 ]
               }
             ].map((item, idx) => (
-              <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+              <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'forwards' }}>
                 
-                {/* Visual Timeline Line */}
-                {idx !== 3 && <div className="absolute left-[28px] top-[60px] bottom-[-48px] w-[3px] bg-[#333] rounded-full -z-10 opacity-30" />}
+                {/* Timeline Connector */}
+                {idx !== 3 && <div className="absolute left-[20px] top-[45px] bottom-[-20px] w-[2px] bg-[#333] rounded-full -z-10" />}
 
                 {/* Header */}
-                <div className="flex items-start gap-5 mb-5 pl-1">
-                    {/* Big Date Box */}
-                    <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
-                       <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
-                       <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
+                <div className="flex items-start gap-4 mb-4 pl-0">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${item.border} bg-[#1a1a1a] text-white text-[10px] font-black shrink-0 z-10 shadow-lg`}>
+                       {item.date}
                     </div>
 
                     <div className="pt-1">
-                       <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-white font-black text-2xl tracking-tight">{item.title}</h4>
-                          {item.highlight && <span className="bg-[#FFD700] text-black text-[10px] px-1.5 py-0.5 rounded font-black uppercase">Star</span>}
-                       </div>
-                       <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
+                       <h4 className="text-white font-black text-xl mb-1">{item.title}</h4>
+                       <p className="text-[#B0B0B0] text-sm leading-relaxed max-w-sm">{item.desc}</p>
                     </div>
                 </div>
 
-                {/* VIVID SCROLL GALLERY */}
-                <div className="relative w-screen left-1/2 -translate-x-1/2">
-                   <div className="flex gap-6 overflow-x-auto pb-10 pt-4 px-6 custom-scrollbar snap-x snap-mandatory">
+                {/* SCROLLABLE GALLERY with Variable Sizes */}
+                <div className="w-full overflow-x-auto pb-6 pt-2 pl-14 pr-4 custom-scrollbar snap-x snap-mandatory -ml-2">
+                   <div className="flex gap-4 w-max">
                       {item.images && item.images.map((img, imgIdx) => (
-                        <div key={imgIdx} className="snap-center shrink-0 relative group/card cursor-pointer">
+                        <div key={imgIdx} className="snap-center shrink-0 flex flex-col gap-3">
                            
-                           {/* VIVID CARD CONTAINER */}
-                           <div className={`w-[220px] h-[320px] rounded-[32px] ${item.bg} relative overflow-hidden shadow-2xl ${item.shadow} transition-transform duration-500 hover:-translate-y-2`}>
+                           {/* CONTAINER: Size depends on 'type' */}
+                           <div 
+                             className={`
+                               relative rounded-2xl overflow-hidden shadow-lg border border-white/5 bg-[#1a1a1a]
+                               ${img.type === 'wide' ? 'w-[300px] aspect-[16/10]' : 'w-[160px] aspect-[9/18]'}
+                             `}
+                             onClick={() => setSelectedImage(img.src)} // Open Viewer
+                           >
+                              {/* The Image - No extra padding, respecting user's frame */}
+                              <img 
+                                src={img.src} 
+                                alt={img.name} 
+                                className="w-full h-full object-contain bg-black/50" 
+                                loading="lazy"
+                              />
                               
-                              {/* Decorative Circle/Noise */}
-                              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-[50px] rounded-full pointer-events-none" />
-                              <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-
-                              {/* FLOATING PHONE IMAGE */}
-                              {/* Rotated by default, straightens on hover */}
-                              <div className="absolute top-6 left-5 right-5 bottom-8 transform -rotate-[6deg] group-hover/card:rotate-0 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) origin-bottom">
-                                 
-                                 {/* Phone Frame */}
-                                 <div className="w-full h-full bg-[#121212] rounded-[24px] border-[6px] border-[#222] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] overflow-hidden relative">
-                                    {/* Image with object-cover to fill frame (no spacing!) */}
-                                    <img 
-                                      src={img.src} 
-                                      alt={img.name} 
-                                      className="w-full h-full object-cover"
-                                      onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
-                                      }} 
-                                    />
-                                    
-                                    {/* Fallback */}
-                                    <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 bg-[#1a1a1a]">
-                                       <div className="w-8 h-8 rounded border-2 border-dashed border-[#444]" />
-                                       <span className="text-[10px] text-[#666] font-bold uppercase">No Preview</span>
-                                    </div>
-                                    
-                                    {/* Glossy Reflection Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
+                              {/* "Expand" Hint Overlay */}
+                              <div className="absolute inset-0 bg-black/0 active:bg-black/10 transition-colors flex items-center justify-center">
+                                 <div className="opacity-0 active:opacity-100 bg-black/60 rounded-full p-2 backdrop-blur-sm">
+                                    <Search size={20} className="text-white" />
                                  </div>
                               </div>
+                           </div>
 
-                              {/* Label */}
-                              <div className="absolute bottom-4 left-0 right-0 text-center z-10">
-                                 <span className="text-white text-xs font-black uppercase tracking-widest drop-shadow-md bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
-                                   {img.name}
-                                 </span>
-                              </div>
+                           {/* Label */}
+                           <div className="text-center">
+                              <span className="text-[#888] text-[10px] font-bold uppercase tracking-wider bg-[#222] px-2 py-1 rounded-md">
+                                {img.name}
+                              </span>
                            </div>
                         </div>
                       ))}
-                      
-                      {/* Spacer for end of scroll */}
-                      <div className="w-2 shrink-0" />
                    </div>
                 </div>
               </div>
             ))}
-            
-            {/* Q4 Stats Card - Glassmorphism Style */}
-            <div className="mx-2 mt-4 bg-gradient-to-br from-[#2a2a2a] to-[#111] p-[1px] rounded-[32px] shadow-2xl slide-up opacity-0" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>
-               <div className="bg-[#1a1a1a]/90 backdrop-blur-xl rounded-[31px] p-6 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-32 bg-[#95B1FF] blur-[120px] opacity-10 pointer-events-none" />
-                  
-                  <div className="flex justify-between items-end mb-6 relative z-10">
-                     <div>
-                        <p className="text-[#95B1FF] text-xs font-black uppercase tracking-widest mb-1">Verified Stats</p>
-                        <h4 className="text-white font-black text-2xl">Q4 社群實績</h4>
-                     </div>
-                     <div className="bg-[#242424] p-2 rounded-full border border-white/10">
-                        <Mic className="text-[#95B1FF]" size={20} />
-                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center gap-1 hover:bg-white/10 transition-colors">
-                       <span className="text-4xl font-black text-white">3</span>
-                       <span className="text-[10px] text-[#888] uppercase font-bold tracking-widest">語音直播</span>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center gap-1 hover:bg-white/10 transition-colors">
-                       <span className="text-4xl font-black text-[#95B1FF]">86</span>
-                       <span className="text-[10px] text-[#888] uppercase font-bold tracking-widest">專屬貼文</span>
-                    </div>
-                  </div>
-               </div>
-            </div>
           </div>
+
+          {/* Render the Image Viewer Overlay */}
+          {selectedImage && (
+            <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />
+          )}
         </div>
       )
     },
