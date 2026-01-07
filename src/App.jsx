@@ -1,24 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  TrendingUp, 
-  Target, 
-  Calendar, 
-  Award, 
-  Rocket, 
-  ShieldCheck, 
-  Activity, 
-  Lock, 
-  ChevronRight, 
-  ArrowLeft, 
-  ArrowRight,
-  Bell,
-  Search,
-  Crown,
-  PlayCircle,
-  Mic,
-  Zap,
-  BarChart3,
-  X
+  TrendingUp, Target, Calendar, Award, Rocket, ShieldCheck, Activity, 
+  Lock, ChevronRight, ArrowLeft, ArrowRight, Bell, Search, Crown, 
+  PlayCircle, Mic, Zap, BarChart3, X
 } from 'lucide-react';
 
 // --- DATA & HELPER COMPONENTS ---
@@ -104,7 +88,6 @@ const ImageViewer = ({ src, onClose }) => {
       >
         <X size={32} />
       </button>
-      {/* Added 'animate-scale-in' and 'onClick stopPropagation' */}
       <img 
         src={src} 
         alt="Full View" 
@@ -114,28 +97,28 @@ const ImageViewer = ({ src, onClose }) => {
     </div>
   );
 };
-// --- NEW COMPONENT: Auto-Playing Feature Card ---
+
+// --- FEATURE CARD ---
 const AutoFeatureCard = ({ item, onImageClick }) => {
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
   useEffect(() => {
     if (!item.images || item.images.length <= 1) return;
 
-    // 1. Generate a random delay between 0 and 2000ms
+    let intervalId = null;
     const randomDelay = Math.random() * 2000;
 
-    // 2. Start the interval AFTER the random delay
     const timeoutId = setTimeout(() => {
-      const intervalId = setInterval(() => {
+      // FIX 1: Faster transition interval (3000ms) for better pacing
+      intervalId = setInterval(() => {
         setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
-      }, 4000); // Increased from 2000ms to 4000ms for better viewing time
-
-      // Cleanup interval when component unmounts
-      return () => clearInterval(intervalId);
+      }, 3000); 
     }, randomDelay);
 
-    // Cleanup timeout
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [item.images]);
 
   // Variant Styles
@@ -159,12 +142,13 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     >
       <div className={`absolute inset-0 ${item.bg} opacity-20 z-0`} />
       <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${getContainerStyle()}`}>
-         {/* The 'key' attribute ensures React triggers the fade animation every time the image changes */}
+         {/* FIX 2: Apply custom styles (zoom/position) if defined in data */}
          <img 
            key={currentImg.src} 
            src={currentImg.src} 
            alt={currentImg.name} 
-           className="w-full h-full object-cover animate-fade-in-slow" 
+           className={`w-full h-full animate-fade-in-fast ${currentImg.fit === 'contain' ? 'object-contain scale-95' : 'object-cover'}`}
+           style={currentImg.customStyle || {}} 
          />
       </div>
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10 flex justify-between items-end">
@@ -183,6 +167,8 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     </div>
   );
 };
+
+
 // --- MAIN APP COMPONENT ---
 
 const App = () => {
@@ -335,7 +321,7 @@ const App = () => {
       )
     },
 
-    // 3. Trading
+    // 3. Trading (FIXED: Improved Layout & Added Images)
     {
       id: 'trading',
       content: (
@@ -343,27 +329,51 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
-              致勝交易背後 是全年持續升級的引擎
+              APP 實戰見證：全年持續升級的致勝引擎
             </h2>
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
-              { code: 'GE', name: '奇異航太', roi: '+99.9%', op: '均價 $128.80 ➡️ 11/17 $257.50 結算', comment: '「航天行業幾乎無競爭對手，服務營收穩定。」', metric: '關鍵指標：服務營收佔比 / 寡佔定價權' },
-              { code: 'INTC', name: '英特爾', roi: '+51.7%', op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35', comment: '「基本面展露逆境反轉，台海風險的對沖資產。」', metric: '關鍵指標：P/B Ratio 歷史低位 / 營收轉折點' },
-              { code: 'AMZN', name: '亞馬遜', roi: '+22.8%', op: '10/06 入場 $171.70 ➡️ 均價 $176.76 ➡️ 年底 $217', comment: '「AWS利潤率被低估，兩架馬車並進。」', metric: '關鍵指標：AWS Operating Margin' },
-              { code: 'TSLA', name: '特斯拉', roi: '+23.5%', op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305', comment: '「自動駕駛的唯一股，堅守 FSD 信念。」', metric: '關鍵指標：FSD 滲透率 / 算力基礎設施化' }
+              // FIX: Ensure you have these images in /public/images/ or change the names below
+              { 
+                code: 'GE', name: '奇異航太', roi: '+99.9%', 
+                op: '均價 $128.80 ➡️ 11/17 $257.50 結算', 
+                comment: '「航天行業幾乎無競爭對手，服務營收穩定。」', 
+                metric: '關鍵指標：服務營收佔比 / 寡佔定價權',
+                img: `${import.meta.env.BASE_URL}images/GE.png` 
+              },
+              { 
+                code: 'INTC', name: '英特爾', roi: '+51.7%', 
+                op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35', 
+                comment: '「基本面展露逆境反轉，台海風險的對沖資產。」', 
+                metric: '關鍵指標：P/B Ratio 歷史低位 / 營收轉折點',
+                img: `${import.meta.env.BASE_URL}images/INTC.png`
+              },
+              { 
+                code: 'TSLA', name: '特斯拉', roi: '+23.5%', 
+                op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305', 
+                comment: '「自動駕駛的唯一股，堅守 FSD 信念。」', 
+                metric: '關鍵指標：FSD 滲透率 / 算力基礎設施化',
+                img: `${import.meta.env.BASE_URL}images/TSLA.png`
+              }
             ].map((stock, idx) => (
               <div key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <div className="flex items-center justify-between mb-5">
+                {/* FIX 3: Flex-col on mobile for better spacing, row on larger screens */}
+                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
                   <div className="flex items-center gap-3">
                     <span className="text-sm px-3 py-1 rounded-xl bg-black text-[#95B1FF] font-black border border-white/10 uppercase tracking-widest">{stock.code}</span>
                     <span className="text-white font-black text-xl">{stock.name}</span>
                   </div>
                   <p className="text-3xl font-black italic text-[#95B1FF]">{stock.roi}</p>
                 </div>
-                <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
+                
+                <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                    <Activity size={14} /> {stock.metric}
                 </p>
+
+                {/* FIX 4: Inserted Key Screenshot Here */}
+                <img src={stock.img} alt={stock.name} className="w-full h-48 object-cover rounded-xl mb-4 border border-white/10 opacity-90" />
+
                 <div className="mb-5 bg-black/60 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
                   <p className="text-white text-lg font-black leading-relaxed">{stock.op}</p>
                 </div>
@@ -375,7 +385,7 @@ const App = () => {
       )
     },
 
-    // 4. App Iteration (Fixed: Auto-Carousel & Mobile Nav Conflict)
+    // 4. App Iteration (FIXED: Stock Overview Image Positioning)
     {
       id: 'app-iteration',
       content: (
@@ -428,7 +438,16 @@ const App = () => {
                 variant: 'default', 
                 images: [
                   { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
-                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
+                  // FIX 5: Custom Style for Stock Overview (Zoom In + Move Up)
+                  { 
+                    name: '個股新聞', 
+                    src: `${import.meta.env.BASE_URL}images/stock_overview.png`, 
+                    fit: 'contain',
+                    customStyle: { 
+                      transform: 'scale(1.3) translateY(-25%)', // Zoom 30%, Move Up 25%
+                      transformOrigin: 'top center' 
+                    } 
+                  }
                 ]
               },
               { 
@@ -440,17 +459,13 @@ const App = () => {
                 shadow: 'shadow-[#12b886]/40',
                 variant: 'wide', 
                 images: [
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png` },
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, fit: 'contain' },
                   { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
                 ]
               }
             ].map((item, idx) => (
               <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                
-                {/* Visual Timeline Line */}
                 {idx !== 3 && <div className="absolute left-[28px] top-[60px] bottom-[-48px] w-[3px] bg-[#333] rounded-full -z-10 opacity-30" />}
-
-                {/* Header */}
                 <div className="flex items-start gap-5 mb-5 pl-1">
                     <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
                        <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
@@ -465,8 +480,6 @@ const App = () => {
                        <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
                     </div>
                 </div>
-
-                {/* AUTO-PLAY CAROUSEL */}
                 <div className="px-4">
                    <AutoFeatureCard item={item} onImageClick={setSelectedImage} />
                 </div>
@@ -493,10 +506,10 @@ const App = () => {
             {[
               { id: 1, title: '聯準會主席變更', desc: '新舊交接期的政策連續性與不確定性將是核心。', img: 'https://images.pexels.com/photos/2862155/pexels-photo-2862155.jpeg' },
               { id: 2, title: '失業率與軟著陸', desc: '正式驗證美國經濟是否能在高利率下軟著陸。', img: 'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg' },
-              { id: 3, title: '策略性壓降 Beta', desc: '計畫將組合 Beta 回歸 1.0，以防禦姿態等待。', img: 'https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg' }
+              { id: 3, title: 'AI 競爭從 GPU 變成併網與配電速度', desc: '算力瓶頸不再是晶片，電力供給與併網速度決定成敗。', img: 'https://images.pexels.com/photos/236089/pexels-photo-236089.jpeg' }
             ].map((item, idx) => (
               <div key={idx} className="bg-[#242424] rounded-[32px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <img src={item.img} alt={item.title} className="h-48 w-full object-cover opacity-60" />
+                <img src={item.img} alt={item.title} className="h-80 w-full object-cover opacity-60" />
                 <div className="p-8">
                   <div className="flex items-center gap-4 mb-3">
                     <div className="w-10 h-10 rounded-2xl bg-[#95B1FF] text-black font-black flex items-center justify-center">{item.id}</div>
@@ -523,7 +536,6 @@ const App = () => {
             </h2>
           </div>
 
-          {/* Gauge Visualization */}
           <div className="bg-[#242424] rounded-[40px] p-8 border border-white/5 flex flex-col items-center mb-8 shadow-2xl relative overflow-hidden scale-in">
             <div className="relative w-56 h-56 mb-4">
               <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
@@ -545,7 +557,6 @@ const App = () => {
             </div>
           </div>
 
-          {/* CTA Section */}
           <div className="mt-auto space-y-4 fade-in" style={{ animationDelay: '0.6s' }}>
             <button className="w-full py-7 rounded-[32px] font-black text-2xl text-white bg-primary-gradient shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
                立即計算我的 Beta
@@ -566,27 +577,22 @@ const App = () => {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Top Navigation */}
       <div className="fixed top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
           {screens.map((_, idx) => (
             <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
           ))}
       </div>
 
-      {/* Main Content (Added pb-32 to clear floating dock) */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-32 custom-scrollbar relative">
         <div key={activeScreen} className="min-h-full">
           {screens[activeScreen].content}
         </div>
       </div>
 
-      {/* Renders the Image Viewer OVERLAY */}
       {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
 
-      {/* Bottom Navigation - Floating & Compact */}
       <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
         <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
-          {/* Prev Button - Circular */}
           <button 
             onClick={prevScreen} 
             disabled={activeScreen === 0} 
@@ -594,11 +600,7 @@ const App = () => {
           >
             <ArrowLeft size={20} />
           </button>
-
-          {/* Divider */}
           <div className="w-px h-6 bg-white/10"></div>
-
-          {/* Next Button - Pill with Text */}
           <button 
             onClick={nextScreen} 
             disabled={activeScreen === screens.length - 1} 
@@ -614,30 +616,19 @@ const App = () => {
         .bg-primary-gradient { background: linear-gradient(135deg, #95B1FF 0%, #346AFF 100%); }
         .custom-scrollbar::-webkit-scrollbar { width: 0px; }
         .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Animations */
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
         
-        /* NEW: Slower fade for the image carousel to avoid "jumpy" feel */
-        .animate-fade-in-slow { animation: fadeIn 1.2s ease-out forwards; }
+        /* UPDATED: Faster transition (0.7s) */
+        .animate-fade-in-fast { animation: fadeIn 0.7s ease-out forwards; }
         
         .slide-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .scale-in { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        /* Used for the Modal expansion */
         .animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
         .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Ensures the modal zooms in slightly when opening */
-        @keyframes scaleIn { 
-          from { opacity: 0; transform: scale(0.95); } 
-          to { opacity: 1; transform: scale(1); } 
-        }
-        
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         @keyframes popIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
         
         .animate-draw-stroke {
@@ -652,8 +643,7 @@ const App = () => {
           opacity: 0;
           animation: fadeIn 0.5s ease-out forwards 0.5s;
         }
-      `}
-      </style>
+      `}</style>
     </div>
   );
 };
