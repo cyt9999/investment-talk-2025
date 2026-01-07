@@ -122,7 +122,7 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     if (!item.images || item.images.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
-    }, 2000); // 2s interval for better readability (0.5s is too fast for UX)
+    }, 2000); 
     return () => clearInterval(interval);
   }, [item.images]);
 
@@ -131,8 +131,8 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     switch (item.variant) {
       case 'tilt': return 'rotate-[-2deg] scale-[1.02]';
       case 'zoom': return 'scale-110';
-      case 'wide': return 'aspect-[16/10]'; // Wider container
-      default: return 'aspect-[9/16]'; // Default Phone Ratio
+      case 'wide': return 'aspect-[16/10]'; 
+      default: return 'aspect-[9/16]'; 
     }
   };
 
@@ -141,25 +141,19 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
   return (
     <div 
       className={`relative w-full overflow-hidden rounded-[24px] shadow-2xl transition-all duration-500 bg-[#1a1a1a] ${item.shadow} ${item.variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
-      // STOP PROPAGATION: Prevents the swipe from changing screens
       onTouchStart={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
       onClick={() => onImageClick(currentImg.src)}
     >
-      {/* Background Gradient */}
       <div className={`absolute inset-0 ${item.bg} opacity-20 z-0`} />
-
-      {/* Image Layer */}
       <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${getContainerStyle()}`}>
          <img 
-           key={currentImg.src} // Key change triggers animation
+           key={currentImg.src} 
            src={currentImg.src} 
            alt={currentImg.name} 
-           className="w-full h-full object-cover animate-fade-in" // Full bleed, no padding
+           className="w-full h-full object-cover animate-fade-in" 
          />
       </div>
-
-      {/* Overlay Text */}
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10 flex justify-between items-end">
          <div>
             <div className="flex gap-1 mb-1">
@@ -392,7 +386,7 @@ const App = () => {
                 desc: '核心觀點、五大清單系統同步啟動。',
                 bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]', 
                 shadow: 'shadow-[#4c6ef5]/30',
-                variant: 'tilt', // Variation 1: Tilted
+                variant: 'tilt', 
                 images: [
                   { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
                   { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
@@ -406,7 +400,7 @@ const App = () => {
                 desc: '情緒指標與趨勢圖上線，Beta 計算機輔助風險控管。', 
                 bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]', 
                 shadow: 'shadow-[#ff6b6b]/40',
-                variant: 'zoom', // Variation 2: Zoom
+                variant: 'zoom', 
                 highlight: true,
                 images: [
                   { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
@@ -420,7 +414,7 @@ const App = () => {
                 desc: '文字聊天室凝聚社群，大盤看板與板塊 ETF 即時追蹤。',
                 bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]', 
                 shadow: 'shadow-[#7950f2]/40',
-                variant: 'default', // Variation 3: Default (Standard)
+                variant: 'default', 
                 images: [
                   { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
                   { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
@@ -433,7 +427,7 @@ const App = () => {
                 desc: '語音直播與回放功能，搭配即時個股新聞，資訊零時差。',
                 bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]', 
                 shadow: 'shadow-[#12b886]/40',
-                variant: 'wide', // Variation 4: Wide Layout for multi-screen images
+                variant: 'wide', 
                 images: [
                   { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png` },
                   { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
@@ -447,7 +441,6 @@ const App = () => {
 
                 {/* Header */}
                 <div className="flex items-start gap-5 mb-5 pl-1">
-                    {/* Big Date Box */}
                     <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
                        <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
                        <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
@@ -569,24 +562,39 @@ const App = () => {
           ))}
       </div>
 
-      {/* Main Content */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-8 custom-scrollbar relative">
+      {/* Main Content (Added pb-32 to clear floating dock) */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-32 custom-scrollbar relative">
         <div key={activeScreen} className="min-h-full">
           {screens[activeScreen].content}
         </div>
       </div>
 
-      {/* Renders the Image Viewer OVERLAY when selectedImage is active */}
+      {/* Renders the Image Viewer OVERLAY */}
       {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
 
-      {/* Bottom Controls */}
-      <div className="h-32 bg-gradient-to-t from-[#141414] via-[#141414] to-transparent flex flex-col items-center justify-center px-8 pb-4 shrink-0 relative z-[40] border-t border-white/5">
-        <div className="w-full flex gap-5">
-          <button onClick={prevScreen} disabled={activeScreen === 0} className={`flex-1 py-5 rounded-[24px] border border-white/10 flex items-center justify-center text-white font-black text-lg active:scale-95 transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'bg-[#242424]'}`}>
-             <ArrowLeft size={20} className="mr-2" /> 上一頁
+      {/* Bottom Navigation - Floating & Compact */}
+      <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
+        <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
+          {/* Prev Button - Circular */}
+          <button 
+            onClick={prevScreen} 
+            disabled={activeScreen === 0} 
+            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white/10 text-white'}`}
+          >
+            <ArrowLeft size={20} />
           </button>
-          <button onClick={nextScreen} disabled={activeScreen === screens.length - 1} className={`flex-1 py-5 rounded-[24px] flex items-center justify-center text-white font-black text-lg active:scale-95 transition-all shadow-lg ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient'}`}>
-             下一頁 <ArrowRight size={20} className="ml-2" />
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-white/10"></div>
+
+          {/* Next Button - Pill with Text */}
+          <button 
+            onClick={nextScreen} 
+            disabled={activeScreen === screens.length - 1} 
+            className={`h-12 px-6 rounded-full flex items-center gap-2 font-bold transition-all ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient text-white shadow-lg active:scale-95'}`}
+          >
+            <span className="text-sm">下一頁</span>
+            <ArrowRight size={18} />
           </button>
         </div>
       </div>
