@@ -427,8 +427,8 @@ const App = () => {
                 images: [
                   // Use template literal to add the Base URL automatically
                   { name: '觀察與持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
-                  { name: '三大選股策略', src: `${import.meta.env.BnASE_URL}public/images/strategy.png` }, 
-                  { name: '市場情緒', src: `public/images/marketpart.png` }
+                  { name: '三大選股策略', src: `${import.meta.env.BnASE_URL}images/strategy.png` }, 
+                  { name: '市場情緒', src: `${import.meta.env.BnASE_URL}images/marketpart.png` }
                 ]
               },
               { 
@@ -446,8 +446,8 @@ const App = () => {
                 title: '全維數據集成', 
                 desc: '文字聊天室、大盤看板、板塊 ETF。',
                 images: [
-                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}public/images/chatroom.png` },
-                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}public/images/stock_overview.png` }
+                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
+                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
                 ]
               },
               { 
