@@ -90,7 +90,7 @@ const ComparisonLineChart = ({ data }) => {
   );
 }
 
-// Image Viewer Component (Fixed Z-Index and Layout)
+// Image Viewer Component
 const ImageViewer = ({ src, onClose }) => {
   if (!src) return null;
   return (
@@ -113,6 +113,70 @@ const ImageViewer = ({ src, onClose }) => {
     </div>
   );
 };
+
+// --- NEW COMPONENT: Auto-Playing Feature Card ---
+const AutoFeatureCard = ({ item, onImageClick }) => {
+  const [currentImgIdx, setCurrentImgIdx] = useState(0);
+
+  useEffect(() => {
+    if (!item.images || item.images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
+    }, 2000); // 2s interval for better readability (0.5s is too fast for UX)
+    return () => clearInterval(interval);
+  }, [item.images]);
+
+  // Variant Styles
+  const getContainerStyle = () => {
+    switch (item.variant) {
+      case 'tilt': return 'rotate-[-2deg] scale-[1.02]';
+      case 'zoom': return 'scale-110';
+      case 'wide': return 'aspect-[16/10]'; // Wider container
+      default: return 'aspect-[9/16]'; // Default Phone Ratio
+    }
+  };
+
+  const currentImg = item.images[currentImgIdx];
+
+  return (
+    <div 
+      className={`relative w-full overflow-hidden rounded-[24px] shadow-2xl transition-all duration-500 bg-[#1a1a1a] ${item.shadow} ${item.variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
+      // STOP PROPAGATION: Prevents the swipe from changing screens
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchEnd={(e) => e.stopPropagation()}
+      onClick={() => onImageClick(currentImg.src)}
+    >
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 ${item.bg} opacity-20 z-0`} />
+
+      {/* Image Layer */}
+      <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${getContainerStyle()}`}>
+         <img 
+           key={currentImg.src} // Key change triggers animation
+           src={currentImg.src} 
+           alt={currentImg.name} 
+           className="w-full h-full object-cover animate-fade-in" // Full bleed, no padding
+         />
+      </div>
+
+      {/* Overlay Text */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10 flex justify-between items-end">
+         <div>
+            <div className="flex gap-1 mb-1">
+              {item.images.map((_, idx) => (
+                <div key={idx} className={`h-1 rounded-full transition-all duration-300 ${idx === currentImgIdx ? 'w-4 bg-white' : 'w-1 bg-white/30'}`} />
+              ))}
+            </div>
+            <p className="text-white font-bold text-sm tracking-wide">{currentImg.name}</p>
+         </div>
+         <div className="bg-white/10 p-1.5 rounded-full backdrop-blur-md">
+            <Search size={14} className="text-white/80" />
+         </div>
+      </div>
+    </div>
+  );
+};
+
 
 // --- MAIN APP COMPONENT ---
 
@@ -306,7 +370,7 @@ const App = () => {
       )
     },
 
-    // 4. App Iteration (Redesigned: Vivid, Floating, Variable Sizes)
+    // 4. App Iteration (Fixed: Auto-Carousel & Mobile Nav Conflict)
     {
       id: 'app-iteration',
       content: (
@@ -325,54 +389,54 @@ const App = () => {
                 date: 'MAY', 
                 year: '2025',
                 title: 'App 正式啟航', 
-                subtitle: 'FOUNDATION',
-                desc: '核心觀點、五大清單系統同步啟動，建立投資體系基石。',
-                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]', // Vivid Blue
+                desc: '核心觀點、五大清單系統同步啟動。',
+                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]', 
                 shadow: 'shadow-[#4c6ef5]/30',
+                variant: 'tilt', // Variation 1: Tilted
                 images: [
-                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png`, type: 'tall' }, 
-                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png`, type: 'tall' }, 
-                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png`, type: 'tall' }
+                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
+                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
+                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png` }
                 ]
               },
               { 
                 date: 'AUG', 
                 year: '2025',
                 title: '量化監測體系', 
-                subtitle: 'QUANTITATIVE',
                 desc: '情緒指標與趨勢圖上線，Beta 計算機輔助風險控管。', 
-                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]', // Vivid Red
-                shadow: 'shadow-[#ff6b6b]/30',
+                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]', 
+                shadow: 'shadow-[#ff6b6b]/40',
+                variant: 'zoom', // Variation 2: Zoom
                 highlight: true,
                 images: [
-                  { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png`, type: 'tall' },
-                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png`, type: 'tall' }
+                  { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
+                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png` }
                 ]
               },
               { 
                 date: 'NOV', 
                 year: '2025',
                 title: '全維數據集成', 
-                subtitle: 'INTEGRATION',
                 desc: '文字聊天室凝聚社群，大盤看板與板塊 ETF 即時追蹤。',
-                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]', // Vivid Purple
-                shadow: 'shadow-[#7950f2]/30',
+                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]', 
+                shadow: 'shadow-[#7950f2]/40',
+                variant: 'default', // Variation 3: Default (Standard)
                 images: [
-                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png`, type: 'tall' },
-                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png`, type: 'wide' }
+                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
+                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
                 ]
               },
               { 
                 date: 'DEC', 
                 year: '2025',
                 title: '多媒體內容化', 
-                subtitle: 'MULTIMEDIA',
                 desc: '語音直播與回放功能，搭配即時個股新聞，資訊零時差。',
-                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]', // Vivid Teal
-                shadow: 'shadow-[#12b886]/30',
+                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]', 
+                shadow: 'shadow-[#12b886]/40',
+                variant: 'wide', // Variation 4: Wide Layout for multi-screen images
                 images: [
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, type: 'wide' },
-                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png`, type: 'tall' }
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png` },
+                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
                 ]
               }
             ].map((item, idx) => (
@@ -398,57 +462,9 @@ const App = () => {
                     </div>
                 </div>
 
-                {/* VIVID SCROLL GALLERY */}
-                <div className="w-full overflow-x-auto pb-8 pt-4 pl-4 pr-4 custom-scrollbar snap-x snap-mandatory -ml-2">
-                   <div className="flex gap-5 w-max">
-                      {item.images && item.images.map((img, imgIdx) => (
-                        <div key={imgIdx} className="snap-center shrink-0 relative group/card cursor-pointer">
-                           
-                           {/* VIVID CARD CONTAINER */}
-                           {/* Adapts width based on 'type' to ensure wide images aren't squished */}
-                           <div 
-                             className={`
-                               relative rounded-[24px] ${item.bg} overflow-hidden shadow-2xl ${item.shadow}
-                               transition-transform duration-300 active:scale-95
-                               ${img.type === 'wide' ? 'w-[280px] aspect-[16/10]' : 'w-[180px] aspect-[9/16]'}
-                             `}
-                             onClick={() => setSelectedImage(img.src)}
-                           >
-                              {/* Decorative Circle */}
-                              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-[50px] rounded-full pointer-events-none" />
-                              
-                              {/* IMAGE - Floating, no crop, no extra border */}
-                              <div className="absolute inset-3 rounded-[16px] overflow-hidden bg-black/10 shadow-inner">
-                                <img 
-                                  src={img.src} 
-                                  alt={img.name} 
-                                  className="w-full h-full object-contain drop-shadow-2xl"
-                                  onError={(e) => {
-                                    e.target.style.display = 'none';
-                                    e.target.nextSibling.style.display = 'flex';
-                                  }} 
-                                />
-                                {/* Fallback */}
-                                <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 bg-[#1a1a1a]">
-                                   <span className="text-[10px] text-[#666] font-bold uppercase">No Preview</span>
-                                </div>
-                              </div>
-
-                              {/* Search Icon Hint */}
-                              <div className="absolute bottom-3 right-3 bg-black/20 p-1.5 rounded-full backdrop-blur-md opacity-60">
-                                 <Search size={12} className="text-white" />
-                              </div>
-                           </div>
-
-                           {/* Label */}
-                           <div className="text-center mt-3">
-                              <span className="text-[#888] text-[10px] font-bold uppercase tracking-wider bg-[#222] px-2 py-1 rounded-md border border-white/5">
-                                {img.name}
-                              </span>
-                           </div>
-                        </div>
-                      ))}
-                   </div>
+                {/* AUTO-PLAY CAROUSEL */}
+                <div className="px-4">
+                   <AutoFeatureCard item={item} onImageClick={setSelectedImage} />
                 </div>
               </div>
             ))}
