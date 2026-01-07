@@ -109,7 +109,6 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     const randomDelay = Math.random() * 2000;
 
     const timeoutId = setTimeout(() => {
-      // FIX 1: Faster transition interval (3000ms) for better pacing
       intervalId = setInterval(() => {
         setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
       }, 3000); 
@@ -142,7 +141,6 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     >
       <div className={`absolute inset-0 ${item.bg} opacity-20 z-0`} />
       <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${getContainerStyle()}`}>
-         {/* FIX 2: Apply custom styles (zoom/position) if defined in data */}
          <img 
            key={currentImg.src} 
            src={currentImg.src} 
@@ -276,8 +274,8 @@ const App = () => {
               </div>
             </div>
           </div>
-          <p className="text-[#666] text-xs font-medium text-center opacity-60">
-             *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線,為實際交易紀錄,過往表現不保證未來收益,投資有風險。
+          <p className="text-[#fff] text-xs font-base text-center opacity-50">
+             *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線至 2025/12 APP中的實際交易紀錄。過往表現不保證未來收益，請自行評估投資風險。
           </p>
         </div>
       )
@@ -321,20 +319,20 @@ const App = () => {
       )
     },
 
-    // 3. Trading (FIXED: Improved Layout & Added Images)
+    // 3. Trading (FIXED: ImageViewer + Full Width Readability)
     {
       id: 'trading',
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
+            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
               <Award size={32} color={colors.primary} />
               APP 實戰見證：全年持續升級的致勝引擎
             </h2>
+             <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">到「持倉清單」中看完整的持倉動態與即時價格</p>
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
-              // FIX: Ensure you have these images in /public/images/ or change the names below
               { 
                 code: 'GE', name: '奇異航太', roi: '+99.9%', 
                 op: '均價 $128.80 ➡️ 11/17 $257.50 結算', 
@@ -358,7 +356,6 @@ const App = () => {
               }
             ].map((stock, idx) => (
               <div key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                {/* FIX 3: Flex-col on mobile for better spacing, row on larger screens */}
                 <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
                   <div className="flex items-center gap-3">
                     <span className="text-sm px-3 py-1 rounded-xl bg-black text-[#95B1FF] font-black border border-white/10 uppercase tracking-widest">{stock.code}</span>
@@ -371,8 +368,13 @@ const App = () => {
                    <Activity size={14} /> {stock.metric}
                 </p>
 
-                {/* FIX 4: Inserted Key Screenshot Here */}
-                <img src={stock.img} alt={stock.name} className="w-full h-48 object-cover rounded-xl mb-4 border border-white/10 opacity-90" />
+                {/* UPDATED: h-auto + object-contain + Click to View */}
+                <img 
+                  src={stock.img} 
+                  alt={stock.name} 
+                  onClick={() => setSelectedImage(stock.img)} 
+                  className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20" 
+                />
 
                 <div className="mb-5 bg-black/60 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
                   <p className="text-white text-lg font-black leading-relaxed">{stock.op}</p>
@@ -385,7 +387,7 @@ const App = () => {
       )
     },
 
-    // 4. App Iteration (FIXED: Stock Overview Image Positioning)
+    // 4. App Iteration
     {
       id: 'app-iteration',
       content: (
@@ -438,13 +440,12 @@ const App = () => {
                 variant: 'default', 
                 images: [
                   { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
-                  // FIX 5: Custom Style for Stock Overview (Zoom In + Move Up)
                   { 
                     name: '個股新聞', 
                     src: `${import.meta.env.BASE_URL}images/stock_overview.png`, 
                     fit: 'contain',
                     customStyle: { 
-                      transform: 'scale(1.3) translateY(-25%)', // Zoom 30%, Move Up 25%
+                      transform: 'scale(1.3) translateY(-25%)', 
                       transformOrigin: 'top center' 
                     } 
                   }
@@ -506,7 +507,7 @@ const App = () => {
             {[
               { id: 1, title: '聯準會主席變更', desc: '新舊交接期的政策連續性與不確定性將是核心。', img: 'https://images.pexels.com/photos/2862155/pexels-photo-2862155.jpeg' },
               { id: 2, title: '失業率與軟著陸', desc: '正式驗證美國經濟是否能在高利率下軟著陸。', img: 'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg' },
-              { id: 3, title: 'AI 競爭從 GPU 變成併網與配電速度', desc: '算力瓶頸不再是晶片，電力供給與併網速度決定成敗。', img: 'https://images.pexels.com/photos/236089/pexels-photo-236089.jpeg' }
+              { id: 3, title: '策略性壓降 Beta', desc: '計畫將組合 Beta 回歸 1.0，以防禦姿態等待。', img: 'https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg' }
             ].map((item, idx) => (
               <div key={idx} className="bg-[#242424] rounded-[32px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
                 <img src={item.img} alt={item.title} className="h-80 w-full object-cover opacity-60" />
