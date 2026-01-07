@@ -254,13 +254,12 @@ const App = () => {
           </div>
 
           <p className="text-[#666] text-xs font-medium text-center opacity-60">
-             *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現
+             *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線,為實際交易紀錄,過往表現不保證未來收益,投資有風險。
           </p>
         </div>
       )
     },
 
-    // 2. 2025 智慧軌跡
    // 2. 2025 智慧軌跡 (Talk 君怎麼做)
     {
       id: 'trajectory',
@@ -269,7 +268,7 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Calendar size={32} color={colors.primary} />
-              時機抓對了
+              時機抓對了 執行力讓數字說話
             </h2>
           </div>
           
@@ -348,7 +347,7 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
-              致勝交易
+              致勝交易背後 是全年持續升級的引擎
             </h2>
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
@@ -425,10 +424,9 @@ const App = () => {
                 title: 'App 正式上線', 
                 desc: '核心觀點、五大清單系統同步啟動。',
                 images: [
-                  // Use template literal to add the Base URL automatically
                   { name: '觀察與持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
-                  { name: '三大選股策略', src: `${import.meta.env.BnASE_URL}images/strategy.png` }, 
-                  { name: '市場情緒', src: `${import.meta.env.BnASE_URL}images/marketpart.png` }
+                  { name: '三大選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
+                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png` }
                 ]
               },
               { 
@@ -455,8 +453,8 @@ const App = () => {
                 title: '多媒體內容化', 
                 desc: '語音直播與回放、個股即時新聞。',
                 images: [
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}public/images/live.png` },
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}public/images/news.png` }
+                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png` },
+                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
                 ]
               }
             ].map((item, idx) => (
@@ -472,38 +470,41 @@ const App = () => {
 
                   {/* Product Image Gallery (Horizontal Scroll) */}
                   {item.images && (
-                    <div className="flex gap-4 overflow-x-auto pb-2 -mx-2 px-2 custom-scrollbar">
+                    <div className="flex gap-4 overflow-x-auto pb-4 -mx-2 px-2 custom-scrollbar">
                       {item.images.map((img, imgIdx) => (
                         <div key={imgIdx} className="flex-shrink-0 w-40 flex flex-col gap-3 group cursor-pointer">
                            {/* Image Container */}
-                           <div className="w-full aspect-[9/16] bg-[#1a1a1a] rounded-2xl border border-white/10 flex items-center justify-center relative overflow-hidden transition-all group-hover:border-[#95B1FF]/50 group-hover:shadow-lg group-hover:shadow-[#95B1FF]/10">
+                           <div className="w-full aspect-[9/16] bg-[#1a1a1a] rounded-2xl border border-white/10 flex items-center justify-center relative overflow-hidden transition-all duration-300 group-hover:border-[#95B1FF]/50 group-hover:shadow-2xl group-hover:shadow-[#95B1FF]/20 group-hover:-translate-y-2">
                               
-                              {/* IMAGE ELEMENT */}
+                              {/* Shine Effect Overlay */}
+                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none z-20" />
+
+                              {/* IMAGE ELEMENT (Updated) */}
                               <img 
                                 src={img.src} 
                                 alt={img.name} 
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                // Changed object-cover to object-contain, added padding p-2
+                                className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-110 relative z-10"
                                 onError={(e) => {
-                                  // Fallback if image still fails
                                   e.target.style.display = 'none';
                                   e.target.nextSibling.style.display = 'flex';
                                 }} 
                               />
 
-                              {/* Fallback Placeholder (Hidden by default) */}
-                              <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 opacity-50 bg-[#242424]">
+                              {/* Fallback Placeholder */}
+                              <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 opacity-50 bg-[#242424] z-0">
                                  <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white flex items-center justify-center">
                                     <div className="w-1 h-1 bg-white rounded-full"></div>
                                  </div>
                                  <span className="text-[10px] font-bold uppercase tracking-widest">No Image</span>
                               </div>
                               
-                              {/* Overlay Gradient */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
+                              {/* Background Gradient (Subtle) */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"></div>
                            </div>
                            
                            {/* Caption */}
-                           <p className="text-[#E0E0E0] text-xs font-bold text-center group-hover:text-[#95B1FF] transition-colors">
+                           <p className="text-[#E0E0E0] text-xs font-bold text-center group-hover:text-[#95B1FF] transition-colors duration-300">
                               {img.name}
                            </p>
                         </div>
@@ -524,11 +525,11 @@ const App = () => {
                  <span className="text-[10px] bg-white text-black px-2 py-0.5 rounded uppercase font-black">Verified</span>
               </div>
               <div className="grid grid-cols-2 gap-5">
-                <div className="bg-black/50 p-5 rounded-3xl border border-white/5 text-center">
+                <div className="bg-black/50 p-5 rounded-3xl border border-white/5 text-center transition-transform hover:scale-105 duration-300">
                   <p className="text-[#95B1FF] text-3xl font-black mb-1">3 場</p>
                   <p className="text-[#B0B0B0] text-xs uppercase font-bold">語音直播</p>
                 </div>
-                <div className="bg-black/50 p-5 rounded-3xl border border-white/5 text-center">
+                <div className="bg-black/50 p-5 rounded-3xl border border-white/5 text-center transition-transform hover:scale-105 duration-300">
                   <p className="text-white text-3xl font-black mb-1">86 篇</p>
                   <p className="text-[#B0B0B0] text-xs uppercase font-bold">專屬貼文</p>
                 </div>
@@ -547,7 +548,7 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
                <Activity size={32} color={colors.primary} />
-               2026 宏觀巨變
+               宏觀巨變在即 APP功能讓你快一步
             </h2>
             <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從「盈餘驅動」轉向「政策驅動」</p>
           </div>
@@ -581,7 +582,7 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <ShieldCheck size={32} color={colors.primary} />
-              誰先控風險誰贏
+              政策驅動時代 誰先控風險誰贏
             </h2>
           </div>
 
@@ -610,7 +611,7 @@ const App = () => {
           {/* CTA Section */}
           <div className="mt-auto space-y-4 fade-in" style={{ animationDelay: '0.6s' }}>
             <button className="w-full py-7 rounded-[32px] font-black text-2xl text-white bg-primary-gradient shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
-               立即測算我的 Beta
+               立即計算我的 Beta
                <ChevronRight size={24} />
             </button>
             <button className="w-full py-7 rounded-[32px] font-black text-xl text-[#E0E0E0] border-2 border-white/10 bg-[#242424] active:scale-95 transition-all flex items-center justify-center gap-3">
