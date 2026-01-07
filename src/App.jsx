@@ -406,8 +406,6 @@ const App = () => {
         </div>
       )
     },
-
-   // 4. 2025 APP 迭代
     // 4. 2025 APP 迭代
     {
       id: 'app-iteration',
@@ -428,9 +426,9 @@ const App = () => {
                 desc: '核心觀點、五大清單系統同步啟動。',
                 images: [
                   // Use template literal to add the Base URL automatically
-                  { name: '觀察與持倉清單', src: `${import.meta.env.BASE_URL}public/images/holding.png` }, 
+                  { name: '觀察與持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
                   { name: '三大選股策略', src: `${import.meta.env.BnASE_URL}public/images/strategy.png` }, 
-                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}public/images/marketpart.png` }
+                  { name: '市場情緒', src: `public/images/marketpart.png` }
                 ]
               },
               { 
@@ -439,8 +437,8 @@ const App = () => {
                 desc: '情緒指標、趨勢圖、Beta 計算機。', 
                 highlight: true,
                 images: [
-                  { name: '市場情緒 v2', src: `${import.meta.env.BASE_URL}public/images/marketpart2.png` },
-                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}public/images/beta.png` }
+                  { name: '市場情緒 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
+                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png` }
                 ]
               },
               { 
