@@ -99,31 +99,43 @@ const ImageViewer = ({ src, onClose }) => {
       onClick={onClose}
     >
       <button 
-        className="absolute top-6 right-6 text-white bg-white/20 rounded-full p-2 backdrop-blur-md hover:bg-white/30 transition-colors"
+        className="absolute top-6 right-6 text-white bg-white/20 rounded-full p-2 backdrop-blur-md hover:bg-white/30 transition-colors z-50"
         onClick={onClose}
       >
         <X size={32} />
       </button>
+      {/* Added 'animate-scale-in' and 'onClick stopPropagation' */}
       <img 
         src={src} 
         alt="Full View" 
-        className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+        className="max-w-full max-h-full object-contain rounded-md shadow-2xl animate-scale-in"
         onClick={(e) => e.stopPropagation()} 
       />
     </div>
   );
 };
-
 // --- NEW COMPONENT: Auto-Playing Feature Card ---
 const AutoFeatureCard = ({ item, onImageClick }) => {
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
   useEffect(() => {
     if (!item.images || item.images.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
-    }, 2000); 
-    return () => clearInterval(interval);
+
+    // 1. Generate a random delay between 0 and 2000ms
+    const randomDelay = Math.random() * 2000;
+
+    // 2. Start the interval AFTER the random delay
+    const timeoutId = setTimeout(() => {
+      const intervalId = setInterval(() => {
+        setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
+      }, 4000); // Increased from 2000ms to 4000ms for better viewing time
+
+      // Cleanup interval when component unmounts
+      return () => clearInterval(intervalId);
+    }, randomDelay);
+
+    // Cleanup timeout
+    return () => clearTimeout(timeoutId);
   }, [item.images]);
 
   // Variant Styles
@@ -147,31 +159,30 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     >
       <div className={`absolute inset-0 ${item.bg} opacity-20 z-0`} />
       <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${getContainerStyle()}`}>
+         {/* The 'key' attribute ensures React triggers the fade animation every time the image changes */}
          <img 
            key={currentImg.src} 
            src={currentImg.src} 
            alt={currentImg.name} 
-           className="w-full h-full object-cover animate-fade-in" 
+           className="w-full h-full object-cover animate-fade-in-slow" 
          />
       </div>
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10 flex justify-between items-end">
          <div>
             <div className="flex gap-1 mb-1">
               {item.images.map((_, idx) => (
-                <div key={idx} className={`h-1 rounded-full transition-all duration-300 ${idx === currentImgIdx ? 'w-4 bg-white' : 'w-1 bg-white/30'}`} />
+                <div key={idx} className={`h-1 rounded-full transition-all duration-500 ${idx === currentImgIdx ? 'w-4 bg-white' : 'w-1 bg-white/30'}`} />
               ))}
             </div>
-            <p className="text-white font-bold text-sm tracking-wide">{currentImg.name}</p>
+            <p className="text-white font-bold text-sm tracking-wide transition-all duration-500">{currentImg.name}</p>
          </div>
-         <div className="bg-white/10 p-1.5 rounded-full backdrop-blur-md">
+         <div className="bg-white/10 p-1.5 rounded-full backdrop-blur-md hover:bg-white/20 transition-colors">
             <Search size={14} className="text-white/80" />
          </div>
       </div>
     </div>
   );
 };
-
-
 // --- MAIN APP COMPONENT ---
 
 const App = () => {
@@ -603,14 +614,30 @@ const App = () => {
         .bg-primary-gradient { background: linear-gradient(135deg, #95B1FF 0%, #346AFF 100%); }
         .custom-scrollbar::-webkit-scrollbar { width: 0px; }
         .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Animations */
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        
+        /* NEW: Slower fade for the image carousel to avoid "jumpy" feel */
+        .animate-fade-in-slow { animation: fadeIn 1.2s ease-out forwards; }
+        
         .slide-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .scale-in { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Used for the Modal expansion */
+        .animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
         .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        /* Ensures the modal zooms in slightly when opening */
+        @keyframes scaleIn { 
+          from { opacity: 0; transform: scale(0.95); } 
+          to { opacity: 1; transform: scale(1); } 
+        }
+        
         @keyframes popIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
         
         .animate-draw-stroke {
@@ -625,7 +652,8 @@ const App = () => {
           opacity: 0;
           animation: fadeIn 0.5s ease-out forwards 0.5s;
         }
-      `}</style>
+      `}
+      </style>
     </div>
   );
 };
