@@ -405,34 +405,39 @@ const App = () => {
         </div>
       )
     },
-    // 4. 2025 APP 迭代
+   // 4. 2025 APP 迭代 (Redesigned)
     {
       id: 'app-iteration',
       content: (
         <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6">
+          <div className="fade-in mt-6 mb-8">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
-              <Rocket size={32} color={colors.primary} />
+              <Rocket size={32} className="text-[#95B1FF]" />
               2025 功能回顧
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從核心觀點到量化監測，全面到位</p>
+            <p className="text-[#B0B0B0] text-sm font-medium tracking-wide">從核心觀點到量化監測，全面到位</p>
           </div>
-          <div className="space-y-8 flex-1 overflow-y-auto custom-scrollbar pr-1">
+
+          <div className="space-y-10 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20">
             {[
               { 
-                date: '2025/05', 
-                title: 'App 正式上線', 
-                desc: '核心觀點、五大清單系統同步啟動。',
+                date: 'May 2025', 
+                title: 'App 正式啟航', 
+                subtitle: 'Foundation',
+                desc: '核心觀點、五大清單系統同步啟動，建立投資體系基石。',
+                color: 'from-[#95B1FF] to-[#346AFF]',
                 images: [
-                  { name: '觀察與持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
-                  { name: '三大選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
+                  { name: '觀察與持倉', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
+                  { name: '三大策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
                   { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png` }
                 ]
               },
               { 
-                date: '2025/08', 
+                date: 'Aug 2025', 
                 title: '量化監測體系', 
-                desc: '情緒指標、趨勢圖、Beta 計算機。', 
+                subtitle: 'Quantitative',
+                desc: '情緒指標與趨勢圖上線，Beta 計算機輔助風險控管。', 
+                color: 'from-[#FF8A8A] to-[#FF5C5C]',
                 highlight: true,
                 images: [
                   { name: '市場情緒 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
@@ -440,106 +445,126 @@ const App = () => {
                 ]
               },
               { 
-                date: '2025/11', 
+                date: 'Nov 2025', 
                 title: '全維數據集成', 
-                desc: '文字聊天室、大盤看板、板塊 ETF。',
+                subtitle: 'Integration',
+                desc: '文字聊天室凝聚社群，大盤看板與板塊 ETF 即時追蹤。',
+                color: 'from-[#ADC4FF] to-[#6B8EFF]',
                 images: [
                   { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
-                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
+                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/stock_overview.png` }
                 ]
               },
               { 
-                date: '2025/12', 
+                date: 'Dec 2025', 
                 title: '多媒體內容化', 
-                desc: '語音直播與回放、個股即時新聞。',
+                subtitle: 'Multimedia',
+                desc: '語音直播與回放功能，搭配即時個股新聞，資訊零時差。',
+                color: 'from-[#E0E0E0] to-[#999]',
                 images: [
                   { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png` },
-                  { name: '個股即時新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
+                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
                 ]
               }
             ].map((item, idx) => (
-              <div key={idx} className={`bg-[#242424] rounded-[32px] overflow-hidden border transition-all slide-up opacity-0 ${item.highlight ? 'border-[#95B1FF]/50' : 'border-white/5'}`} style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'forwards' }}>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                     <div>
-                        <p className="text-[#95B1FF] text-xs font-black mb-1">{item.date}</p>
-                        <h4 className="text-white font-black text-xl">{item.title}</h4>
-                     </div>
+              <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'forwards' }}>
+                
+                {/* Timeline Connector */}
+                {idx !== 3 && <div className="absolute left-[19px] top-16 bottom-[-40px] w-0.5 bg-gradient-to-b from-[#333] to-transparent -z-10" />}
+
+                {/* Card Layout */}
+                <div className="pl-0">
+                  {/* Header Section */}
+                  <div className="flex items-center gap-4 mb-4">
+                    {/* Date Badge */}
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg shadow-${item.color.split(' ')[1]}/20 shrink-0`}>
+                       <span className="text-[10px] font-black text-white leading-none text-center">{item.date.split(' ')[0]}<br/><span className="opacity-70 text-[8px]">{item.date.split(' ')[1]}</span></span>
+                    </div>
+                    <div>
+                       <div className="flex items-baseline gap-2">
+                         <h4 className="text-white font-black text-xl tracking-tight">{item.title}</h4>
+                         <span className="text-[#666] text-xs font-bold uppercase tracking-widest">{item.subtitle}</span>
+                       </div>
+                       <p className="text-[#B0B0B0] text-sm mt-0.5">{item.desc}</p>
+                    </div>
                   </div>
-                  <p className="text-[#B0B0B0] text-base mb-6">{item.desc}</p>
 
-                  {/* Product Image Gallery (Horizontal Scroll) */}
-                  {item.images && (
-                    <div className="flex gap-4 overflow-x-auto pb-4 -mx-2 px-2 custom-scrollbar">
-                      {item.images.map((img, imgIdx) => (
-                        <div key={imgIdx} className="flex-shrink-0 w-40 flex flex-col gap-3 group cursor-pointer">
-                           {/* Image Container */}
-                           <div className="w-full aspect-[9/16] bg-[#1a1a1a] rounded-2xl border border-white/10 flex items-center justify-center relative overflow-hidden transition-all duration-300 group-hover:border-[#95B1FF]/50 group-hover:shadow-2xl group-hover:shadow-[#95B1FF]/20 group-hover:-translate-y-2">
-                              
-                              {/* Shine Effect Overlay */}
-                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none z-20" />
-
-                              {/* IMAGE ELEMENT (Updated) */}
-                              <img 
-                                src={img.src} 
-                                alt={img.name} 
-                                // Changed object-cover to object-contain, added padding p-2
-                                className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-110 relative z-10"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                  e.target.nextSibling.style.display = 'flex';
-                                }} 
-                              />
-
-                              {/* Fallback Placeholder */}
-                              <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 opacity-50 bg-[#242424] z-0">
-                                 <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white flex items-center justify-center">
-                                    <div className="w-1 h-1 bg-white rounded-full"></div>
-                                 </div>
-                                 <span className="text-[10px] font-bold uppercase tracking-widest">No Image</span>
-                              </div>
-                              
-                              {/* Background Gradient (Subtle) */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"></div>
-                           </div>
+                  {/* Horizontal Scroll Gallery (The "Ecommerce" Look) */}
+                  <div className="relative">
+                    <div className="flex gap-4 overflow-x-auto pb-6 pt-2 px-2 -mx-2 custom-scrollbar snap-x snap-mandatory">
+                      {item.images && item.images.map((img, imgIdx) => (
+                        <div key={imgIdx} className="snap-center shrink-0 w-[180px] relative group/card cursor-pointer">
                            
-                           {/* Caption */}
-                           <p className="text-[#E0E0E0] text-xs font-bold text-center group-hover:text-[#95B1FF] transition-colors duration-300">
-                              {img.name}
-                           </p>
+                           {/* Image Card Container */}
+                           {/* Using a lighter gradient background to contrast with dark screenshots */}
+                           <div className="w-full aspect-[9/16] rounded-2xl p-1.5 relative overflow-hidden transition-all duration-300 transform group-hover/card:-translate-y-2 group-hover/card:shadow-2xl border border-white/10 bg-gradient-to-b from-[#2a2a2a] to-[#111]">
+                              
+                              {/* Inner Glow Gradient */}
+                              <div className={`absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b ${item.color.replace('from-', 'from-').replace('to-', 'to-')}/10 to-transparent opacity-50`} />
+                              
+                              {/* The Image */}
+                              <div className="w-full h-full rounded-xl overflow-hidden relative bg-[#000] border border-white/5">
+                                 <img 
+                                   src={img.src} 
+                                   alt={img.name} 
+                                   className="w-full h-full object-contain"
+                                   onError={(e) => {
+                                     e.target.style.display = 'none';
+                                     e.target.nextSibling.style.display = 'flex';
+                                   }} 
+                                 />
+                                 {/* Fallback */}
+                                 <div className="hidden absolute inset-0 flex-col items-center justify-center gap-2 opacity-50">
+                                    <div className="w-6 h-6 rounded border border-dashed border-white/50" />
+                                    <span className="text-[8px] uppercase tracking-widest">No Preview</span>
+                                 </div>
+                              </div>
+                           </div>
+
+                           {/* Label Pill */}
+                           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/10 px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5 whitespace-nowrap transition-transform duration-300 group-hover/card:scale-105">
+                              <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${item.color}`} />
+                              <span className="text-[10px] font-bold text-white">{img.name}</span>
+                           </div>
                         </div>
                       ))}
                     </div>
-                  )}
+                    {/* Fade Indicator for scroll */}
+                    <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#141414] to-transparent pointer-events-none" />
+                  </div>
                 </div>
               </div>
             ))}
             
-            {/* Q4 Stats */}
-            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#282828] p-8 rounded-[40px] border-2 border-[#95B1FF]/30 shadow-2xl fade-in" style={{ animationDelay: '0.6s' }}>
-              <div className="flex justify-between items-center mb-6">
-                 <div className="flex items-center gap-2">
-                    <Mic size={20} className="text-[#95B1FF]" />
-                    <h4 className="text-white font-black text-xl uppercase tracking-widest">Q4 實績</h4>
-                 </div>
-                 <span className="text-[10px] bg-white text-black px-2 py-0.5 rounded uppercase font-black">Verified</span>
-              </div>
-              <div className="grid grid-cols-2 gap-5">
-                <div className="bg-black/50 p-5 rounded-3xl border border-white/5 text-center transition-transform hover:scale-105 duration-300">
-                  <p className="text-[#95B1FF] text-3xl font-black mb-1">3 場</p>
-                  <p className="text-[#B0B0B0] text-xs uppercase font-bold">語音直播</p>
-                </div>
-                <div className="bg-black/50 p-5 rounded-3xl border border-white/5 text-center transition-transform hover:scale-105 duration-300">
-                  <p className="text-white text-3xl font-black mb-1">86 篇</p>
-                  <p className="text-[#B0B0B0] text-xs uppercase font-bold">專屬貼文</p>
-                </div>
-              </div>
+            {/* Q4 Stats Card (Redesigned) */}
+            <div className="mt-8 bg-gradient-to-br from-[#1E1E1E] to-[#141414] p-1 rounded-[32px] border border-white/5 shadow-2xl slide-up opacity-0" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+               <div className="bg-[#181818] rounded-[30px] p-6 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-32 bg-[#95B1FF] blur-[100px] opacity-5 pointer-events-none" />
+                  
+                  <div className="flex justify-between items-end mb-6 relative z-10">
+                     <div>
+                        <p className="text-[#95B1FF] text-xs font-black uppercase tracking-widest mb-1">Performance</p>
+                        <h4 className="text-white font-black text-2xl">Q4 社群實績</h4>
+                     </div>
+                     <Mic className="text-[#95B1FF] mb-1" size={24} />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-[#242424] p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center gap-1">
+                       <span className="text-3xl font-black text-white">3</span>
+                       <span className="text-[10px] text-[#888] uppercase font-bold tracking-wider">語音直播</span>
+                    </div>
+                    <div className="bg-[#242424] p-4 rounded-2xl border border-white/5 flex flex-col items-center justify-center gap-1">
+                       <span className="text-3xl font-black text-[#95B1FF]">86</span>
+                       <span className="text-[10px] text-[#888] uppercase font-bold tracking-wider">專屬貼文</span>
+                    </div>
+                  </div>
+               </div>
             </div>
           </div>
         </div>
       )
     },
-
     // 5. 2026 重大事件行事曆
     {
       id: '2026-calendar',
