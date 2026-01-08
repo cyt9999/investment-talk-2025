@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  TrendingUp, Target, Calendar, Award, Rocket, ShieldCheck, Activity, 
-  Lock, ChevronRight, ArrowLeft, ArrowRight, Bell, Search, Crown, 
+import {
+  TrendingUp, Target, Calendar, Award, Rocket, ShieldCheck, Activity,
+  Lock, ChevronRight, ArrowLeft, ArrowRight, Bell, Search, Crown,
   PlayCircle, Mic, Zap, BarChart3, X
 } from 'lucide-react';
 
@@ -28,10 +28,10 @@ const chartData = [
 // Chart Component
 const ComparisonLineChart = ({ data }) => {
   if (!data || data.length === 0) return null;
-  
+
   const allValues = data.flatMap(d => [d.talk, d.sp500]);
-  const max = Math.max(...allValues) * 1.1; 
-  const min = Math.min(...allValues, 0); 
+  const max = Math.max(...allValues) * 1.1;
+  const min = Math.min(...allValues, 0);
   const range = max - min || 1;
 
   const getPoints = (key) => {
@@ -50,26 +50,26 @@ const ComparisonLineChart = ({ data }) => {
 
   return (
     <div className="w-full h-40 mt-6 relative select-none">
-       <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="talkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-               <stop offset="0%" stopColor="#95B1FF" stopOpacity="0.25" />
-               <stop offset="100%" stopColor="#95B1FF" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <line x1="0" y1="100" x2="100" y2="100" stroke="#404040" strokeWidth="0.5" vectorEffect="non-scaling-stroke" />
-          <path d={toPath(spPoints)} fill="none" stroke="#666" strokeWidth="1.5" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" className="opacity-50" />
-          <path d={toArea(talkPoints)} fill="url(#talkGradient)" className="animate-fade-in-delayed" />
-          <path d={toPath(talkPoints)} fill="none" stroke="#95B1FF" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-stroke drop-shadow-lg" />
-       </svg>
-       <div className="absolute inset-0 pointer-events-none">
-          {talkPoints.map((p, i) => (
-            (i === talkPoints.length - 1 || i % 4 === 0) && (
-              <div key={i} className="absolute w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#95B1FF] shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 animate-pop-in" style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${1 + i * 0.1}s` }} />
-            )
-          ))}
-          <div className="absolute w-2 h-2 rounded-full bg-[#666] transform -translate-x-1/2 -translate-y-1/2" style={{ left: '100%', top: `${spPoints[spPoints.length-1].y}%` }} />
-       </div>
+      <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="talkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#95B1FF" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#95B1FF" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="100" x2="100" y2="100" stroke="#404040" strokeWidth="0.5" vectorEffect="non-scaling-stroke" />
+        <path d={toPath(spPoints)} fill="none" stroke="#666" strokeWidth="1.5" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" className="opacity-50" />
+        <path d={toArea(talkPoints)} fill="url(#talkGradient)" className="animate-fade-in-delayed" />
+        <path d={toPath(talkPoints)} fill="none" stroke="#95B1FF" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-stroke drop-shadow-lg" />
+      </svg>
+      <div className="absolute inset-0 pointer-events-none">
+        {talkPoints.map((p, i) => (
+          (i === talkPoints.length - 1 || i % 4 === 0) && (
+            <div key={i} className="absolute w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#95B1FF] shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 animate-pop-in" style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${1 + i * 0.1}s` }} />
+          )
+        ))}
+        <div className="absolute w-2 h-2 rounded-full bg-[#666] transform -translate-x-1/2 -translate-y-1/2" style={{ left: '100%', top: `${spPoints[spPoints.length - 1].y}%` }} />
+      </div>
     </div>
   );
 }
@@ -78,21 +78,21 @@ const ComparisonLineChart = ({ data }) => {
 const ImageViewer = ({ src, onClose }) => {
   if (!src) return null;
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
     >
-      <button 
+      <button
         className="absolute top-6 right-6 text-white bg-white/20 rounded-full p-2 backdrop-blur-md hover:bg-white/30 transition-colors z-50"
         onClick={onClose}
       >
         <X size={32} />
       </button>
-      <img 
-        src={src} 
-        alt="Full View" 
+      <img
+        src={src}
+        alt="Full View"
         className="max-w-full max-h-full object-contain rounded-md shadow-2xl animate-scale-in"
-        onClick={(e) => e.stopPropagation()} 
+        onClick={(e) => e.stopPropagation()}
       />
     </div>
   );
@@ -111,7 +111,7 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     const timeoutId = setTimeout(() => {
       intervalId = setInterval(() => {
         setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
-      }, 3000); 
+      }, 3000);
     }, randomDelay);
 
     return () => {
@@ -125,15 +125,15 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     switch (item.variant) {
       case 'tilt': return 'rotate-[-2deg] scale-[1.02]';
       case 'zoom': return 'scale-110';
-      case 'wide': return 'aspect-[16/10]'; 
-      default: return 'aspect-[9/16]'; 
+      case 'wide': return 'aspect-[16/10]';
+      default: return 'aspect-[9/16]';
     }
   };
 
   const currentImg = item.images[currentImgIdx];
 
   return (
-    <div 
+    <div
       className={`relative w-full overflow-hidden rounded-[24px] shadow-2xl transition-all duration-500 bg-[#1a1a1a] ${item.shadow} ${item.variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
       onTouchStart={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
@@ -141,26 +141,31 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     >
       <div className={`absolute inset-0 ${item.bg} opacity-20 z-0`} />
       <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${getContainerStyle()}`}>
-         <img 
-           key={currentImg.src} 
-           src={currentImg.src} 
-           alt={currentImg.name} 
-           className={`w-full h-full animate-fade-in-fast ${currentImg.fit === 'contain' ? 'object-contain scale-95' : 'object-cover'}`}
-           style={currentImg.customStyle || {}} 
-         />
+        <img
+          key={currentImg.src}
+          src={currentImg.src}
+          alt={currentImg.name}
+          className={`w-full h-full animate-fade-in-fast ${currentImg.fit === 'contain' ? 'object-contain scale-95' : 'object-cover'}`}
+          style={currentImg.customStyle || {}}
+        />
       </div>
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10 flex justify-between items-end">
-         <div>
-            <div className="flex gap-1 mb-1">
-              {item.images.map((_, idx) => (
-                <div key={idx} className={`h-1 rounded-full transition-all duration-500 ${idx === currentImgIdx ? 'w-4 bg-white' : 'w-1 bg-white/30'}`} />
-              ))}
-            </div>
+        <div>
+          <div className="flex gap-1 mb-1">
+            {item.images.map((_, idx) => (
+              <div key={idx} className={`h-1 rounded-full transition-all duration-500 ${idx === currentImgIdx ? 'w-4 bg-white' : 'w-1 bg-white/30'}`} />
+            ))}
+          </div>
+          <div className="flex items-center gap-1.5">
             <p className="text-white font-bold text-sm tracking-wide transition-all duration-500">{currentImg.name}</p>
-         </div>
-         <div className="bg-white/10 p-1.5 rounded-full backdrop-blur-md hover:bg-white/20 transition-colors">
-            <Search size={14} className="text-white/80" />
-         </div>
+            {!['市場情緒', '市場情緒 2.0', '美股大盤/債券/原物料', '即時個股新聞'].includes(currentImg.name) && (
+              <Crown size={14} className="text-[#FFD700]" />
+            )}
+          </div>
+        </div>
+        <div className="bg-white/10 p-1.5 rounded-full backdrop-blur-md hover:bg-white/20 transition-colors">
+          <Search size={14} className="text-white/80" />
+        </div>
       </div>
     </div>
   );
@@ -243,39 +248,39 @@ const App = () => {
             邏輯勝利
           </h1>
           <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">+27.78% 不是終點，而是 5 次關鍵進化的結果。</p>
-          
+
           <div className="bg-[#242424] rounded-[32px] p-6 md:p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
             <div className="absolute -top-10 -right-10 opacity-5">
-               <TrendingUp size={200} color={colors.primary} />
+              <TrendingUp size={200} color={colors.primary} />
             </div>
             <div className="relative z-10">
               <div className="flex flex-col items-start mb-2">
-                 <div>
-                    <p className="text-[#B0B0B0] text-sm font-medium mb-1">Talk 君年度回報</p>
-                    <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-3">
-                      +{displayROI.toFixed(2)}%
-                    </h2>
-                 </div>
-                 <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 backdrop-blur-sm">
-                    <p className="text-[#666] text-xs font-bold uppercase">vs S&P 500</p>
-                    <div className="w-px h-3 bg-[#404040]"></div>
-                    <h3 className="text-sm md:text-base font-bold text-[#808080] tracking-tight">
-                      +17.88%
-                    </h3>
-                 </div>
+                <div>
+                  <p className="text-[#B0B0B0] text-sm font-medium mb-1">Talk 君年度回報</p>
+                  <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-3">
+                    +{displayROI.toFixed(2)}%
+                  </h2>
+                </div>
+                <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 backdrop-blur-sm">
+                  <p className="text-[#666] text-xs font-bold uppercase">vs S&P 500</p>
+                  <div className="w-px h-3 bg-[#404040]"></div>
+                  <h3 className="text-sm md:text-base font-bold text-[#808080] tracking-tight">
+                    +17.88%
+                  </h3>
+                </div>
               </div>
               <ComparisonLineChart data={chartData} />
               <div className="flex justify-between text-[10px] text-[#666] mt-4 font-bold uppercase tracking-wider px-1">
-                 <span>May</span>
-                 <span>Jul</span>
-                 <span>Sep</span>
-                 <span>Nov</span>
-                 <span>Dec</span>
+                <span>May</span>
+                <span>Jul</span>
+                <span>Sep</span>
+                <span>Nov</span>
+                <span>Dec</span>
               </div>
             </div>
           </div>
           <p className="text-[#fff] text-xs font-base text-center opacity-50">
-             *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線至 2025/12 APP中的實際交易紀錄。過往表現不保證未來收益，請自行評估投資風險。
+            *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線至 2025/12 APP中的實際交易紀錄。過往表現不保證未來收益，請自行評估投資風險。
           </p>
         </div>
       )
@@ -304,7 +309,7 @@ const App = () => {
             ].map((item, idx) => (
               <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
                 <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: item.color }}>
-                   <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
                 </div>
                 <div className="flex items-center gap-2 mb-1.5">
                   <p className="text-sm font-black" style={{ color: item.color }}>{item.date}</p>
@@ -314,6 +319,20 @@ const App = () => {
                 <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 flex items-center justify-between shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-[#95B1FF]/20 rounded-lg">
+                <BarChart3 size={20} className="text-[#95B1FF]" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">相關功能</p>
+                <p className="text-[#B0B0B0] text-xs">查看完整持倉與動態</p>
+              </div>
+            </div>
+            <button className="px-4 py-2 bg-[#333] hover:bg-[#404040] rounded-xl text-xs font-bold text-white transition-colors">
+              前往
+            </button>
           </div>
         </div>
       )
@@ -329,28 +348,28 @@ const App = () => {
               <Award size={32} color={colors.primary} />
               APP 實戰見證：全年持續升級的致勝引擎
             </h2>
-             <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">到「持倉清單」中看完整的持倉動態與即時價格</p>
+            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">到「持倉清單」中看完整的持倉動態與即時價格</p>
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
-              { 
-                code: 'GE', name: '奇異航太', roi: '+99.9%', 
-                op: '均價 $128.80 ➡️ 11/17 $257.50 結算', 
-                comment: '「航天行業幾乎無競爭對手，服務營收穩定。」', 
+              {
+                code: 'GE', name: '奇異航太', roi: '+99.9%',
+                op: '均價 $128.80 ➡️ 11/17 $257.50 結算',
+                comment: '「航天行業幾乎無競爭對手，服務營收穩定。」',
                 metric: '關鍵指標：服務營收佔比 / 寡佔定價權',
-                img: `${import.meta.env.BASE_URL}images/GE.png` 
+                img: `${import.meta.env.BASE_URL}images/GE.png`
               },
-              { 
-                code: 'INTC', name: '英特爾', roi: '+51.7%', 
-                op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35', 
-                comment: '「基本面展露逆境反轉，台海風險的對沖資產。」', 
+              {
+                code: 'INTC', name: '英特爾', roi: '+51.7%',
+                op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35',
+                comment: '「基本面展露逆境反轉，台海風險的對沖資產。」',
                 metric: '關鍵指標：P/B Ratio 歷史低位 / 營收轉折點',
                 img: `${import.meta.env.BASE_URL}images/INTC.png`
               },
-              { 
-                code: 'TSLA', name: '特斯拉', roi: '+23.5%', 
-                op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305', 
-                comment: '「自動駕駛的唯一股，堅守 FSD 信念。」', 
+              {
+                code: 'TSLA', name: '特斯拉', roi: '+23.5%',
+                op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305',
+                comment: '「自動駕駛的唯一股，堅守 FSD 信念。」',
                 metric: '關鍵指標：FSD 滲透率 / 算力基礎設施化',
                 img: `${import.meta.env.BASE_URL}images/TSLA.png`
               }
@@ -363,17 +382,17 @@ const App = () => {
                   </div>
                   <p className="text-3xl font-black italic text-[#95B1FF]">{stock.roi}</p>
                 </div>
-                
+
                 <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                   <Activity size={14} /> {stock.metric}
+                  <Activity size={14} /> {stock.metric}
                 </p>
 
                 {/* UPDATED: h-auto + object-contain + Click to View */}
-                <img 
-                  src={stock.img} 
-                  alt={stock.name} 
-                  onClick={() => setSelectedImage(stock.img)} 
-                  className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20" 
+                <img
+                  src={stock.img}
+                  alt={stock.name}
+                  onClick={() => setSelectedImage(stock.img)}
+                  className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20"
                 />
 
                 <div className="mb-5 bg-black/60 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
@@ -395,94 +414,94 @@ const App = () => {
           <div className="fade-in mt-6 mb-4">
             <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
               <Rocket size={32} className="text-[#95B1FF]" />
-              2025 功能回顧
+               2025 功能回顧：投資 Talk 君進化之路
             </h2>
             <p className="text-[#B0B0B0] text-sm font-bold tracking-wide">點擊圖片可查看高清大圖</p>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-12">
             {[
-              { 
-                date: 'MAY', 
+              {
+                date: 'MAY',
                 year: '2025',
-                title: 'App 正式啟航', 
-                desc: '核心觀點、五大清單系統同步啟動。',
-                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]', 
+                title: 'App 正式啟航：五大核心選股系統',
+                desc: 'Talk君持倉、觀察與潛力股追蹤，一站建立最強地基。',
+                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]',
                 shadow: 'shadow-[#4c6ef5]/30',
-                variant: 'tilt', 
+                variant: 'tilt',
                 images: [
-                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` }, 
-                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` }, 
+                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` },
+                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` },
                   { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png` }
                 ]
               },
-              { 
-                date: 'AUG', 
+              {
+                date: 'AUG',
                 year: '2025',
-                title: '量化監測體系', 
-                desc: '情緒指標與趨勢圖上線，Beta 計算機輔助風險控管。', 
-                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]', 
+                title: '量化風險監測體系：Beta 護航引擎',
+                desc: '導入 Beta 計算機與市場情緒指標，風險數值化趨勢曲線掌握全局',
+                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]',
                 shadow: 'shadow-[#ff6b6b]/40',
-                variant: 'zoom', 
+                variant: 'zoom',
                 highlight: true,
                 images: [
-                  { name: '情緒指標 v2', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
+                  { name: '市場情緒 2.0', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
                   { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png` }
                 ]
               },
-              { 
-                date: 'NOV', 
+              {
+                date: 'NOV',
                 year: '2025',
-                title: '全維數據集成', 
-                desc: '文字聊天室凝聚社群，大盤看板與板塊 ETF 即時追蹤。',
-                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]', 
+                title: '全維數據集成：總經看板與社群即時聯動',
+                desc: '整合文字聊天室與板塊 ETF，市場觀點與趨勢脈動一目了然。',
+                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]',
                 shadow: 'shadow-[#7950f2]/40',
-                variant: 'default', 
+                variant: 'default',
                 images: [
                   { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
-                  { 
-                    name: '個股新聞', 
-                    src: `${import.meta.env.BASE_URL}images/stock_overview.png`, 
+                  {
+                    name: '美股大盤/債券/原物料',
+                    src: `${import.meta.env.BASE_URL}images/stock_overview.png`,
                     fit: 'contain',
-                    customStyle: { 
-                      transform: 'scale(1.3) translateY(-25%)', 
-                      transformOrigin: 'top center' 
-                    } 
+                    customStyle: {
+                      transform: 'scale(1.3) translateY(-25%)',
+                      transformOrigin: 'top center'
+                    }
                   }
                 ]
               },
-              { 
-                date: 'DEC', 
+              {
+                date: 'DEC',
                 year: '2025',
-                title: '多媒體內容化', 
-                desc: '語音直播與回放功能，搭配即時個股新聞，資訊零時差。',
-                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]', 
+                title: '即時觀點升級：語音直播 VIP 互動生態',
+                desc: '強化熱門主題即時拆解，搭配專屬問答與直播重點整理，觀點交流零距離。',
+                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]',
                 shadow: 'shadow-[#12b886]/40',
-                variant: 'wide', 
+                variant: 'wide',
                 images: [
                   { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, fit: 'contain' },
-                  { name: '個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
+                  { name: '即時個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
                 ]
               }
             ].map((item, idx) => (
               <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
                 {idx !== 3 && <div className="absolute left-[28px] top-[60px] bottom-[-48px] w-[3px] bg-[#333] rounded-full -z-10 opacity-30" />}
                 <div className="flex items-start gap-5 mb-5 pl-1">
-                    <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
-                       <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
-                       <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
-                    </div>
+                  <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
+                    <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
+                    <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
+                  </div>
 
-                    <div className="pt-1">
-                       <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-white font-black text-2xl tracking-tight">{item.title}</h4>
-                          {item.highlight && <span className="bg-[#FFD700] text-black text-[10px] px-1.5 py-0.5 rounded font-black uppercase">Star</span>}
-                       </div>
-                       <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
+                  <div className="pt-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-white font-black text-2xl tracking-tight">{item.title}</h4>
+                      {item.highlight && <span className="bg-[#FFD700] text-black text-[10px] px-1.5 py-0.5 rounded font-black uppercase">Star</span>}
                     </div>
+                    <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
+                  </div>
                 </div>
                 <div className="px-4">
-                   <AutoFeatureCard item={item} onImageClick={setSelectedImage} />
+                  <AutoFeatureCard item={item} onImageClick={setSelectedImage} />
                 </div>
               </div>
             ))}
@@ -498,8 +517,8 @@ const App = () => {
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
-               <Activity size={32} color={colors.primary} />
-               宏觀巨變在即 APP功能讓你快一步
+              <Activity size={32} color={colors.primary} />
+              宏觀巨變在即 APP功能讓你快一步
             </h2>
             <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從「盈餘驅動」轉向「政策驅動」</p>
           </div>
@@ -510,7 +529,7 @@ const App = () => {
               { id: 3, title: '策略性壓降 Beta', desc: '計畫將組合 Beta 回歸 1.0，以防禦姿態等待。', img: 'https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg' }
             ].map((item, idx) => (
               <div key={idx} className="bg-[#242424] rounded-[32px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <img src={item.img} alt={item.title} className="h-80 w-full object-cover opacity-60" />
+                <img src={item.img} alt={item.title} className="h-40 w-full object-cover opacity-60" />
                 <div className="p-8">
                   <div className="flex items-center gap-4 mb-3">
                     <div className="w-10 h-10 rounded-2xl bg-[#95B1FF] text-black font-black flex items-center justify-center">{item.id}</div>
@@ -520,6 +539,17 @@ const App = () => {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="mt-8 bg-gradient-to-r from-[#1a1a1a] to-[#242424] rounded-[24px] p-6 border border-white/10 shadow-xl slide-up" style={{ animationDelay: '0.5s' }}>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 bg-[#FFD700]/20 rounded-xl">
+                <Crown size={20} className="text-[#FFD700]" />
+              </div>
+              <p className="text-white font-black text-lg">即將發布：美股行事曆</p>
+            </div>
+            <p className="text-[#B0B0B0] text-sm leading-relaxed">
+              不錯過重大 2026 宏觀事件指標 - 請關注每週二四發布的美股趨勢，與週五的每週盤勢
+            </p>
           </div>
         </div>
       )
@@ -549,19 +579,19 @@ const App = () => {
                 <p className="text-[#95B1FF] text-xs font-black mt-2 uppercase tracking-widest bg-[#95B1FF]/10 px-3 py-1 rounded-full">Defense Mode</p>
               </div>
             </div>
-            
+
             <div className="bg-[#141414] rounded-3xl p-6 w-full flex items-center gap-4 slide-up" style={{ animationDelay: '0.3s' }}>
-               <Zap size={24} className="text-[#95B1FF] shrink-0" />
-               <p className="text-[#E0E0E0] text-sm leading-relaxed">
-                 面對變數，我們將 Beta 降至 <span className="text-[#95B1FF] font-bold">1.26</span>，你呢？
-               </p>
+              <Zap size={24} className="text-[#95B1FF] shrink-0" />
+              <p className="text-[#E0E0E0] text-sm leading-relaxed">
+                面對變數，我們將 Beta 降至 <span className="text-[#95B1FF] font-bold">1.26</span>，你呢？
+              </p>
             </div>
           </div>
 
           <div className="mt-auto space-y-4 fade-in" style={{ animationDelay: '0.6s' }}>
             <button className="w-full py-7 rounded-[32px] font-black text-2xl text-white bg-primary-gradient shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
-               立即計算我的 Beta
-               <ChevronRight size={24} />
+              立即計算我的 Beta
+              <ChevronRight size={24} />
             </button>
             <button className="w-full py-7 rounded-[32px] font-black text-xl text-[#E0E0E0] border-2 border-white/10 bg-[#242424] active:scale-95 transition-all flex items-center justify-center gap-3">
               <Crown size={24} className="text-[#FFD700]" /> 查看 Talk 君完整持倉
@@ -573,15 +603,15 @@ const App = () => {
   ];
 
   return (
-    <div 
+    <div
       className="w-full h-[100dvh] bg-[#141414] text-[#E0E0E0] font-sans select-none overflow-hidden flex flex-col relative"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       <div className="fixed top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
-          {screens.map((_, idx) => (
-            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
-          ))}
+        {screens.map((_, idx) => (
+          <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
+        ))}
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-32 custom-scrollbar relative">
@@ -594,17 +624,17 @@ const App = () => {
 
       <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
         <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
-          <button 
-            onClick={prevScreen} 
-            disabled={activeScreen === 0} 
+          <button
+            onClick={prevScreen}
+            disabled={activeScreen === 0}
             className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white/10 text-white'}`}
           >
             <ArrowLeft size={20} />
           </button>
           <div className="w-px h-6 bg-white/10"></div>
-          <button 
-            onClick={nextScreen} 
-            disabled={activeScreen === screens.length - 1} 
+          <button
+            onClick={nextScreen}
+            disabled={activeScreen === screens.length - 1}
             className={`h-12 px-6 rounded-full flex items-center gap-2 font-bold transition-all ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient text-white shadow-lg active:scale-95'}`}
           >
             <span className="text-sm">下一頁</span>
