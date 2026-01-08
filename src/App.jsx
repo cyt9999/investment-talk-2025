@@ -7,22 +7,22 @@ import {
 
 // --- DATA & HELPER COMPONENTS ---
 
-// ROI Data
+// ROI Data (Normalized: May 12 = 0%)
 const chartData = [
-  { date: "2025-05-12", talk: 5.4, sp500: 0.0 },
-  { date: "2025-05-16", talk: 7.51, sp500: 0.8 },
-  { date: "2025-06-24", talk: 7.17, sp500: 4.5 },
-  { date: "2025-06-26", talk: 6.87, sp500: 4.8 },
-  { date: "2025-07-25", talk: 3.1, sp500: 8.2 },
-  { date: "2025-08-01", talk: 24.76, sp500: 8.5 },
-  { date: "2025-09-30", talk: 24.67, sp500: 12.1 },
-  { date: "2025-10-06", talk: 21.19, sp500: 12.5 },
-  { date: "2025-10-29", talk: 24.99, sp500: 14.8 },
-  { date: "2025-11-18", talk: 29.63, sp500: 15.5 },
-  { date: "2025-11-21", talk: 29.58, sp500: 15.8 },
-  { date: "2025-11-24", talk: 29.66, sp500: 16.2 },
-  { date: "2025-11-26", talk: 29.68, sp500: 16.5 },
-  { date: "2025-12-26", talk: 27.78, sp500: 17.88 }
+  { date: "2025-05-12", talk: 0.00, sp500: 0.0 },
+  { date: "2025-05-16", talk: 2.00, sp500: 0.8 },
+  { date: "2025-06-24", talk: 1.68, sp500: 4.5 },
+  { date: "2025-06-26", talk: 1.39, sp500: 4.8 },
+  { date: "2025-07-25", talk: -2.18, sp500: 8.2 },
+  { date: "2025-08-01", talk: 18.37, sp500: 8.5 },
+  { date: "2025-09-30", talk: 18.28, sp500: 12.1 },
+  { date: "2025-10-06", talk: 14.98, sp500: 12.5 },
+  { date: "2025-10-29", talk: 18.59, sp500: 14.8 },
+  { date: "2025-11-18", talk: 22.99, sp500: 15.5 },
+  { date: "2025-11-21", talk: 22.94, sp500: 15.8 },
+  { date: "2025-11-24", talk: 23.02, sp500: 16.2 },
+  { date: "2025-11-26", talk: 23.04, sp500: 16.5 },
+  { date: "2025-12-26", talk: 21.23, sp500: 17.88 }
 ];
 
 // Chart Component
@@ -192,7 +192,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (activeScreen === 0) animateValue(0, 27.78, setDisplayROI, 1000);
+    if (activeScreen === 0) animateValue(0, 21.23, setDisplayROI, 1000);
     if (activeScreen === 5) animateValue(0, 1.26, setDisplayBeta, 1000);
   }, [activeScreen]);
 
@@ -247,7 +247,7 @@ const App = () => {
           <h1 className="text-4xl md:text-5xl font-black mb-6" style={{ background: colors.primaryGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             邏輯勝利
           </h1>
-          <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">+27.78% 不是終點，而是 5 次關鍵進化的結果。</p>
+          <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">+21.23% 不是終點，而是 5 次關鍵進化的結果。</p>
 
           <div className="bg-[#242424] rounded-[32px] p-6 md:p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
             <div className="absolute -top-10 -right-10 opacity-5">
@@ -320,20 +320,7 @@ const App = () => {
               </div>
             ))}
           </div>
-          <div className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 flex items-center justify-between shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-[#95B1FF]/20 rounded-lg">
-                <BarChart3 size={20} className="text-[#95B1FF]" />
-              </div>
-              <div>
-                <p className="text-white font-bold text-sm">相關功能</p>
-                <p className="text-[#B0B0B0] text-xs">查看完整持倉與動態</p>
-              </div>
-            </div>
-            <button className="px-4 py-2 bg-[#333] hover:bg-[#404040] rounded-xl text-xs font-bold text-white transition-colors">
-              前往
-            </button>
-          </div>
+
         </div>
       )
     },
@@ -344,11 +331,10 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
               APP 實戰見證：全年持續升級的致勝引擎
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">到「持倉清單」中看完整的持倉動態與即時價格</p>
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
             {[
@@ -383,7 +369,7 @@ const App = () => {
                   <p className="text-3xl font-black italic text-[#95B1FF]">{stock.roi}</p>
                 </div>
 
-                <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
                   <Activity size={14} /> {stock.metric}
                 </p>
 
@@ -395,12 +381,29 @@ const App = () => {
                   className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20"
                 />
 
-                <div className="mb-5 bg-black/60 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
-                  <p className="text-white text-lg font-black leading-relaxed">{stock.op}</p>
+                <div className="mb-5 bg-black/30 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
+                  <p className="text-white text-sm font-normal leading-relaxed">{stock.op}</p>
                 </div>
                 <p className="text-[#B0B0B0] text-base italic leading-relaxed border-l-2 border-[#95B1FF]/30 pl-4">{stock.comment}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-[#95B1FF]/20 rounded-lg">
+                <BarChart3 size={20} className="text-[#95B1FF]" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">以上交易紀錄來自APP中的「持倉清單」</p>
+                <p className="text-[#B0B0B0] text-xs">到「持倉清單」中看完整的持倉動態與即時價格</p>
+              </div>
+            </div>
+            <img
+              src={`${import.meta.env.BASE_URL}images/stock_holding.png`}
+              alt="Holding List"
+              className="w-full h-auto rounded-xl border border-white/10 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/stock_holding.png`)}
+            />
           </div>
         </div>
       )
@@ -412,11 +415,10 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6 mb-4">
-            <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
+            <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3 mb-10">
               <Rocket size={32} className="text-[#95B1FF]" />
-               2025 功能回顧：投資 Talk 君進化之路
+              2025 功能回顧：投資 Talk 君進化之路
             </h2>
-            <p className="text-[#B0B0B0] text-sm font-bold tracking-wide">點擊圖片可查看高清大圖</p>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-12">
@@ -528,9 +530,10 @@ const App = () => {
               { id: 2, title: '失業率與軟著陸', desc: '正式驗證美國經濟是否能在高利率下軟著陸。', img: 'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg' },
               { id: 3, title: '策略性壓降 Beta', desc: '計畫將組合 Beta 回歸 1.0，以防禦姿態等待。', img: 'https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg' }
             ].map((item, idx) => (
-              <div key={idx} className="bg-[#242424] rounded-[32px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <img src={item.img} alt={item.title} className="h-40 w-full object-cover opacity-60" />
-                <div className="p-8">
+              <div key={idx} className="relative bg-[#242424] rounded-[32px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${item.img})` }} />
+                <div className="absolute inset-0 bg-black/55" />
+                <div className="relative z-10 p-8">
                   <div className="flex items-center gap-4 mb-3">
                     <div className="w-10 h-10 rounded-2xl bg-[#95B1FF] text-black font-black flex items-center justify-center">{item.id}</div>
                     <h4 className="text-white text-xl font-black">{item.title}</h4>
@@ -540,16 +543,56 @@ const App = () => {
               </div>
             ))}
           </div>
-          <div className="mt-8 bg-gradient-to-r from-[#1a1a1a] to-[#242424] rounded-[24px] p-6 border border-white/10 shadow-xl slide-up" style={{ animationDelay: '0.5s' }}>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 bg-[#FFD700]/20 rounded-xl">
-                <Crown size={20} className="text-[#FFD700]" />
-              </div>
-              <p className="text-white font-black text-lg">即將發布：美股行事曆</p>
+          {/* New Section: 3 Feature Cards */}
+          <div className="mt-12 slide-up" style={{ animationDelay: '0.5s' }}>
+            <div className="flex items-center gap-2 mb-4 px-2 opacity-80">
+              <div className="w-1 h-4 bg-[#95B1FF] rounded-full"></div>
+              <h3 className="text-white font-bold text-lg tracking-wide">APP 每週更新，不在錯過任何重要總經時事</h3>
             </div>
-            <p className="text-[#B0B0B0] text-sm leading-relaxed">
-              不錯過重大 2026 宏觀事件指標 - 請關注每週二四發布的美股趨勢，與週五的每週盤勢
-            </p>
+
+            <div className="space-y-4">
+              {/* Row 1: Updates & Reports */}
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { title: '美股盤勢整理', sub: '每週二、四更新', img: 'stock_post.png' },
+                  { title: '美股趨勢剖析', sub: '每週五發布', img: 'stock_report.png' }
+                ].map((card, i) => (
+                  <div key={i} className="bg-[#242424] rounded-[24px] overflow-hidden border border-white/5 shadow-xl flex flex-col group">
+                    <div className="h-28 overflow-hidden relative">
+                      <img
+                        src={`${import.meta.env.BASE_URL}images/${card.img}`}
+                        alt={card.title}
+                        className="w-full h-full object-cover object-top opacity-90 group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-4 flex-1 flex flex-col justify-center bg-[#242424] relative z-20">
+                      <h4 className="text-white font-bold text-md mb-1 leading-tight">{card.title}</h4>
+                      <p className="text-[#95B1FF] text-[14px] uppercase tracking-wide">{card.sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Row 2: Calendar */}
+              <div className="bg-[#242424] rounded-[24px] overflow-hidden border border-white/5 shadow-xl flex flex-col group">
+                <div className="h-42 overflow-hidden relative">
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/calendar.png`}
+                    alt="美股行事曆"
+                    className="w-full h-full object-cover object-top opacity-90 group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-5 flex items-center justify-between bg-[#242424] relative z-20">
+                  <div>
+                    <h4 className="text-white font-bold text-lg mb-1 leading-tight">美股行事曆</h4>
+                    <p className="text-[#95B1FF] text-xs font-bold uppercase tracking-wide">即將發布</p>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-[#333] flex items-center justify-center">
+                    <Crown size={14} className="text-[#FFD700]" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )
