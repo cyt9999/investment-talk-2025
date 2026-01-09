@@ -280,7 +280,7 @@ const App = () => {
             </div>
           </div>
           <p className="text-[#fff] text-xs font-base text-center opacity-50">
-            *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05 APP 上線至 2025/12 APP中的實際交易紀錄。過往表現不保證未來收益，請自行評估投資風險。
+            *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05/12 起算（基準值 0%），基於APP內實際持倉紀錄計算區間累計回報。過往表現不保證未來收益，請自行評估投資風險。
           </p>
         </div>
       )
@@ -300,12 +300,12 @@ const App = () => {
           <div className="space-y-12 relative">
             <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
             {[
-              { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '堅定不交籌碼，確立「盈餘驅動」主軸，加倉 QQQ 與特斯拉。', color: '#FF8A8A' },
-              { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '鮑威爾強調等待數據。策略性配置 30% SHY 短債觀望，不隨市場雜訊起舞。', color: colors.primary },
-              { date: '07/22', tag: '板塊輪動', title: '能源接棒 AI', desc: '獲利了結奇異航太 (GE) +100% 漲幅，轉倉 GEV 佈局 AI 算力背後的能源剛需。', color: colors.primary },
-              { date: '08/01', tag: '逆勢抄底', title: '非農暴雷：黑色星期五', desc: '失業率數據引發衰退恐慌。坚持「軟著陸」劇本，逆勢大舉加倉 TSLA 與 ARM。', color: '#ADC4FF' },
-              { date: '10/06', tag: '價值回歸', title: '重倉亞馬遜', desc: '看好 AWS 利潤率與電商旺季，在財報前夕將 AMZN 權重拉升至 17%，回歸價值本質。', color: colors.primary },
-              { date: '11/25', tag: '精準對沖', title: '情緒過熱：啟動防禦', desc: '情緒指標突破 64% 警戒線，買入 SOXS (半導體空頭) 鎖定全年利潤，主動壓降 Beta。', color: colors.primary }
+              { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '多頭確立｜堅定不交籌碼，加倉 QQQ 與特斯拉', color: '#FF8A8A' },
+              { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '策略性配置 30% SHY 短債觀望', color: colors.primary },
+              //{ date: '07/22', tag: '板塊輪動', title: '能源接棒 AI', desc: 'GE 獲利逾 100% 續抱，並加倉 GEV，全面鎖定 AI 算力背後的能源缺口。', color: colors.primary },
+              { date: '08/01', tag: '逆勢抄底', title: '非農暴雷：黑色星期五', desc: '不被帶節奏，逆勢加倉 TSLA 與 ARM', color: '#ADC4FF' },
+              //{ date: '10/06', tag: '價值回歸', title: '重倉亞馬遜', desc: '看好 AWS 利潤率與電商旺季，在財報前夕將 AMZN 權重拉升至 17%，回歸價值本質。', color: colors.primary },
+              { date: '11/25', tag: '精準對沖', title: '情緒過熱：啟動防禦', desc: '情緒指標突破 64% 警戒線，主動壓降 Beta', color: colors.primary }
             ].map((item, idx) => (
               <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
                 <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: item.color }}>
