@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   TrendingUp, Target, Calendar, Award, Rocket, ShieldCheck, Activity,
   Lock, ChevronRight, ArrowLeft, ArrowRight, Bell, Search, Crown,
-  PlayCircle, Mic, Zap, BarChart3, X
+  PlayCircle, Mic, Zap, BarChart3, X, Gift, Share2, Camera, MessageSquare
 } from 'lucide-react';
 
 // --- DATA & HELPER COMPONENTS ---
@@ -193,7 +193,7 @@ const App = () => {
 
   useEffect(() => {
     if (activeScreen === 0) animateValue(0, 21.23, setDisplayROI, 1000);
-    if (activeScreen === 5) animateValue(0, 1.26, setDisplayBeta, 1000);
+    if (activeScreen === 4) animateValue(0, 1.26, setDisplayBeta, 1000);
   }, [activeScreen]);
 
   const animateValue = (start, end, setter, duration) => {
@@ -517,12 +517,41 @@ const App = () => {
       id: '2026-calendar',
       content: (
         <div className="flex flex-col min-h-full pb-10">
+          {/* --- MOVED: Beta Value & CTA --- */}
+          <div className="mt-4 pt-8 border-t border-white/10">
+            <div className="fade-in mt-6">
+              <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
+                <ShieldCheck size={32} color={colors.primary} />
+                宏觀巨變在即 APP功能讓你快一步
+              </h2>
+            </div>
+
+            <div className="bg-[#242424] rounded-[40px] p-8 border border-white/5 flex flex-col items-center mb-8 shadow-2xl relative overflow-hidden scale-in">
+              <div className="relative w-56 h-56 mb-4">
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a2a" strokeWidth="8" />
+                  <circle cx="50" cy="50" r="45" fill="none" stroke={colors.primary} strokeWidth="8" strokeDasharray={`${(displayBeta / 1.5) * 282} 282`} style={{ transition: 'stroke-dasharray 1s ease-out' }} />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pt-8">
+                  <p className="text-[#B0B0B0] text-sm mb-1">Talk 君 Beta</p>
+                  <p className="text-white text-6xl font-black tracking-tighter">{displayBeta.toFixed(2)}</p>
+                  <p className="text-[#95B1FF] text-xs font-black mt-2 uppercase tracking-widest bg-[#95B1FF]/10 px-3 py-1 rounded-full">Defense Mode</p>
+                </div>
+              </div>
+
+              <div className="bg-[#141414] rounded-3xl p-6 w-full flex items-center gap-4 slide-up" style={{ animationDelay: '0.3s' }}>
+                <Zap size={24} className="text-[#95B1FF] shrink-0" />
+                <p className="text-[#E0E0E0] text-sm leading-relaxed">
+                  面對變數，我們將 Beta 降至 <span className="text-[#95B1FF] font-bold">1.26</span>，你呢？
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
               <Activity size={32} color={colors.primary} />
-              宏觀巨變在即 APP功能讓你快一步
+              2026，從「盈餘驅動」轉向「政策驅動」
             </h2>
-            <p className="text-[#B0B0B0] text-base mb-10 leading-relaxed">從「盈餘驅動」轉向「政策驅動」</p>
           </div>
           <div className="space-y-10">
             {[
@@ -594,50 +623,80 @@ const App = () => {
               </div>
             </div>
           </div>
+
+
         </div>
       )
     },
 
-    // 6. Beta Value & CTA
+    // 6. Campaign Page
     {
-      id: 'beta-cta',
+      id: 'campaign',
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
-              <ShieldCheck size={32} color={colors.primary} />
-              政策驅動時代 誰先控風險誰贏
+            <h2 className="text-2xl font-black text-white mb-4 flex items-center gap-2">
+              <Gift size={24} className="text-[#FF69B4]" />
+              年度寵粉｜分享領直播券
             </h2>
           </div>
 
-          <div className="bg-[#242424] rounded-[40px] p-8 border border-white/5 flex flex-col items-center mb-8 shadow-2xl relative overflow-hidden scale-in">
-            <div className="relative w-56 h-56 mb-4">
-              <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a2a" strokeWidth="8" />
-                <circle cx="50" cy="50" r="45" fill="none" stroke={colors.primary} strokeWidth="8" strokeDasharray={`${(displayBeta / 1.5) * 282} 282`} style={{ transition: 'stroke-dasharray 1s ease-out' }} />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center pt-8">
-                <p className="text-[#B0B0B0] text-sm mb-1">Talk 君 Beta</p>
-                <p className="text-white text-6xl font-black tracking-tighter">{displayBeta.toFixed(2)}</p>
-                <p className="text-[#95B1FF] text-xs font-black mt-2 uppercase tracking-widest bg-[#95B1FF]/10 px-3 py-1 rounded-full">Defense Mode</p>
+          <div className="bg-[#2a2a2a] rounded-[24px] p-5 border border-white/5 shadow-2xl relative overflow-hidden scale-in">
+            <div className="absolute top-0 right-0 p-3 opacity-5">
+              <Gift size={80} className="text-[#FF69B4]" />
+            </div>
+
+            <div className="relative z-10 mb-4">
+              <p className="text-white text-lg font-black mb-1">完成任務領 2 月語音直播券</p>
+              <p className="text-[#B0B0B0] text-xs leading-relaxed">
+                分享以下內容至社團大廳，即刻開通權限：
+              </p>
+            </div>
+
+            <div className="space-y-2 relative z-10 mb-4">
+              <div className="bg-[#141414]/80 backdrop-blur-sm rounded-xl p-3 border border-white/10 flex gap-3 items-center">
+                <div className="bg-[#95B1FF]/20 p-2 rounded-full text-[#95B1FF] shrink-0">
+                  <Camera size={16} />
+                </div>
+                <div>
+                  <h4 className="text-white font-bold text-sm">1. 你的 Beta 值與截圖</h4>
+                </div>
+              </div>
+
+              <div className="bg-[#141414]/80 backdrop-blur-sm rounded-xl p-3 border border-white/10 flex gap-3 items-center">
+                <div className="bg-[#95B1FF]/20 p-2 rounded-full text-[#95B1FF] shrink-0">
+                  <MessageSquare size={16} />
+                </div>
+                <div>
+                  <h4 className="text-white font-bold text-sm">2. 2026 最期待的 APP 功能</h4>
+                </div>
               </div>
             </div>
 
-            <div className="bg-[#141414] rounded-3xl p-6 w-full flex items-center gap-4 slide-up" style={{ animationDelay: '0.3s' }}>
-              <Zap size={24} className="text-[#95B1FF] shrink-0" />
-              <p className="text-[#E0E0E0] text-sm leading-relaxed">
-                面對變數，我們將 Beta 降至 <span className="text-[#95B1FF] font-bold">1.26</span>，你呢？
-              </p>
+            {/* Visual Placeholder for Example - Condensed */}
+            <div className="w-full h-24 bg-gradient-to-br from-[#141414] to-[#242424] rounded-lg border border-dashed border-white/20 flex flex-col items-center justify-center text-[#666] mb-4 relative overflow-hidden group hover:border-[#FF69B4]/30 transition-colors">
+              <div className="z-10 flex items-center gap-2 opacity-70">
+                <Share2 size={14} />
+                <span className="text-[10px] font-bold">分享範例預覽</span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-white/10 relative z-10 flex items-center justify-between">
+              <div>
+                <span className="text-[#FFD700] font-bold flex items-center gap-1.5 text-xs"><Crown size={14} /> 達成獎勵</span>
+                <span className="text-[#B0B0B0] text-[10px] block mt-0.5">2 月首場語音直播入場券 (2/6前發放)</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[#B0B0B0] text-[10px] block font-bold">截止日</span>
+                <span className="text-[#FF69B4] text-xs font-black">1/31 23:59 (美東)</span>
+              </div>
             </div>
           </div>
 
-          <div className="mt-auto space-y-4 fade-in" style={{ animationDelay: '0.6s' }}>
-            <button className="w-full py-7 rounded-[32px] font-black text-2xl text-white bg-primary-gradient shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
-              立即計算我的 Beta
-              <ChevronRight size={24} />
-            </button>
-            <button className="w-full py-7 rounded-[32px] font-black text-xl text-[#E0E0E0] border-2 border-white/10 bg-[#242424] active:scale-95 transition-all flex items-center justify-center gap-3">
-              <Crown size={24} className="text-[#FFD700]" /> 查看 Talk 君完整持倉
+          <div className="mt-auto pt-4 fade-in" style={{ animationDelay: '0.3s' }}>
+            <button className="w-full py-4 rounded-[24px] font-black text-lg text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-md shadow-[#FF69B4]/10 active:scale-95 transition-all flex items-center justify-center gap-2 hover:brightness-110">
+              <ShieldCheck size={20} />
+              立即計算 Beta 領券
             </button>
           </div>
         </div>
