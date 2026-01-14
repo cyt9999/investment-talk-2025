@@ -126,8 +126,8 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
     switch (item.variant) {
       case 'tilt': return 'rotate-[-2deg] scale-[1.02]';
       case 'zoom': return 'scale-110';
-      case 'wide': return 'aspect-[16/10]';
-      default: return 'aspect-[9/16]';
+      case 'wide': return '';
+      default: return '';
     }
   };
 
@@ -135,7 +135,7 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
 
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-[24px] shadow-2xl transition-all duration-500 bg-[#1a1a1a] ${item.shadow} ${item.variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
+      className={`relative w-full overflow-hidden rounded-[24px] shadow-2xl transition-all duration-500 bg-[#1a1a1a] shadow-inner aspect-video`}
       onTouchStart={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
       onClick={() => onImageClick(currentImg.src)}
@@ -146,7 +146,7 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
           key={currentImg.src}
           src={currentImg.src}
           alt={currentImg.name}
-          className={`w-full h-full animate-fade-in-fast ${currentImg.fit === 'contain' ? 'object-contain scale-95' : 'object-cover'}`}
+          className={`w-full h-full animate-fade-in-fast ${currentImg.fit === 'contain' ? 'object-contain scale-95' : 'object-contain object-top p-3'}`}
           style={currentImg.customStyle || {}}
         />
       </div>
@@ -168,7 +168,7 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
           <Search size={14} className="text-white/80" />
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
@@ -426,7 +426,6 @@ const App = () => {
             {[
               {
                 date: 'MAY',
-                year: '2025',
                 title: 'App 正式啟航：五大核心選股系統',
                 desc: 'Talk君持倉、觀察與潛力股追蹤，一站建立最強地基。',
                 bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]',
@@ -440,7 +439,6 @@ const App = () => {
               },
               {
                 date: 'AUG',
-                year: '2025',
                 title: '量化風險監測體系：Beta 護航引擎',
                 desc: '導入 Beta 計算機與市場情緒指標，風險數值化趨勢曲線掌握全局',
                 bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]',
@@ -454,7 +452,6 @@ const App = () => {
               },
               {
                 date: 'NOV',
-                year: '2025',
                 title: '全維數據集成：總經看板與社群即時聯動',
                 desc: '整合文字聊天室與板塊 ETF，市場觀點與趨勢脈動一目了然。',
                 bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]',
@@ -475,7 +472,6 @@ const App = () => {
               },
               {
                 date: 'DEC',
-                year: '2025',
                 title: '即時觀點升級：語音直播 VIP 互動生態',
                 desc: '強化熱門主題即時拆解，搭配專屬問答與直播重點整理，觀點交流零距離。',
                 bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]',
@@ -527,23 +523,38 @@ const App = () => {
               </h2>
             </div>
 
-            <div className="bg-[#242424] rounded-[40px] p-8 border border-white/5 flex flex-col items-center mb-8 shadow-2xl relative overflow-hidden scale-in">
-              <div className="relative w-56 h-56 mb-4">
-                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a2a" strokeWidth="8" />
-                  <circle cx="50" cy="50" r="45" fill="none" stroke={colors.primary} strokeWidth="8" strokeDasharray={`${(displayBeta / 1.5) * 282} 282`} style={{ transition: 'stroke-dasharray 1s ease-out' }} />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center pt-8">
-                  <p className="text-[#B0B0B0] text-sm pb-5">Talk 君 Beta</p>
-                  <p className="text-white text-6xl font-black tracking-tighter pb-5 mb-3">{displayBeta.toFixed(2)}</p>
+            <div className="bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-[#B0B0B0] text-xs font-bold uppercase tracking-wider mb-1">Talk君 Beta值</p>
+                    <p className="text-white text-5xl font-black tracking-tighter leading-none">{displayBeta.toFixed(2)}</p>
+                  </div>
+                  <div className="pb-1">
+                    <span className="text-[#95B1FF] text-3xl font-black uppercase tracking-widest leading-none">進攻</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-[#141414] rounded-3xl p-6 w-full flex items-center gap-4 slide-up" style={{ animationDelay: '0.3s' }}>
-                <Zap size={24} className="text-[#95B1FF] shrink-0" />
-                <p className="text-[#E0E0E0] text-sm leading-relaxed">
-                  面對變數，我們將 Beta 降至 <span className="text-[#95B1FF] font-bold">1.26</span>，你呢？
-                </p>
+                {/* Progress Bar Chart */}
+                <div className="relative h-4 bg-[#141414] rounded-full overflow-hidden border border-white/5">
+                  {/* Tick marks */}
+                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10 z-10"></div>
+                  <div className="absolute left-1/4 top-0 bottom-0 w-px bg-white/5 z-0"></div>
+                  <div className="absolute left-3/4 top-0 bottom-0 w-px bg-white/5 z-0"></div>
+
+                  {/* Bar */}
+                  <div
+                    className="h-full bg-primary-gradient rounded-full shadow-[0_0_15px_rgba(149,177,255,0.5)] relative"
+                    style={{ width: `${(displayBeta / 2) * 100}%`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}
+                  >
+                    <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50"></div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-md">🤫</span>
+                  <p className="text-[#afafaf] text-sm font-medium">悄悄說：Talk君持倉清單的即時 Beta 值也上線囉</p>
+                </div>
               </div>
             </div>
           </div>
@@ -553,7 +564,7 @@ const App = () => {
               2026，從「盈餘驅動」轉向「政策驅動」
             </h3>
           </div>
-          <div className="space-y-10 mt-6">
+          <div className="space-y-10 my-6">
             {[
               { id: 1, title: '聯準會主席變更', desc: '新舊交接期的政策連續性與不確定性將是核心。', img: 'https://images.pexels.com/photos/2862155/pexels-photo-2862155.jpeg' },
               { id: 2, title: '失業率與軟著陸', desc: '正式驗證美國經濟是否能在高利率下軟著陸。', img: 'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg' },
@@ -571,6 +582,21 @@ const App = () => {
                 </div>
               </div>
             ))}
+          </div>
+          {/* Row 2: Calendar - Nudge Note Style */}
+          <div className="bg-gradient-to-r from-[#242424] to-[#95B1FF]/20 rounded-2xl p-4 border border-white/5 flex items-center justify-between shadow-lg group hover:border-[#95B1FF]/30 transition-colors cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#1a1a1a] border border-white/5 flex items-center justify-center shrink-0">
+                <Calendar size={24} className="text-[#95B1FF]" />
+              </div>
+              <div>
+                <h4 className="text-white font-bold text-md mb-1">新功能：美股行事曆</h4>
+                <p className="text-[#afafaf] text-sm">掌握關鍵財報與經濟數據發布日</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pl-2">
+              <span className="text-[#FFD700] text-[10px] font-bold uppercase tracking-wider bg-[#FFD700]/10 px-2 py-1 rounded-full whitespace-nowrap">即將發布</span>
+            </div>
           </div>
           {/* New Section: 3 Feature Cards */}
           <div className="mt-12 slide-up" style={{ animationDelay: '0.5s' }}>
@@ -603,25 +629,7 @@ const App = () => {
                 ))}
               </div>
 
-              {/* Row 2: Calendar */}
-              <div className="bg-[#242424] rounded-[24px] overflow-hidden border border-white/5 shadow-xl flex flex-col group">
-                <div className="h-42 overflow-hidden relative">
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/calendar.png`}
-                    alt="美股行事曆"
-                    className="w-full h-full object-cover object-top opacity-90 group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-5 flex items-center justify-between bg-[#242424] relative z-20">
-                  <div>
-                    <h4 className="text-white font-bold text-lg mb-1 leading-tight">美股行事曆</h4>
-                    <p className="text-[#95B1FF] text-xs font-bold uppercase tracking-wide">即將發布</p>
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-[#333] flex items-center justify-center">
-                    <Crown size={14} className="text-[#FFD700]" />
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
 
@@ -649,8 +657,8 @@ const App = () => {
 
             <div className="relative z-10 mb-4">
               <p className="text-white text-lg font-black mb-1">完成任務領 2 月語音直播券</p>
-              <p className="text-[#B0B0B0] text-xs leading-relaxed">
-                分享以下內容至社團大廳，即刻開通權限：
+              <p className="text-[#B0B0B0] text-sm leading-relaxed">
+                1月31前，分享以下內容至社團大廳，即刻開通權限
               </p>
             </div>
 
@@ -660,7 +668,7 @@ const App = () => {
                   <Camera size={16} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm">1. 你的 Beta 值與截圖</h4>
+                  <h4 className="text-white font-bold text-md">1. 你的 Beta 值與截圖</h4>
                 </div>
               </div>
 
@@ -669,36 +677,95 @@ const App = () => {
                   <MessageSquare size={16} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm">2. 2026 最期待的 APP 功能</h4>
+                  <h4 className="text-white font-bold text-md">2. 2026 最期待的功能 😍</h4>
+                </div>
+
+              </div>
+              <p className='text-sm text-[#afafaf] pb-1'>💡 許願小靈感：目標 Beta 區間自動提醒、持倉風險體檢、AI個股分析...任君許願!</p>
+
+            </div>
+
+            <div className="mb-6 group text-center">
+              <div className="inline-block relative">
+                <img
+                  src={`${import.meta.env.BASE_URL}images/club_example.png`}
+                  alt="分享範例預覽"
+                  className="w-[60%] mx-auto h-auto rounded-lg border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity cursor-pointer shadow-lg group-hover:shadow-[#FF69B4]/20 group-hover:scale-105 duration-300"
+                  onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/club_example.png`)}
+                />
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
+                  <Share2 size={10} className="text-[#FF69B4]" />
+                  <span className="text-white text-[10px] whitespace-nowrap">點擊預覽範例</span>
                 </div>
               </div>
             </div>
 
-            {/* Visual Placeholder for Example - Condensed */}
-            <div className="w-full h-24 bg-gradient-to-br from-[#141414] to-[#242424] rounded-lg border border-dashed border-white/20 flex flex-col items-center justify-center text-[#666] mb-4 relative overflow-hidden group hover:border-[#FF69B4]/30 transition-colors">
-              <div className="z-10 flex items-center gap-2 opacity-70">
-                <Share2 size={14} />
-                <span className="text-[10px] font-bold">分享範例預覽</span>
-              </div>
-            </div>
+            {/* Sexy Reward Ticket Section - REFINED SHAPE (Restored) */}
+            <div className="relative mt-auto group cursor-pointer mb-8 transform hover:-translate-y-1 transition-transform duration-300">
+              {/* Ticket Container */}
+              <div className="relative w-full max-w-sm mx-auto filter drop-shadow-2xl">
 
-            <div className="pt-3 border-t border-white/10 relative z-10 flex items-center justify-between">
-              <div>
-                <span className="text-[#FFD700] font-bold flex items-center gap-1.5 text-xs"><Crown size={14} /> 達成獎勵</span>
-                <span className="text-[#B0B0B0] text-[10px] block mt-0.5">2 月首場語音直播入場券 (2/6前發放)</span>
-              </div>
-              <div className="text-right">
-                <span className="text-[#B0B0B0] text-[10px] block font-bold">截止日</span>
-                <span className="text-[#FF69B4] text-xs font-black">1/31 23:59 (美東)</span>
-              </div>
-            </div>
-          </div>
+                {/* Top Section (Main) */}
+                <div className="bg-[#1a1a1a] rounded-t-[32px] p-6 pb-10 relative overflow-hidden border-t border-x border-white/10">
+                  {/* Corner Notches (Top Lefft/Right) */}
+                  <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-[#141414] border-b border-r border-white/10 z-20"></div>
+                  <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-[#141414] border-b border-l border-white/10 z-20"></div>
 
-          <div className="mt-auto pt-4 fade-in" style={{ animationDelay: '0.3s' }}>
-            <button className="w-full py-4 rounded-[24px] font-black text-lg text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-md shadow-[#FF69B4]/10 active:scale-95 transition-all flex items-center justify-center gap-2 hover:brightness-110">
-              <ShieldCheck size={20} />
-              立即計算 Beta 領券
-            </button>
+                  {/* Gradient Shine */}
+                  <div className="absolute top-0 right-0 w-[150%] h-full bg-gradient-to-l from-white/5 to-transparent skew-x-12 opacity-50 pointer-events-none"></div>
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#FF69B4] via-[#FFD700] to-[#FF69B4]"></div>
+
+                  <div className="flex flex-col items-center relative z-10">
+                    <span className="bg-[#FFD700] text-black text-[12px] font-black px-4 py-1 rounded-sm uppercase tracking-widest mb-6 shadow-md transform -skew-x-12">
+                      分享即領
+                    </span>
+
+                    <h4 className="text-white font-black text-4xl italic tracking-tighter leading-none mb-4 text-center drop-shadow-sm flex flex-col items-center">
+                      <span>VIP</span>
+                      <span className="text-[#FF69B4] text-5xl">PASS</span>
+                    </h4>
+
+                    <div className="w-full flex justify-center py-2 mb-2">
+                      <div className="relative transform transition-transform group-hover:scale-110 duration-500">
+                        <div className="absolute inset-0 bg-[#FF69B4] blur-2xl opacity-20 rounded-full animate-pulse"></div>
+                        <Mic size={64} className="text-white relative z-10 drop-shadow-xl" />
+                        <Crown size={32} className="text-[#FFD700] absolute -top-4 -right-2 z-20 rotate-[15deg] drop-shadow-lg" weight="fill" />
+                      </div>
+                    </div>
+
+                    <p className="text-[#B0B0B0] text-sm font-bold tracking-wide uppercase">2 月語音直播入場券</p>
+                  </div>
+                </div>
+
+                {/* Deep Notch / Perforation Area */}
+                <div className="relative h-6 bg-[#1a1a1a] border-x border-white/10 flex items-center mb-[-1px] z-10">
+                  {/* The Deep Side Notches */}
+                  <div className="absolute -left-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-r border-white/10 z-20 shadow-inner"></div>
+                  <div className="absolute -right-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-l border-white/10 z-20 shadow-inner"></div>
+                  {/* The Dashed Line */}
+                  <div className="w-full h-[2px] border-t-2 border-dashed border-[#444] mx-5 opacity-50"></div>
+                </div>
+
+                {/* Bottom Section (Stub) */}
+                <div className="bg-[#1a1a1a] rounded-b-[32px] p-6 pt-4 border-b border-x border-white/10 relative overflow-hidden flex flex-col items-center">
+                  {/* Corner Notches (Bottom Left/Right) */}
+                  <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
+                  <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
+
+                  <button className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    <ShieldCheck size={24} />
+                    立即計算 Beta 領券
+                  </button>
+                  <div className="flex justify-center items-center text-[#555] text-[10px] font-bold uppercase tracking-[0.2em] mt-4">
+                    <span>ENDS 2025/01/31</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <p className="text-[#666] text-[10px] text-center mt-3">主辦單位保有最終詮釋權</p>
+            </div>
           </div>
         </div>
       )
@@ -754,6 +821,20 @@ const App = () => {
         
         /* UPDATED: Faster transition (0.7s) */
         .animate-fade-in-fast { animation: fadeIn 0.7s ease-out forwards; }
+        
+        /* TRUE TICKET SHAPE CSS */
+        .ticket-top {
+            background: radial-gradient(circle at bottom left, transparent 15px, #1a1a1a 15.5px) bottom left,
+                        radial-gradient(circle at bottom right, transparent 15px, #1a1a1a 15.5px) bottom right;
+            background-size: 51% 100%;
+            background-repeat: no-repeat;
+        }
+        .ticket-bottom {
+            background: radial-gradient(circle at top left, transparent 15px, #1a1a1a 15.5px) top left,
+                        radial-gradient(circle at top right, transparent 15px, #1a1a1a 15.5px) top right;
+            background-size: 51% 100%;
+            background-repeat: no-repeat;
+        }
         
         .slide-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .scale-in { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
