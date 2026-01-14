@@ -3,27 +3,22 @@ import {
   TrendingUp, Target, Calendar, Award, Rocket, ShieldCheck, Activity,
   Lock, ChevronRight, ArrowLeft, ArrowRight, Bell, Search, Crown,
   PlayCircle, Mic, Zap, BarChart3, X, Gift, Share2, Camera, MessageSquare,
-  AlarmClock
+  AlarmClock, Globe
 } from 'lucide-react';
+import { translations } from './translations';
 
 // --- DATA & HELPER COMPONENTS ---
 
 // ROI Data (Normalized: May 12 = 0%)
 const chartData = [
-  { date: "2025-05-12", talk: 0.00, sp500: 0.0 },
-  { date: "2025-05-16", talk: 2.00, sp500: 0.8 },
-  { date: "2025-06-24", talk: 1.68, sp500: 4.5 },
-  { date: "2025-06-26", talk: 1.39, sp500: 4.8 },
-  { date: "2025-07-25", talk: -2.18, sp500: 8.2 },
-  { date: "2025-08-01", talk: 18.37, sp500: 8.5 },
-  { date: "2025-09-30", talk: 18.28, sp500: 12.1 },
-  { date: "2025-10-06", talk: 14.98, sp500: 12.5 },
-  { date: "2025-10-29", talk: 18.59, sp500: 14.8 },
-  { date: "2025-11-18", talk: 22.99, sp500: 15.5 },
-  { date: "2025-11-21", talk: 22.94, sp500: 15.8 },
-  { date: "2025-11-24", talk: 23.02, sp500: 16.2 },
-  { date: "2025-11-26", talk: 23.04, sp500: 16.5 },
-  { date: "2025-12-26", talk: 21.23, sp500: 17.88 }
+  { date: "2025-05-31", talk: 35.73, sp500: 0.51 },
+  { date: "2025-06-30", talk: 38.3, sp500: 5.5 },
+  { date: "2025-07-30", talk: 39.2, sp500: 8.2 },
+  { date: "2025-08-25", talk: 42.4, sp500: 9.4 },
+  { date: "2025-09-22", talk: 56.9, sp500: 13.8 },
+  { date: "2025-10-27", talk: 58.9, sp500: 16.9 },
+  { date: "2025-11-28", talk: 52.9, sp500: 16.4 },
+  { date: "2025-12-31", talk: 50.8, sp500: 16.4 }
 ];
 
 // Chart Component
@@ -181,7 +176,10 @@ const App = () => {
   const [displayBeta, setDisplayBeta] = useState(0);
   const [displayROI, setDisplayROI] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [language, setLanguage] = useState('TC');
   const scrollRef = useRef(null);
+
+  const t = translations[language];
 
   const colors = {
     primary: '#95B1FF',
@@ -193,8 +191,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (activeScreen === 0) animateValue(0, 21.23, setDisplayROI, 1000);
-    if (activeScreen === 4) animateValue(0, 1.26, setDisplayBeta, 1000);
+    if (activeScreen === 0) animateValue(0, 50.8, setDisplayROI, 1000);
+    if (activeScreen === 4) animateValue(0, 1.22, setDisplayBeta, 1000);
   }, [activeScreen]);
 
   const animateValue = (start, end, setter, duration) => {
@@ -233,22 +231,54 @@ const App = () => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [activeScreen]);
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: t.campaign.shareTextTitle,
+          text: t.campaign.shareTextBody,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.log('Error sharing', error);
+      }
+    } else {
+      // Fallback
+      alert('您的瀏覽器不支援原生分享，請截圖分享！');
+    }
+  };
+
   const screens = [
     // 1. Overall
     {
       id: 'overall',
       content: (
         <div className="flex flex-col min-h-full pb-10 fade-in">
-          <div className="mt-12 mb-6">
+          <div className="mt-12 mb-6 flex justify-between items-start">
             <span className="text-xs font-bold px-3 py-1.5 rounded-full border border-[#404040] text-white tracking-widest uppercase bg-[#282828] shadow-sm">
-              2025 年度回顧
+              {t.overall.badge}
             </span>
+            {/* Language Toggle */}
+            <div className="flex bg-[#282828] rounded-full p-1 border border-[#404040]">
+              <button
+                onClick={() => setLanguage('TC')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'TC' ? 'bg-[#95B1FF] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
+              >
+                繁
+              </button>
+              <button
+                onClick={() => setLanguage('SC')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'SC' ? 'bg-[#ff95b1] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
+              >
+                简
+              </button>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-2 text-white leading-tight">超越大盤的</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-2 text-white leading-tight">{t.overall.titlePrefix}</h1>
           <h1 className="text-4xl md:text-5xl font-black mb-6" style={{ background: colors.primaryGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            邏輯勝利
+            {t.overall.titleMain}
           </h1>
-          <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">+21.23% 不是終點，而是 5 次關鍵進化的結果。</p>
+          <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">{t.overall.description}</p>
 
           <div className="bg-[#242424] rounded-[32px] p-6 md:p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
             <div className="absolute -top-10 -right-10 opacity-5">
@@ -257,13 +287,13 @@ const App = () => {
             <div className="relative z-10">
               <div className="flex flex-col items-start mb-2">
                 <div>
-                  <p className="text-[#B0B0B0] text-sm font-medium mb-1">Talk 君年度回報</p>
+                  <p className="text-[#B0B0B0] text-sm font-medium mb-1">{t.overall.returnLabel}</p>
                   <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-3">
                     +{displayROI.toFixed(2)}%
                   </h2>
                 </div>
                 <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 backdrop-blur-sm">
-                  <p className="text-[#666] text-xs font-bold uppercase">vs S&P 500</p>
+                  <p className="text-[#666] text-xs font-bold uppercase">{t.overall.sp500Label}</p>
                   <div className="w-px h-3 bg-[#404040]"></div>
                   <h3 className="text-sm md:text-base font-bold text-[#808080] tracking-tight">
                     +17.88%
@@ -272,16 +302,12 @@ const App = () => {
               </div>
               <ComparisonLineChart data={chartData} />
               <div className="flex justify-between text-[10px] text-[#666] mt-4 font-bold uppercase tracking-wider px-1">
-                <span>May</span>
-                <span>Jul</span>
-                <span>Sep</span>
-                <span>Nov</span>
-                <span>Dec</span>
+                {t.overall.months.map((m, i) => <span key={i}>{m}</span>)}
               </div>
             </div>
           </div>
           <p className="text-[#fff] text-xs font-base text-center opacity-50">
-            *白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05/12 起算（基準值 0%），基於APP內實際持倉紀錄計算區間累計回報。過往表現不保證未來收益，請自行評估投資風險。
+            {t.overall.disclaimer}
           </p>
         </div>
       )
@@ -295,31 +321,30 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Calendar size={32} color={colors.primary} />
-              時機抓對了 執行力讓數字說話
+              {t.trajectory.title}
             </h2>
           </div>
           <div className="space-y-12 relative">
             <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
-            {[
-              { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '多頭確立｜堅定不交籌碼，加倉 QQQ 與特斯拉', color: '#FF8A8A' },
-              { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '策略性配置 30% SHY 短債觀望', color: colors.primary },
-              //{ date: '07/22', tag: '板塊輪動', title: '能源接棒 AI', desc: 'GE 獲利逾 100% 續抱，並加倉 GEV，全面鎖定 AI 算力背後的能源缺口。', color: colors.primary },
-              { date: '08/01', tag: '逆勢抄底', title: '非農暴雷：黑色星期五', desc: '不被帶節奏，逆勢加倉 TSLA 與 ARM', color: '#ADC4FF' },
-              //{ date: '10/06', tag: '價值回歸', title: '重倉亞馬遜', desc: '看好 AWS 利潤率與電商旺季，在財報前夕將 AMZN 權重拉升至 17%，回歸價值本質。', color: colors.primary },
-              { date: '11/25', tag: '精準對沖', title: '情緒過熱：啟動防禦', desc: '情緒指標突破 64% 警戒線，主動壓降 Beta', color: colors.primary }
-            ].map((item, idx) => (
-              <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: item.color }}>
-                  <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
+            {t.trajectory.items.map((item, idx) => {
+              // Map colors based on index to preserve design
+              const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
+              const color = itemColors[idx] || colors.primary;
+
+              return (
+                <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                  <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <p className="text-sm font-black" style={{ color: color }}>{item.date}</p>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
+                  </div>
+                  <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
+                  <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
                 </div>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <p className="text-sm font-black" style={{ color: item.color }}>{item.date}</p>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
-                </div>
-                <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
-                <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
         </div>
@@ -334,60 +359,39 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
-              APP 實戰見證：全年持續升級的致勝引擎
+              {t.trading.title}
             </h2>
           </div>
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-1">
-            {[
-              {
-                code: 'GE', name: '奇異航太', roi: '+99.9%',
-                op: '均價 $128.80 ➡️ 11/17 $257.50 結算',
-                comment: '「航天行業幾乎無競爭對手，服務營收穩定。」',
-                metric: '關鍵指標：服務營收佔比 / 寡佔定價權',
-                img: `${import.meta.env.BASE_URL}images/GE.png`
-              },
-              {
-                code: 'INTC', name: '英特爾', roi: '+51.7%',
-                op: '7/25 入場 $20.60 ➡️ 均價 $22.64 ➡️ 年底 $34.35',
-                comment: '「基本面展露逆境反轉，台海風險的對沖資產。」',
-                metric: '關鍵指標：P/B Ratio 歷史低位 / 營收轉折點',
-                img: `${import.meta.env.BASE_URL}images/INTC.png`
-              },
-              {
-                code: 'TSLA', name: '特斯拉', roi: '+23.5%',
-                op: '底層策略入場 $220.00 ➡️ 均價 $247.00 ➡️ 年底 $305',
-                comment: '「自動駕駛的唯一股，堅守 FSD 信念。」',
-                metric: '關鍵指標：FSD 滲透率 / 算力基礎設施化',
-                img: `${import.meta.env.BASE_URL}images/TSLA.png`
-              }
-            ].map((stock, idx) => (
-              <div key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm px-3 py-1 rounded-xl bg-black text-[#95B1FF] font-black border border-white/10 uppercase tracking-widest">{stock.code}</span>
-                    <span className="text-white font-black text-xl">{stock.name}</span>
+            {t.trading.records.map((stock, idx) => {
+              const imgs = ['GE.png', 'INTC.png', 'TSLA.png'];
+              const imgSrc = `${import.meta.env.BASE_URL}images/${imgs[idx]}`;
+              return (
+                <div key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                  <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm px-3 py-1 rounded-xl bg-black text-[#95B1FF] font-black border border-white/10 uppercase tracking-widest">{stock.code}</span>
+                      <span className="text-white font-black text-xl">{stock.name}</span>
+                    </div>
+                    <p className="text-3xl font-black italic text-[#95B1FF]">{stock.roi}</p>
                   </div>
-                  <p className="text-3xl font-black italic text-[#95B1FF]">{stock.roi}</p>
+
+                  <p className="text-[#B0B0B0] text-base italic leading-relaxed border-l-2 border-[#95B1FF]/30 pl-4 mb-4 ">{stock.comment}</p>
+
+
+                  {/* UPDATED: h-auto + object-contain + Click to View */}
+                  <img
+                    src={imgSrc}
+                    alt={stock.name}
+                    onClick={() => setSelectedImage(imgSrc)}
+                    className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20"
+                  />
+                  <p className="text-[#95B1FF] text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <Activity size={14} /> {stock.metric}
+                  </p>
                 </div>
-
-                <p className="text-[#95B1FF] text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Activity size={14} /> {stock.metric}
-                </p>
-
-                {/* UPDATED: h-auto + object-contain + Click to View */}
-                <img
-                  src={stock.img}
-                  alt={stock.name}
-                  onClick={() => setSelectedImage(stock.img)}
-                  className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20"
-                />
-
-                <div className="mb-5 bg-black/30 p-5 rounded-2xl border-2 border-white/5 shadow-inner">
-                  <p className="text-white text-sm font-normal leading-relaxed">{stock.op}</p>
-                </div>
-                <p className="text-[#B0B0B0] text-base italic leading-relaxed border-l-2 border-[#95B1FF]/30 pl-4">{stock.comment}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
           <div className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
@@ -395,8 +399,8 @@ const App = () => {
                 <BarChart3 size={20} className="text-[#95B1FF]" />
               </div>
               <div>
-                <p className="text-white font-bold text-sm">以上交易紀錄來自APP中的「持倉清單」</p>
-                <p className="text-[#B0B0B0] text-xs">到「持倉清單」中看完整的持倉動態與即時價格</p>
+                <p className="text-white font-bold text-sm">{t.trading.holdingTitle}</p>
+                <p className="text-[#B0B0B0] text-xs">{t.trading.holdingDesc}</p>
               </div>
             </div>
             <img
@@ -418,92 +422,77 @@ const App = () => {
           <div className="fade-in mt-6 mb-4">
             <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3 mb-10">
               <Rocket size={32} className="text-[#95B1FF]" />
-              2025 功能回顧：投資 Talk 君進化之路
+              {t.appIteration.title}
             </h2>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-20 space-y-12">
-            {[
-              {
-                date: 'MAY',
-                title: 'App 正式啟航：五大核心選股系統',
-                desc: 'Talk君持倉、觀察與潛力股追蹤，一站建立最強地基。',
-                bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]',
-                shadow: 'shadow-[#4c6ef5]/30',
-                variant: 'tilt',
-                images: [
-                  { name: '持倉清單', src: `${import.meta.env.BASE_URL}images/holding.png` },
-                  { name: '選股策略', src: `${import.meta.env.BASE_URL}images/strategy.png` },
-                  { name: '市場情緒', src: `${import.meta.env.BASE_URL}images/marketpart.png` }
-                ]
-              },
-              {
-                date: 'AUG',
-                title: '量化風險監測體系：Beta 護航引擎',
-                desc: '導入 Beta 計算機與市場情緒指標，風險數值化趨勢曲線掌握全局',
-                bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]',
-                shadow: 'shadow-[#ff6b6b]/40',
-                variant: 'zoom',
-                highlight: true,
-                images: [
-                  { name: '市場情緒 2.0', src: `${import.meta.env.BASE_URL}images/marketpart2.png` },
-                  { name: 'Beta 計算機', src: `${import.meta.env.BASE_URL}images/beta.png` }
-                ]
-              },
-              {
-                date: 'NOV',
-                title: '全維數據集成：總經看板與社群即時聯動',
-                desc: '整合文字聊天室與板塊 ETF，市場觀點與趨勢脈動一目了然。',
-                bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]',
-                shadow: 'shadow-[#7950f2]/40',
-                variant: 'default',
-                images: [
-                  { name: '文字聊天室', src: `${import.meta.env.BASE_URL}images/chatroom.png` },
-                  {
-                    name: '美股大盤/債券/原物料',
-                    src: `${import.meta.env.BASE_URL}images/stock_overview.png`,
-                    fit: 'contain',
-                    customStyle: {
-                      transform: 'scale(1.3) translateY(-25%)',
-                      transformOrigin: 'top center'
-                    }
-                  }
-                ]
-              },
-              {
-                date: 'DEC',
-                title: '即時觀點升級：語音直播 VIP 互動生態',
-                desc: '強化熱門主題即時拆解，搭配專屬問答與直播重點整理，觀點交流零距離。',
-                bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]',
-                shadow: 'shadow-[#12b886]/40',
-                variant: 'wide',
-                images: [
-                  { name: '語音直播', src: `${import.meta.env.BASE_URL}images/live.png`, fit: 'contain' },
-                  { name: '即時個股新聞', src: `${import.meta.env.BASE_URL}images/news.png` }
-                ]
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                {idx !== 3 && <div className="absolute left-[28px] top-[60px] bottom-[-48px] w-[3px] bg-[#333] rounded-full -z-10 opacity-30" />}
-                <div className="flex items-start gap-5 mb-5 pl-1">
-                  <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
-                    <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
-                    <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
-                  </div>
+            {t.appIteration.items.map((item, idx) => {
+              const staticIterationData = [
+                {
+                  bg: 'bg-gradient-to-br from-[#4c6ef5] via-[#5c7cfa] to-[#748ffc]',
+                  shadow: 'shadow-[#4c6ef5]/30',
+                  variant: 'tilt',
+                  imgs: ['holding.png', 'strategy.png', 'marketpart.png']
+                },
+                {
+                  bg: 'bg-gradient-to-br from-[#ff6b6b] via-[#fa5252] to-[#e03131]',
+                  shadow: 'shadow-[#ff6b6b]/40',
+                  variant: 'zoom',
+                  highlight: true,
+                  imgs: ['marketpart2.png', 'beta.png']
+                },
+                {
+                  bg: 'bg-gradient-to-br from-[#7950f2] via-[#845ef7] to-[#be4bdb]',
+                  shadow: 'shadow-[#7950f2]/40',
+                  variant: 'default',
+                  imgs: ['chatroom.png', 'stock_overview.png'],
+                  imgConfigs: [{}, { fit: 'contain', customStyle: { transform: 'scale(1.3) translateY(-25%)', transformOrigin: 'top center' } }]
+                },
+                {
+                  bg: 'bg-gradient-to-br from-[#12b886] via-[#20c997] to-[#38d9a9]',
+                  shadow: 'shadow-[#12b886]/40',
+                  variant: 'wide',
+                  imgs: ['live.png', 'news.png'],
+                  imgConfigs: [{ fit: 'contain' }, {}]
+                }
+              ];
+              const s = staticIterationData[idx];
 
-                  <div className="pt-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-white font-black text-2xl tracking-tight">{item.title}</h4>
-                      {item.highlight && <span className="bg-[#FFD700] text-black text-[10px] px-1.5 py-0.5 rounded font-black uppercase">Star</span>}
+              // Merge translation and static data
+              const finalItem = {
+                ...item,
+                ...s,
+                images: item.images.map((img, imgIdx) => ({
+                  ...img,
+                  src: `${import.meta.env.BASE_URL}images/${s.imgs[imgIdx]}`,
+                  ...(s.imgConfigs?.[imgIdx] || {})
+                }))
+              };
+
+              return (
+                <div key={idx} className="relative group slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                  {idx !== 3 && <div className="absolute left-[28px] top-[60px] bottom-[-48px] w-[3px] bg-[#333] rounded-full -z-10 opacity-30" />}
+                  <div className="flex items-start gap-5 mb-5 pl-1">
+                    <div className="flex flex-col items-center justify-center bg-[#2a2a2a] w-[56px] h-[56px] rounded-2xl border border-white/10 shadow-xl shrink-0 z-10">
+                      <span className="text-[14px] font-black text-white leading-none">{item.date}</span>
+                      <span className="text-[10px] font-bold text-[#666]">{item.year}</span>
                     </div>
-                    <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
+
+                    <div className="pt-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="text-white font-bold text-xl tracking-tight">{item.title}</h4>
+                        {finalItem.highlight && <span className="bg-[#FFD700] text-black text-[10px] px-1.5 py-0.5 rounded font-black uppercase">Star</span>}
+                      </div>
+                      <p className="text-[#B0B0B0] text-sm font-medium leading-relaxed max-w-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                  <div className="px-4">
+                    <AutoFeatureCard item={finalItem} onImageClick={setSelectedImage} />
                   </div>
                 </div>
-                <div className="px-4">
-                  <AutoFeatureCard item={item} onImageClick={setSelectedImage} />
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )
@@ -517,9 +506,9 @@ const App = () => {
           {/* --- MOVED: Beta Value & CTA --- */}
           <div className="mt-4 pt-8 border-t border-white/10">
             <div className="fade-in mt-6">
-              <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
+              <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 pb-3">
                 <ShieldCheck size={32} color={colors.primary} />
-                宏觀巨變在即 APP功能讓你快一步
+                {t.calendar.title1}
               </h2>
             </div>
 
@@ -527,11 +516,11 @@ const App = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-end justify-between">
                   <div>
-                    <p className="text-[#B0B0B0] text-xs font-bold uppercase tracking-wider mb-1">Talk君 Beta值</p>
-                    <p className="text-white text-5xl font-black tracking-tighter leading-none">{displayBeta.toFixed(2)}</p>
+                    <p className="text-[#B0B0B0] text-xs font-bold uppercase tracking-wider mb-1">{t.calendar.betaLabel}</p>
+                    <p className="text-white text-4xl font-black tracking-tighter leading-none">{displayBeta.toFixed(2)}</p>
                   </div>
                   <div className="pb-1">
-                    <span className="text-[#95B1FF] text-3xl font-black uppercase tracking-widest leading-none">進攻</span>
+                    <span className="text-[#95B1FF] text-xl font-black uppercase tracking-widest leading-none">{t.calendar.attackLabel}</span>
                   </div>
                 </div>
 
@@ -553,35 +542,38 @@ const App = () => {
 
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-md">🤫</span>
-                  <p className="text-[#afafaf] text-sm font-medium">悄悄說：Talk君持倉清單的即時 Beta 值也上線囉</p>
+                  <p className="text-[#afafaf] text-sm font-medium">{t.calendar.whisper}</p>
                 </div>
               </div>
             </div>
           </div>
           <div className="fade-in">
-            <h3 className="text-xl font-black text-white py-3 flex items-center gap-3">
+            <h3 className="text-xl font-bold text-white py-3 flex items-center gap-3">
               <Activity size={32} color={colors.primary} />
-              2026，從「盈餘驅動」轉向「政策驅動」
+              {t.calendar.title2}
             </h3>
           </div>
           <div className="space-y-10 my-6">
-            {[
-              { id: 1, title: '聯準會主席變更', desc: '新舊交接期的政策連續性與不確定性將是核心。', img: 'https://images.pexels.com/photos/2862155/pexels-photo-2862155.jpeg' },
-              { id: 2, title: '失業率與軟著陸', desc: '正式驗證美國經濟是否能在高利率下軟著陸。', img: 'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg' },
-              { id: 3, title: '策略性壓降 Beta', desc: '計畫將組合 Beta 回歸 1.0，以防禦姿態等待。', img: 'https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg' }
-            ].map((item, idx) => (
-              <div key={idx} className="relative bg-[#242424] rounded-[32px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${item.img})` }} />
-                <div className="absolute inset-0 bg-black/55" />
-                <div className="relative z-10 p-8">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-10 h-10 rounded-2xl bg-[#95B1FF] text-black font-black flex items-center justify-center">{item.id}</div>
-                    <h4 className="text-white text-xl font-black">{item.title}</h4>
+            {t.calendar.events.map((item, idx) => {
+              const imgs = [
+                'https://images.pexels.com/photos/2862155/pexels-photo-2862155.jpeg',
+                'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg',
+                'https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg'
+              ];
+              return (
+                <div key={idx} className="relative bg-[#242424] rounded-[16px] overflow-hidden border border-white/5 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                  <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${imgs[idx]})` }} />
+                  <div className="absolute inset-0 bg-black/55" />
+                  <div className="relative z-10 p-4">
+                    <div className="flex items-center gap-4 mb-1">
+                      <div className="w-10 h-10 rounded-2xl bg-[#95B1FF] text-black font-bold flex items-center justify-center">{item.id}</div>
+                      <h4 className="text-white text-xl font-black">{item.title}</h4>
+                    </div>
+                    <p className="text-[#B0B0B0] text-base leading-relaxed pl-14">{item.desc}</p>
                   </div>
-                  <p className="text-[#B0B0B0] text-base leading-relaxed pl-14">{item.desc}</p>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
           {/* Row 2: Calendar - Nudge Note Style */}
           <div className="bg-gradient-to-r from-[#242424] to-[#95B1FF]/20 rounded-2xl p-4 border border-white/5 flex items-center justify-between shadow-lg group hover:border-[#95B1FF]/30 transition-colors cursor-pointer">
@@ -590,12 +582,12 @@ const App = () => {
                 <Calendar size={24} className="text-[#95B1FF]" />
               </div>
               <div>
-                <h4 className="text-white font-bold text-md mb-1">新功能：美股行事曆</h4>
-                <p className="text-[#afafaf] text-sm">掌握關鍵財報與經濟數據發布日</p>
+                <h4 className="text-white font-bold text-md mb-1">{t.calendar.nudgeTitle}</h4>
+                <p className="text-[#afafaf] text-sm">{t.calendar.nudgeDesc}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 pl-2">
-              <span className="text-[#FFD700] text-[10px] font-bold uppercase tracking-wider bg-[#FFD700]/10 px-2 py-1 rounded-full whitespace-nowrap">即將發布</span>
+              <span className="text-[#FFD700] text-[10px] font-bold uppercase tracking-wider bg-[#FFD700]/10 px-2 py-1 rounded-full whitespace-nowrap">{t.calendar.comingSoon}</span>
             </div>
           </div>
           {/* New Section: 3 Feature Cards */}
@@ -603,30 +595,30 @@ const App = () => {
             <div className="flex items-center gap-2 mb-4 px-2 opacity-80">
               <h3 className="text-xl font-black text-white py-3 flex items-center gap-3">
                 <AlarmClock size={32} color={colors.primary} />
-                APP 每週更新，不錯過任何總經時事</h3>
+                {t.calendar.title3}</h3>
             </div>
 
             <div className="space-y-4">
               {/* Row 1: Updates & Reports */}
               <div className="grid grid-cols-2 gap-4">
-                {[
-                  { title: '美股盤勢整理', sub: '每週二、四更新', img: 'stock_post.png' },
-                  { title: '美股趨勢剖析', sub: '每週五發布', img: 'stock_report.png' }
-                ].map((card, i) => (
-                  <div key={i} className="bg-[#242424] rounded-[24px] overflow-hidden border border-white/5 shadow-xl flex flex-col group">
-                    <div className="h-28 overflow-hidden relative">
-                      <img
-                        src={`${import.meta.env.BASE_URL}images/${card.img}`}
-                        alt={card.title}
-                        className="w-full h-full object-cover object-top opacity-90 group-hover:scale-105 transition-transform duration-500"
-                      />
+                {t.calendar.updates.map((card, i) => {
+                  const imgs = ['stock_post.png', 'stock_report.png'];
+                  return (
+                    <div key={i} className="bg-[#242424] rounded-[24px] overflow-hidden border border-white/5 shadow-xl flex flex-col group">
+                      <div className="h-28 overflow-hidden relative">
+                        <img
+                          src={`${import.meta.env.BASE_URL}images/${imgs[i]}`}
+                          alt={card.title}
+                          className="w-full h-full object-cover object-top opacity-90 group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col justify-center bg-[#242424] relative z-20">
+                        <h4 className="text-white font-bold text-md mb-1 leading-tight">{card.title}</h4>
+                        <p className="text-[#95B1FF] text-[14px] uppercase tracking-wide">{card.sub}</p>
+                      </div>
                     </div>
-                    <div className="p-4 flex-1 flex flex-col justify-center bg-[#242424] relative z-20">
-                      <h4 className="text-white font-bold text-md mb-1 leading-tight">{card.title}</h4>
-                      <p className="text-[#95B1FF] text-[14px] uppercase tracking-wide">{card.sub}</p>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
 
@@ -646,7 +638,7 @@ const App = () => {
           <div className="fade-in mt-6">
             <h2 className="text-2xl font-black text-white mb-4 flex items-center gap-2">
               <Gift size={24} className="text-[#FF69B4]" />
-              年度寵粉｜分享領直播券
+              {t.campaign.title}
             </h2>
           </div>
 
@@ -656,9 +648,9 @@ const App = () => {
             </div>
 
             <div className="relative z-10 mb-4">
-              <p className="text-white text-lg font-black mb-1">完成任務領 2 月語音直播券</p>
+              <p className="text-white text-lg font-black mb-1">{t.campaign.subtitle}</p>
               <p className="text-[#B0B0B0] text-sm leading-relaxed">
-                1月31前，分享以下內容至社團大廳，即刻開通權限
+                {t.campaign.desc}
               </p>
             </div>
 
@@ -668,7 +660,7 @@ const App = () => {
                   <Camera size={16} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-md">1. 你的 Beta 值與截圖</h4>
+                  <h4 className="text-white font-bold text-md">{t.campaign.task1}</h4>
                 </div>
               </div>
 
@@ -677,15 +669,15 @@ const App = () => {
                   <MessageSquare size={16} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-md">2. 2026 最期待的功能 😍</h4>
+                  <h4 className="text-white font-bold text-md">{t.campaign.task2}</h4>
                 </div>
 
               </div>
-              <p className='text-sm text-[#afafaf] pb-1'>💡 許願小靈感：目標 Beta 區間自動提醒、持倉風險體檢、AI個股分析...任君許願!</p>
+              <p className='text-sm text-[#afafaf] pb-1'>{t.campaign.hint}</p>
 
             </div>
 
-            <div className="mb-6 group text-center">
+            <div className="mb-6 pb-6 group text-center">
               <div className="inline-block relative">
                 <img
                   src={`${import.meta.env.BASE_URL}images/club_example.png`}
@@ -695,7 +687,7 @@ const App = () => {
                 />
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
                   <Share2 size={10} className="text-[#FF69B4]" />
-                  <span className="text-white text-[10px] whitespace-nowrap">點擊預覽範例</span>
+                  <span className="text-white text-[10px] whitespace-nowrap">{t.campaign.preview}</span>
                 </div>
               </div>
             </div>
@@ -706,7 +698,7 @@ const App = () => {
               <div className="relative w-full max-w-sm mx-auto filter drop-shadow-2xl">
 
                 {/* Top Section (Main) */}
-                <div className="bg-[#1a1a1a] rounded-t-[32px] p-6 pb-10 relative overflow-hidden border-t border-x border-white/10">
+                <div className="bg-[#1a1a1a] rounded-t-[32px] p-6 pb-5 relative overflow-hidden border-t border-x border-white/10">
                   {/* Corner Notches (Top Lefft/Right) */}
                   <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-[#141414] border-b border-r border-white/10 z-20"></div>
                   <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-[#141414] border-b border-l border-white/10 z-20"></div>
@@ -717,15 +709,9 @@ const App = () => {
 
                   <div className="flex flex-col items-center relative z-10">
                     <span className="bg-[#FFD700] text-black text-[12px] font-black px-4 py-1 rounded-sm uppercase tracking-widest mb-6 shadow-md transform -skew-x-12">
-                      分享即領
+                      {t.campaign.shareTag}
                     </span>
-
-                    <h4 className="text-white font-black text-4xl italic tracking-tighter leading-none mb-4 text-center drop-shadow-sm flex flex-col items-center">
-                      <span>VIP</span>
-                      <span className="text-[#FF69B4] text-5xl">PASS</span>
-                    </h4>
-
-                    <div className="w-full flex justify-center py-2 mb-2">
+                    <div className="w-full flex justify-center py-3 mb-2">
                       <div className="relative transform transition-transform group-hover:scale-110 duration-500">
                         <div className="absolute inset-0 bg-[#FF69B4] blur-2xl opacity-20 rounded-full animate-pulse"></div>
                         <Mic size={64} className="text-white relative z-10 drop-shadow-xl" />
@@ -733,8 +719,14 @@ const App = () => {
                       </div>
                     </div>
 
-                    <p className="text-[#B0B0B0] text-sm font-bold tracking-wide uppercase">2 月語音直播入場券</p>
+                    <h4 className="text-white font-black text-3xl italic tracking-tighter leading-none mb-4 text-center drop-shadow-sm flex flex-col items-center">
+                      <span>{t.campaign.ticketTitle}</span>
+                      <span className="text-[#FF69B4] text-4xl pt-2">{t.campaign.ticketSubtitle}</span>
+                    </h4>
+
+                    <p className="text-[#B0B0B0] text-sm font-bold tracking-wide uppercase">{t.campaign.ticketSession}</p>
                   </div>
+
                 </div>
 
                 {/* Deep Notch / Perforation Area */}
@@ -752,19 +744,28 @@ const App = () => {
                   <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
                   <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
 
-                  <button className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative">
+                  <button className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                     <ShieldCheck size={24} />
-                    立即計算 Beta 領券
+                    {t.campaign.cta}
                   </button>
-                  <div className="flex justify-center items-center text-[#555] text-[10px] font-bold uppercase tracking-[0.2em] mt-4">
-                    <span>ENDS 2025/01/31</span>
+
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleShare(); }}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 text-[#95B1FF] bg-[#95B1FF]/5 hover:bg-[#95B1FF]/15 rounded-xl transition-colors mb-4 border border-[#95B1FF]/20"
+                  >
+                    <Share2 size={16} />
+                    <span className="text-xs font-bold tracking-wider">{t.campaign.shareBtn}</span>
+                  </button>
+
+                  <div className="flex justify-center items-center text-[#afafaf] text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <span>{t.campaign.ends}</span>
                   </div>
                 </div>
 
               </div>
 
-              <p className="text-[#666] text-[10px] text-center mt-3">主辦單位保有最終詮釋權</p>
+              <p className="text-[#666] text-[10px] text-center mt-3">{t.campaign.copyright}</p>
             </div>
           </div>
         </div>
