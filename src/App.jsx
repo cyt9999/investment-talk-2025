@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   TrendingUp, Target, Calendar, Award, Rocket, ShieldCheck, Activity,
   Lock, ChevronRight, ArrowLeft, ArrowRight, Bell, Search, Crown,
-  PlayCircle, Mic, Zap, BarChart3, X, Gift, Share2, Camera, MessageSquare
+  PlayCircle, Mic, Zap, BarChart3, X, Gift, Share2, Camera, MessageSquare,
+  AlarmClock
 } from 'lucide-react';
 
 // --- DATA & HELPER COMPONENTS ---
@@ -533,9 +534,8 @@ const App = () => {
                   <circle cx="50" cy="50" r="45" fill="none" stroke={colors.primary} strokeWidth="8" strokeDasharray={`${(displayBeta / 1.5) * 282} 282`} style={{ transition: 'stroke-dasharray 1s ease-out' }} />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pt-8">
-                  <p className="text-[#B0B0B0] text-sm mb-1">Talk 君 Beta</p>
-                  <p className="text-white text-6xl font-black tracking-tighter">{displayBeta.toFixed(2)}</p>
-                  <p className="text-[#95B1FF] text-xs font-black mt-2 uppercase tracking-widest bg-[#95B1FF]/10 px-3 py-1 rounded-full">Defense Mode</p>
+                  <p className="text-[#B0B0B0] text-sm pb-5">Talk 君 Beta</p>
+                  <p className="text-white text-6xl font-black tracking-tighter pb-5 mb-3">{displayBeta.toFixed(2)}</p>
                 </div>
               </div>
 
@@ -547,13 +547,13 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+          <div className="fade-in">
+            <h3 className="text-xl font-black text-white py-3 flex items-center gap-3">
               <Activity size={32} color={colors.primary} />
               2026，從「盈餘驅動」轉向「政策驅動」
-            </h2>
+            </h3>
           </div>
-          <div className="space-y-10">
+          <div className="space-y-10 mt-6">
             {[
               { id: 1, title: '聯準會主席變更', desc: '新舊交接期的政策連續性與不確定性將是核心。', img: 'https://images.pexels.com/photos/2862155/pexels-photo-2862155.jpeg' },
               { id: 2, title: '失業率與軟著陸', desc: '正式驗證美國經濟是否能在高利率下軟著陸。', img: 'https://images.pexels.com/photos/52608/pexels-photo-52608.jpeg' },
@@ -575,8 +575,9 @@ const App = () => {
           {/* New Section: 3 Feature Cards */}
           <div className="mt-12 slide-up" style={{ animationDelay: '0.5s' }}>
             <div className="flex items-center gap-2 mb-4 px-2 opacity-80">
-              <div className="w-1 h-4 bg-[#95B1FF] rounded-full"></div>
-              <h3 className="text-white font-bold text-lg tracking-wide">APP 每週更新，不在錯過任何重要總經時事</h3>
+              <h3 className="text-xl font-black text-white py-3 flex items-center gap-3">
+                <AlarmClock size={32} color={colors.primary} />
+                APP 每週更新，不錯過任何總經時事</h3>
             </div>
 
             <div className="space-y-4">
