@@ -365,9 +365,11 @@ const App = () => {
               )
             })}
           </div>
-          <div
-            className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99] group"
-            onClick={() => window.open('https://www.cmoney.tw/r/245/ksg7i8', '_blank')}
+          <a
+            href="https://www.cmoney.tw/r/245/ksg7i8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99] group"
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-[#95B1FF]/20 rounded-lg group-hover:bg-[#95B1FF]/30 transition-colors">
@@ -382,9 +384,13 @@ const App = () => {
               src={`${import.meta.env.BASE_URL}images/stock_holding.png`}
               alt="Holding List"
               className="w-full h-auto rounded-xl border border-white/10 opacity-90 hover:opacity-100 transition-opacity cursor-pointer hover:shadow-lg"
-              onClick={(e) => { e.stopPropagation(); setSelectedImage(`${import.meta.env.BASE_URL}images/stock_holding.png`); }}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent link navigation
+                e.stopPropagation();
+                setSelectedImage(`${import.meta.env.BASE_URL}images/stock_holding.png`);
+              }}
             />
-          </div>
+          </a>
         </div>
       )
     },
@@ -525,9 +531,11 @@ const App = () => {
               </h2>
             </div>
 
-            <div
-              className="bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99]"
-              onClick={() => window.open('https://www.cmoney.tw/r/245/ksg7i8', '_blank')}
+            <a
+              href="https://www.cmoney.tw/r/245/ksg7i8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99]"
             >
               <div className="flex flex-col gap-4">
                 <div className="flex items-end justify-between">
@@ -561,7 +569,7 @@ const App = () => {
                   <p className="text-[#afafaf] text-sm font-medium">{t.calendar.whisper} <ArrowRight size={12} className="inline" /></p>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
           <div className="fade-in">
             <h3 className="text-xl font-bold text-white py-3 flex items-center gap-3">
@@ -790,14 +798,16 @@ const App = () => {
                   <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
                   <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
 
-                  <button
-                    onClick={() => window.open('https://www.cmoney.tw/r/245/rb8xim', '_blank')}
+                  <a
+                    href="https://www.cmoney.tw/r/245/rb8xim"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                     <ShieldCheck size={24} />
                     {t.campaign.cta}
-                  </button>
+                  </a>
 
                   <button
                     onClick={(e) => { e.stopPropagation(); handleShare(); }}
@@ -833,6 +843,13 @@ const App = () => {
           <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
         ))}
       </div>
+
+      <button
+        onClick={handleShare}
+        className="fixed top-6 right-6 z-[60] p-2.5 bg-[#1a1a1a]/40 backdrop-blur-md border border-white/10 rounded-full text-white shadow-lg active:scale-95 hover:bg-white/10 transition-all"
+      >
+        <Share2 size={20} />
+      </button>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-32 custom-scrollbar relative">
         <div key={activeScreen} className="min-h-full">
