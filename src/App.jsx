@@ -264,13 +264,13 @@ const App = () => {
                 onClick={() => setLanguage('TC')}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'TC' ? 'bg-[#95B1FF] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
               >
-                繁
+                繁中
               </button>
               <button
                 onClick={() => setLanguage('SC')}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'SC' ? 'bg-[#ff95b1] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
               >
-                简
+                简中
               </button>
             </div>
           </div>
@@ -313,50 +313,12 @@ const App = () => {
       )
     },
 
-    // 2. Trajectory
-    {
-      id: 'trajectory',
-      content: (
-        <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
-              <Calendar size={32} color={colors.primary} />
-              {t.trajectory.title}
-            </h2>
-          </div>
-          <div className="space-y-12 relative">
-            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
-            {t.trajectory.items.map((item, idx) => {
-              // Map colors based on index to preserve design
-              const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
-              const color = itemColors[idx] || colors.primary;
-
-              return (
-                <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                  <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
-                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                  </div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <p className="text-sm font-black" style={{ color: color }}>{item.date}</p>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
-                  </div>
-                  <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
-                  <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
-                </div>
-              )
-            })}
-          </div>
-
-        </div>
-      )
-    },
-
-    // 3. Trading (FIXED: ImageViewer + Full Width Readability)
+    // 2. Trading (FIXED: ImageViewer + Full Width Readability)
     {
       id: 'trading',
       content: (
         <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6">
+          <div className="fade-in my-6">
             <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
               {t.trading.title}
@@ -393,23 +355,64 @@ const App = () => {
               )
             })}
           </div>
-          <div className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg">
+          <div
+            className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99] group"
+            onClick={() => window.open('https://www.cmoney.tw/app?uuids=20000001&int-main_tab_index=1', '_blank')}
+          >
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-[#95B1FF]/20 rounded-lg">
+              <div className="p-2 bg-[#95B1FF]/20 rounded-lg group-hover:bg-[#95B1FF]/30 transition-colors">
                 <BarChart3 size={20} className="text-[#95B1FF]" />
               </div>
               <div>
                 <p className="text-white font-bold text-sm">{t.trading.holdingTitle}</p>
-                <p className="text-[#B0B0B0] text-xs">{t.trading.holdingDesc}</p>
+                <p className="text-[#B0B0B0] text-xs flex items-center gap-1 group-hover:text-[#95B1FF] transition-colors">{t.trading.holdingDesc} <ArrowRight size={12} /></p>
               </div>
             </div>
             <img
               src={`${import.meta.env.BASE_URL}images/stock_holding.png`}
               alt="Holding List"
-              className="w-full h-auto rounded-xl border border-white/10 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
-              onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/stock_holding.png`)}
+              className="w-full h-auto rounded-xl border border-white/10 opacity-90 hover:opacity-100 transition-opacity cursor-pointer hover:shadow-lg"
+              onClick={(e) => { e.stopPropagation(); setSelectedImage(`${import.meta.env.BASE_URL}images/stock_holding.png`); }}
             />
           </div>
+        </div>
+      )
+    },
+
+    // 3. Trajectory
+    {
+      id: 'trajectory',
+      content: (
+        <div className="flex flex-col min-h-full pb-10">
+          <div className="fade-in mt-6">
+            <h2 className="text-3xl font-black text-white flex items-center gap-3 mb-3">
+              <Calendar size={32} color={colors.primary} />
+              {t.trajectory.title}
+            </h2>
+          </div>
+          <div className="space-y-12 relative">
+            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
+            {t.trajectory.items.map((item, idx) => {
+              // Map colors based on index to preserve design
+              const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
+              const color = itemColors[idx] || colors.primary;
+
+              return (
+                <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                  <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <p className="text-sm font-black" style={{ color: color }}>{item.date}</p>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
+                  </div>
+                  <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
+                  <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
+                </div>
+              )
+            })}
+          </div>
+
         </div>
       )
     },
@@ -419,8 +422,8 @@ const App = () => {
       id: 'app-iteration',
       content: (
         <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6 mb-4">
-            <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3 mb-10">
+          <div className="fade-in my-6">
+            <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
               <Rocket size={32} className="text-[#95B1FF]" />
               {t.appIteration.title}
             </h2>
@@ -504,15 +507,18 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           {/* --- MOVED: Beta Value & CTA --- */}
-          <div className="mt-4 pt-8 border-t border-white/10">
-            <div className="fade-in mt-6">
-              <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 pb-3">
+          <div>
+            <div className="fade-in my-6">
+              <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
                 <ShieldCheck size={32} color={colors.primary} />
                 {t.calendar.title1}
               </h2>
             </div>
 
-            <div className="bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up">
+            <div
+              className="bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99]"
+              onClick={() => window.open('https://www.cmoney.tw/app?uuids=20000001&int-main_tab_index=1', '_blank')}
+            >
               <div className="flex flex-col gap-4">
                 <div className="flex items-end justify-between">
                   <div>
@@ -542,7 +548,7 @@ const App = () => {
 
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-md">🤫</span>
-                  <p className="text-[#afafaf] text-sm font-medium">{t.calendar.whisper}</p>
+                  <p className="text-[#afafaf] text-sm font-medium">{t.calendar.whisper} <ArrowRight size={12} className="inline" /></p>
                 </div>
               </div>
             </div>
@@ -565,9 +571,9 @@ const App = () => {
                   <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${imgs[idx]})` }} />
                   <div className="absolute inset-0 bg-black/55" />
                   <div className="relative z-10 p-4">
-                    <div className="flex items-center gap-4 mb-1">
+                    <div className="flex items-center gap-3 mb-1">
                       <div className="w-10 h-10 rounded-2xl bg-[#95B1FF] text-black font-bold flex items-center justify-center">{item.id}</div>
-                      <h4 className="text-white text-xl font-black">{item.title}</h4>
+                      <h4 className="text-white text-xl font-bold">{item.title}</h4>
                     </div>
                     <p className="text-[#B0B0B0] text-base leading-relaxed pl-14">{item.desc}</p>
                   </div>
@@ -744,7 +750,10 @@ const App = () => {
                   <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
                   <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
 
-                  <button className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3">
+                  <button
+                    onClick={() => window.open('https://www.cmoney.tw/app?uuids=20000001&int-main_tab_index=3&int-boardIndex=0&long-stateBoardId=10918', '_blank')}
+                    className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3"
+                  >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                     <ShieldCheck size={24} />
                     {t.campaign.cta}
