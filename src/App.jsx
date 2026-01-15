@@ -527,7 +527,7 @@ const App = () => {
 
             <div
               className="bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99]"
-              onClick={() => window.open('https://www.cmoney.tw/app?uuids=20000001&int-main_tab_index=1', '_blank')}
+              onClick={() => window.open('https://www.cmoney.tw/r/245/ksg7i8', '_blank')}
             >
               <div className="flex flex-col gap-4">
                 <div className="flex items-end justify-between">
@@ -655,7 +655,7 @@ const App = () => {
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#95B1FF] rounded-full blur-[100px] opacity-10 animate-pulse pointer-events-none"></div>
 
             <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
-              <p className="text-[#95B1FF] text-2xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '0s', animationDuration: '3s' }}>
+              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '0s', animationDuration: '3s' }}>
                 {t.story.p1}
               </p>
             </div>
@@ -667,7 +667,7 @@ const App = () => {
             </div>
 
             <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
-              <p className="text-[#95B1FF] text-xl font-medium leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '5s', animationDuration: '3s' }}>
+              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '5s', animationDuration: '3s' }}>
                 {t.story.p3}
               </p>
             </div>

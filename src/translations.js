@@ -20,7 +20,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "這一年，我做了哪些對的決策？",
+            title: "50% 的背後，我做對了什麼？",
             records: [
                 {
                     code: 'GE', name: '奇異航太', roi: '+139.1%',
@@ -152,7 +152,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "这一年，我做了哪些对的决策？",
+            title: "50% 的背后，我做对了什么？",
             records: [
                 {
                     code: 'GE', name: '通用电气航空', roi: '+139.1%',
