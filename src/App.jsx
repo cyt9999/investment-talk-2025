@@ -231,6 +231,16 @@ const App = () => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [activeScreen]);
 
+  // Auto-advance for Story Transition (Screen 5)
+  useEffect(() => {
+    if (activeScreen === 5) {
+      const timer = setTimeout(() => {
+        nextScreen();
+      }, 7500);
+      return () => clearTimeout(timer);
+    }
+  }, [activeScreen]);
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -357,7 +367,7 @@ const App = () => {
           </div>
           <div
             className="mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99] group"
-            onClick={() => window.open('https://www.cmoney.tw/app?uuids=20000001&int-main_tab_index=1', '_blank')}
+            onClick={() => window.open('https://www.cmoney.tw/r/245/ksg7i8', '_blank')}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-[#95B1FF]/20 rounded-lg group-hover:bg-[#95B1FF]/30 transition-colors">
@@ -636,6 +646,36 @@ const App = () => {
       )
     },
 
+    // 5. Story Transition
+    {
+      id: 'story-transition',
+      content: (
+        <div className="flex flex-col h-full justify-center items-center px-6 pb-20 fade-in text-center">
+          <div className="relative w-full max-w-lg h-40">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#95B1FF] rounded-full blur-[100px] opacity-10 animate-pulse pointer-events-none"></div>
+
+            <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
+              <p className="text-[#95B1FF] text-2xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '0s', animationDuration: '3s' }}>
+                {t.story.p1}
+              </p>
+            </div>
+
+            <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
+              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '2.5s', animationDuration: '2.5s' }}>
+                {t.story.p2}
+              </p>
+            </div>
+
+            <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
+              <p className="text-[#95B1FF] text-xl font-medium leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '5s', animationDuration: '3s' }}>
+                {t.story.p3}
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    },
+
     // 6. Campaign Page
     {
       id: 'campaign',
@@ -751,7 +791,7 @@ const App = () => {
                   <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
 
                   <button
-                    onClick={() => window.open('https://www.cmoney.tw/app?uuids=20000001&int-main_tab_index=3&int-boardIndex=0&long-stateBoardId=10918', '_blank')}
+                    onClick={() => window.open('https://www.cmoney.tw/r/245/rb8xim', '_blank')}
                     className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>

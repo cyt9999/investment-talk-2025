@@ -4,14 +4,14 @@ export const translations = {
             badge: "2025 年度回顧",
             titlePrefix: "超越大盤的",
             titleMain: "邏輯勝利",
-            description: "+50.8% 不是終點，而是 5 次關鍵進化的結果。",
+            description: "+50.8% 不是終點，而是我們一起寫下的成長故事。",
             returnLabel: "Talk 君年度回報",
             sp500Label: "vs S&P 500",
             disclaimer: "*白色實線為Talk君淨值，灰色虛線為同期 S&P 500 表現，績效統計自 2025/05/31 起算，基於APP內實際持倉紀錄計算區間累計回報。過往表現不保證未來收益，請自行評估投資風險。",
             months: ["May", "Jul", "Sep", "Nov", "Dec"]
         },
         trajectory: {
-            title: "時機抓對了 執行力讓數字說話",
+            title: "回頭看，那些我們並肩走過的重要時刻",
             items: [
                 { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '多頭確立｜堅定不交籌碼，加倉 QQQ 與特斯拉' },
                 { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '策略性配置 30% SHY 短債觀望' },
@@ -20,7 +20,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "APP 實戰見證：全年持續升級的致勝引擎",
+            title: "這一年，我做了哪些對的決策？",
             records: [
                 {
                     code: 'GE', name: '奇異航太', roi: '+139.1%',
@@ -45,7 +45,7 @@ export const translations = {
             holdingDesc: "到「持倉清單」中看完整的持倉動態與即時價格"
         },
         appIteration: {
-            title: "2025 功能回顧：投資 Talk 君進化之路",
+            title: " 2025的每一次進化，都是為了更懂你的需要",
             items: [
                 {
                     date: 'MAY', year: '2025',
@@ -87,7 +87,7 @@ export const translations = {
             ]
         },
         calendar: {
-            title1: "宏觀巨變在即 APP功能讓你快一步",
+            title1: "面對未來的變局，讓我們繼續陪伴著你",
             betaLabel: "Talk君 Beta值",
             attackLabel: "進攻",
             whisper: "悄悄說：Talk君持倉清單的即時 Beta 值也上線囉",
@@ -105,6 +105,11 @@ export const translations = {
                 { title: '美股盤勢整理', sub: '每週二、四更新' },
                 { title: '美股趨勢剖析', sub: '每週五發布' }
             ]
+        },
+        story: {
+            p1: "謝謝你在 2025 年選擇了投資Talk君，讓我們有幸參與你的每一次決策。",
+            p2: "我們始終在思考，還能多為你做些什麼？",
+            p3: "為提供更好的體驗，我們想邀請你與我們分享，讓我們在 2026 繼續並肩作戰。"
         },
         campaign: {
             title: "年度寵粉｜分享領直播券",
@@ -131,14 +136,14 @@ export const translations = {
             badge: "2025 年度回顾",
             titlePrefix: "超越大盘的",
             titleMain: "逻辑胜利",
-            description: "+50.8% 不是终点，而是 5 次关键进化的结果。",
+            description: "+50.8% 不是终点，而是我们一起写下的成长故事。",
             returnLabel: "Talk 君年度回报",
             sp500Label: "vs S&P 500",
             disclaimer: "*白色实线为Talk君净值，灰色虚线为同期 S&P 500 表现，绩效统计自 2025/05/31 起算，基于APP内实际持仓纪录计算区间累计回报。过往表现不保证未来收益，请自行评估投资风险。",
             months: ["May", "Jul", "Sep", "Nov", "Dec"]
         },
         trajectory: {
-            title: "时机抓对了 执行力让数字说话",
+            title: "回头看，那些我们并肩走过的重要时刻",
             items: [
                 { date: '04/09', tag: '解放日', title: '关税风暴后：多头确立', desc: '多头确立｜坚定不交筹码，加仓 QQQ 与特斯拉' },
                 { date: '05/07', tag: '宏观定调', title: '美联储的耐心测试', desc: '策略性配置 30% SHY 短债观望' },
@@ -147,7 +152,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "APP 实战见证：全年持续升级的致胜引擎",
+            title: "这一年，我做了哪些对的决策？",
             records: [
                 {
                     code: 'GE', name: '通用电气航空', roi: '+139.1%',
@@ -172,7 +177,7 @@ export const translations = {
             holdingDesc: "到「持倉清單」中看完整的持倉動態與即時價格"
         },
         appIteration: {
-            title: "2025 功能回顾：投资 Talk 君进化之路",
+            title: "2025的每一次进化，都是为了更懂你的需要",
             items: [
                 {
                     date: 'MAY', year: '2025',
@@ -214,7 +219,7 @@ export const translations = {
             ]
         },
         calendar: {
-            title1: "宏观巨变在即 APP功能让你快一步",
+            title1: "面对未来的变局，让我们继续陪伴着你",
             betaLabel: "Talk君 Beta值",
             attackLabel: "进攻",
             whisper: "悄悄说：Talk君持仓清单的即时 Beta 值也上线啰",
@@ -232,6 +237,11 @@ export const translations = {
                 { title: '美股盘势整理', sub: '每周二、四更新' },
                 { title: '美股趋势剖析', sub: '每周五发布' }
             ]
+        },
+        story: {
+            p1: "谢谢你在 2025 年选择 投资Talk君 APP，让我们有幸参与你的每一次决策。",
+            p2: "我们始终在思考，还能多为你做些什么？",
+            p3: "为了带来更好的体验，我们想邀请你分享这份回忆，让我们在 2026 继续并肩作战。"
         },
         campaign: {
             title: "年度宠粉｜分享领直播券",
