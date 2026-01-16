@@ -6,6 +6,7 @@ import {
   AlarmClock, Globe
 } from 'lucide-react';
 import { translations } from './translations';
+import { initAnalytics, trackEvent, trackPageView } from './utils/analytics'; // Import Analytics
 
 // --- DATA & HELPER COMPONENTS ---
 
@@ -179,6 +180,16 @@ const App = () => {
   const [language, setLanguage] = useState('TC');
   const scrollRef = useRef(null);
 
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    const screenName = screens[activeScreen]?.id || `screen-${activeScreen}`;
+    trackPageView(screenName);
+    trackEvent('view_screen', { screen: screenName, screen_index: activeScreen });
+  }, [activeScreen]);
+
   const t = translations[language];
 
   const colors = {
@@ -242,6 +253,7 @@ const App = () => {
   }, [activeScreen]);
 
   const handleShare = async () => {
+    trackEvent('click_share');
     if (navigator.share) {
       try {
         await navigator.share({
@@ -271,13 +283,13 @@ const App = () => {
             {/* Language Toggle */}
             <div className="flex bg-[#282828] rounded-full p-1 border border-[#404040]">
               <button
-                onClick={() => setLanguage('TC')}
+                onClick={() => { setLanguage('TC'); trackEvent('change_language', { lang: 'TC' }); }}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'TC' ? 'bg-[#95B1FF] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
               >
                 繁中
               </button>
               <button
-                onClick={() => setLanguage('SC')}
+                onClick={() => { setLanguage('SC'); trackEvent('change_language', { lang: 'SC' }); }}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'SC' ? 'bg-[#ff95b1] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
               >
                 简中
@@ -355,7 +367,7 @@ const App = () => {
                   <img
                     src={imgSrc}
                     alt={stock.name}
-                    onClick={() => setSelectedImage(imgSrc)}
+                    onClick={() => { setSelectedImage(imgSrc); trackEvent('view_image', { src: imgSrc, type: 'stock_record' }); }}
                     className="w-full h-auto object-contain rounded-xl mb-4 border border-white/10 opacity-90 cursor-pointer hover:opacity-100 transition-opacity bg-black/20"
                   />
                   <p className="text-[#95B1FF] text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
@@ -370,6 +382,7 @@ const App = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="block mt-4 bg-[#242424] rounded-2xl p-4 border border-white/5 shadow-lg cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99] group"
+            onClick={() => trackEvent('click_external_link', { link: 'cmoney_holding' })}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-[#95B1FF]/20 rounded-lg group-hover:bg-[#95B1FF]/30 transition-colors">
@@ -536,6 +549,7 @@ const App = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="block bg-[#242424] rounded-[32px] p-6 border border-white/5 mb-8 shadow-2xl relative overflow-hidden slide-up cursor-pointer hover:border-[#95B1FF]/50 transition-all active:scale-[0.99]"
+              onClick={() => trackEvent('click_external_link', { link: 'cmoney_calendar' })}
             >
               <div className="flex flex-col gap-4">
                 <div className="flex items-end justify-between">
