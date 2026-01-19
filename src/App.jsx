@@ -16,7 +16,7 @@ const ImageViewer = ({ src, onClose }) => {
   if (!src) return null;
   return (
     <div
-      className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 animate-fade-in"
+      className="absolute inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
     >
       <button
@@ -217,15 +217,15 @@ const App = () => {
     {
       id: 'intro-story',
       content: (
-        <div className="flex flex-col h-full justify-center items-center px-6 pb-20 fade-in text-center relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#111827] to-[#000000]">
+        <div className="flex flex-col min-h-[100dvh] justify-center items-center px-6 pb-20 fade-in text-center relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#111827] to-[#000000]">
           {/* Ambient Light Orbs - Subtler & Cleaner */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none" >
             <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-          </div>
+          </div >
 
           {/* Language Selection Buttons - Appear after animation */}
-          <div className="absolute bottom-20 flex flex-col gap-8 z-50 fade-in opacity-0 items-center" style={{ animationDelay: '6.5s', animationFillMode: 'forwards' }}>
+          < div className="absolute bottom-100 flex flex-col gap-8 z-50 fade-in opacity-0 items-center" style={{ animationDelay: '6.5s', animationFillMode: 'forwards' }}>
             <p className="text-white/80 text-lg font-bold tracking-widest mb-3">請選擇您的語言</p>
             <button
               onClick={() => { setLanguage('TC'); trackEvent('change_language', { lang: 'TC' }); nextScreen(); }}
@@ -243,7 +243,7 @@ const App = () => {
               <span className="relative text-[#ff95b1] font-black text-lg tracking-widest">简体中文</span>
             </button>
 
-          </div>
+          </div >
 
           <div className="relative w-full max-w-lg h-60 flex items-center justify-center mt-20 z-10">
             {/* Group 1: 投資TALK君 / 2025 / 年度復盤 */}
@@ -280,11 +280,11 @@ const App = () => {
               setActiveScreen(screens.length - 1);
               trackEvent('skip_to_campaign');
             }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[60] text-white/30 hover:text-white/90 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-white/50 pb-1"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[60] text-white/30 hover:text-white/90 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-white/50 pb-1"
           >
             SKIP INTRO
           </button>
-        </div>
+        </div >
       )
     },
 
@@ -749,58 +749,59 @@ const App = () => {
   ];
 
   return (
-    <div
-      className="w-full h-[100dvh] bg-[#141414] text-[#E0E0E0] font-sans select-none overflow-hidden flex flex-col relative"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {activeScreen !== 0 && (
-        <div className="fixed top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
-          {screens.map((_, idx) => (
-            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
-          ))}
-        </div>
-      )}
-
-      <button
-        onClick={handleShare}
-        className="fixed top-6 right-6 z-[60] p-2.5 bg-[#1a1a1a]/40 backdrop-blur-md border border-white/10 rounded-full text-white shadow-lg active:scale-95 hover:bg-white/10 transition-all"
+    <div className="w-full h-[100dvh] bg-[#141414] flex justify-center overflow-hidden">
+      <div
+        className="w-full max-w-[480px] h-[100dvh] bg-[#141414] text-[#E0E0E0] font-sans select-none overflow-hidden flex flex-col relative shadow-2xl mx-auto"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
-        <Share2 size={20} />
-      </button>
+        {activeScreen !== 0 && (
+          <div className="absolute top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
+            {screens.map((_, idx) => (
+              <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
+            ))}
+          </div>
+        )}
 
-      <div ref={scrollRef} className={`flex-1 overflow-y-auto custom-scrollbar relative ${activeScreen === 0 ? 'p-0' : 'px-6 pt-20 pb-32'}`}>
-        <div key={activeScreen} className="min-h-full">
-          {screens[activeScreen].content}
-        </div>
-      </div>
+        <button
+          onClick={handleShare}
+          className="absolute top-6 right-6 z-[60] p-2.5 bg-[#1a1a1a]/40 backdrop-blur-md border border-white/10 rounded-full text-white shadow-lg active:scale-95 hover:bg-white/10 transition-all"
+        >
+          <Share2 size={20} />
+        </button>
 
-      {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
-
-      {activeScreen !== 0 && (
-        <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
-          <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
-            <button
-              onClick={prevScreen}
-              disabled={activeScreen === 0}
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white/10 text-white'}`}
-            >
-              <ArrowLeft size={20} />
-            </button>
-            <div className="w-px h-6 bg-white/10"></div>
-            <button
-              onClick={nextScreen}
-              disabled={activeScreen === screens.length - 1}
-              className={`h-12 px-6 rounded-full flex items-center gap-2 font-bold transition-all ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient text-white shadow-lg active:scale-95'}`}
-            >
-              <span className="text-sm">下一頁</span>
-              <ArrowRight size={18} />
-            </button>
+        <div ref={scrollRef} className={`flex-1 overflow-y-auto custom-scrollbar relative ${activeScreen === 0 ? 'p-0' : 'px-6 pt-20 pb-32'}`}>
+          <div key={activeScreen} className="min-h-full">
+            {screens[activeScreen].content}
           </div>
         </div>
-      )}
 
-      <style>{`
+        {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
+
+        {activeScreen !== 0 && (
+          <div className="absolute bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
+            <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
+              <button
+                onClick={prevScreen}
+                disabled={activeScreen === 0}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white/10 text-white'}`}
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <div className="w-px h-6 bg-white/10"></div>
+              <button
+                onClick={nextScreen}
+                disabled={activeScreen === screens.length - 1}
+                className={`h-12 px-6 rounded-full flex items-center gap-2 font-bold transition-all ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient text-white shadow-lg active:scale-95'}`}
+              >
+                <span className="text-sm">下一頁</span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <style>{`
         .bg-primary-gradient { background: linear-gradient(135deg, #95B1FF 0%, #346AFF 100%); }
         .custom-scrollbar::-webkit-scrollbar { width: 0px; }
         .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -846,6 +847,7 @@ const App = () => {
           animation: fadeIn 0.5s ease-out forwards 0.5s;
         }
       `}</style>
+      </div>
     </div>
   );
 };
