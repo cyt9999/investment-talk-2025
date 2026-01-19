@@ -11,7 +11,7 @@ export const translations = {
             months: ["May", "Jul", "Sep", "Nov", "Dec"]
         },
         trajectory: {
-            title: "回頭看，那些我們並肩走過的重要時刻",
+            title: "那些我們並肩走過的重要時刻",
             items: [
                 { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '多頭確立｜堅定不交籌碼，加倉 QQQ 與特斯拉' },
                 { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '策略性配置 30% SHY 短債觀望' },
@@ -20,7 +20,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "50% 的背後，我做對了什麼？",
+            title: "2025，我們做對了什麼？",
             records: [
                 {
                     code: 'GE', name: '奇異航太', roi: '+139.1%',
@@ -45,7 +45,7 @@ export const translations = {
             holdingDesc: "到「持倉清單」中看完整的持倉動態與即時價格"
         },
         appIteration: {
-            title: " 2025的每一次進化，都是為了更懂你的需要",
+            title: "每一次進化，都是為了更懂你的需要",
             items: [
                 {
                     date: 'MAY', year: '2025',
@@ -111,7 +111,7 @@ export const translations = {
             p2: "我們始終在思考，還能多為你做些什麼？",
             p3: "為提供更好的體驗，我們想邀請你與我們分享，讓我們在 2026 繼續並肩作戰。"
         },
-        campaign: {
+        campaign_free: {
             title: "2026，持續為你打造更好的工具",
             subtitle: "跟我們分享您的想法，完成任務領 2 月語音直播券",
             desc: "1月31前，分享以下內容至社團大廳，即刻開通權限",
@@ -129,6 +129,27 @@ export const translations = {
             copyright: "主辦單位保有最終詮釋權",
             shareTextTitle: "Talk君 2025 Wrapped",
             shareTextBody: "分享給你一個免費體驗算 Beta 風險值，現在還有送語音入場券活動"
+        },
+        campaign_paid: {
+            title: "2026，持續為你打造更好的工具",
+            subtitle: "分享就送Talk君問答 + 加碼抽權限",
+            desc: "你不只是使用者，更是決策者。分享回饋至社團大廳，除了專屬報告再抽 1 個月免費權限：",
+            task1: "1. 分享 2025 年最深刻的操作或是最愛的APP功能",
+            task2: "2. 留言：2026 你最期待的 APP 功能是什麼？",
+            hint: "💡 許願小靈感：目標 Beta 區間自動提醒、持倉風險體檢、AI個股分析...任君許願!",
+            preview: "點擊預覽範例",
+            shareTag: "分享禮",
+            // Multiple rewards support
+            rewards: [
+                { tag: "分享禮", title: "Talk君語音問答重點整理", subtitle: "Email 寄送", icon: "Mic" },
+                { tag: "加碼抽", title: "1 個月 APP 權限", subtitle: "15% 名額獲得", icon: "Crown" }
+            ],
+            cta: "1分鐘分享領好禮",
+            shareBtn: "分享給親朋好友一起領",
+            ends: "截止日： 1/31 23:59（美東）止",
+            copyright: "主辦單位保有最終詮釋權",
+            shareTextTitle: "Talk君 2025 Wrapped",
+            shareTextBody: "分享給你一個免費體驗算 Beta 風險值，現在還有送語音入場券活動"
         }
     },
     SC: {
@@ -143,7 +164,7 @@ export const translations = {
             months: ["May", "Jul", "Sep", "Nov", "Dec"]
         },
         trajectory: {
-            title: "回头看，那些我们并肩走过的重要时刻",
+            title: "那些我们并肩走过的重要时刻",
             items: [
                 { date: '04/09', tag: '解放日', title: '关税风暴后：多头确立', desc: '多头确立｜坚定不交筹码，加仓 QQQ 与特斯拉' },
                 { date: '05/07', tag: '宏观定调', title: '美联储的耐心测试', desc: '策略性配置 30% SHY 短债观望' },
@@ -152,7 +173,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "50% 的背后，我做对了什么？",
+            title: "2025，我们做对了什么？",
             records: [
                 {
                     code: 'GE', name: '通用电气航空', roi: '+139.1%',
@@ -177,7 +198,7 @@ export const translations = {
             holdingDesc: "到「持倉清單」中看完整的持倉動態與即時價格"
         },
         appIteration: {
-            title: "2025的每一次进化，都是为了更懂你的需要",
+            title: "每一次进化，都是为了更懂你的需要",
             items: [
                 {
                     date: 'MAY', year: '2025',
@@ -243,7 +264,26 @@ export const translations = {
             p2: "我们始终在思考，还能多为你做些什么？",
             p3: "为了带来更好的体验，我们想邀请你分享这份回忆，让我们在 2026 继续并肩作战。"
         },
-        campaign: {
+        campaign_free: {
+            title: "2026，持续为你打造更好的工具",
+            subtitle: "跟我们分享您的想法，完成任务领 2 月语音直播券",
+            desc: "1月31前，分享以下内容至社团大厅，即刻开通许可权",
+            task1: "1. 你的 Beta 值与截图",
+            task2: "2. 2026 最期待的功能 😍",
+            hint: "💡 许愿小灵感：目标 Beta 区间自动提醒、持仓风险体检、AI个股分析...任君许愿!",
+            preview: "点击预览范例",
+            shareTag: "分享即领",
+            ticketTitle: "语音直播",
+            ticketSubtitle: "2月入场券",
+            ticketSession: "2026/2月指定场次",
+            cta: "立即计算 Beta 领券",
+            shareBtn: "分享给亲朋好友一起领",
+            ends: "ENDS 2026/01/31",
+            copyright: "主办单位保有最终诠释权",
+            shareTextTitle: "Talk君 2025 Wrapped",
+            shareTextBody: "分享给你一个免费体验算 Beta 风险值，现在还有送语音入场券活动"
+        },
+        campaign_paid: {
             title: "2026，持续为你打造更好的工具",
             subtitle: "跟我们分享您的想法，完成任务领 2 月语音直播券",
             desc: "1月31前，分享以下内容至社团大厅，即刻开通许可权",

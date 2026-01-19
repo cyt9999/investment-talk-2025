@@ -7,69 +7,9 @@ import {
 } from 'lucide-react';
 import { translations } from './translations';
 import { initAnalytics, trackEvent, trackPageView } from './utils/analytics'; // Import Analytics
+import { useLocation } from 'react-router-dom';
 
-// --- DATA & HELPER COMPONENTS ---
-
-// ROI Data (Normalized: May 12 = 0%)
-const chartData = [
-  { date: "2025-05-31", talk: 35.73, sp500: 0.51 },
-  { date: "2025-06-30", talk: 38.3, sp500: 5.5 },
-  { date: "2025-07-30", talk: 39.2, sp500: 8.2 },
-  { date: "2025-08-25", talk: 42.4, sp500: 9.4 },
-  { date: "2025-09-22", talk: 56.9, sp500: 13.8 },
-  { date: "2025-10-27", talk: 58.9, sp500: 16.9 },
-  { date: "2025-11-28", talk: 52.9, sp500: 16.4 },
-  { date: "2025-12-31", talk: 50.8, sp500: 16.4 }
-];
-
-// Chart Component
-const ComparisonLineChart = ({ data }) => {
-  if (!data || data.length === 0) return null;
-
-  const allValues = data.flatMap(d => [d.talk, d.sp500]);
-  const max = Math.max(...allValues) * 1.1;
-  const min = Math.min(...allValues, 0);
-  const range = max - min || 1;
-
-  const getPoints = (key) => {
-    return data.map((d, i) => {
-      const x = (i / (data.length - 1)) * 100;
-      const y = 100 - ((d[key] - min) / range) * 100;
-      return { x, y, val: d[key] };
-    });
-  };
-
-  const talkPoints = getPoints('talk');
-  const spPoints = getPoints('sp500');
-
-  const toPath = (pts) => `M ${pts.map(p => `${p.x},${p.y}`).join(' L ')}`;
-  const toArea = (pts) => `M 0,100 L ${pts.map(p => `${p.x},${p.y}`).join(' L ')} L 100,100 Z`;
-
-  return (
-    <div className="w-full h-40 mt-6 relative select-none">
-      <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="talkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#95B1FF" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#95B1FF" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <line x1="0" y1="100" x2="100" y2="100" stroke="#404040" strokeWidth="0.5" vectorEffect="non-scaling-stroke" />
-        <path d={toPath(spPoints)} fill="none" stroke="#666" strokeWidth="1.5" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" className="opacity-50" />
-        <path d={toArea(talkPoints)} fill="url(#talkGradient)" className="animate-fade-in-delayed" />
-        <path d={toPath(talkPoints)} fill="none" stroke="#95B1FF" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-stroke drop-shadow-lg" />
-      </svg>
-      <div className="absolute inset-0 pointer-events-none">
-        {talkPoints.map((p, i) => (
-          (i === talkPoints.length - 1 || i % 4 === 0) && (
-            <div key={i} className="absolute w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#95B1FF] shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 animate-pop-in" style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${1 + i * 0.1}s` }} />
-          )
-        ))}
-        <div className="absolute w-2 h-2 rounded-full bg-[#666] transform -translate-x-1/2 -translate-y-1/2" style={{ left: '100%', top: `${spPoints[spPoints.length - 1].y}%` }} />
-      </div>
-    </div>
-  );
-}
+// --- HELPER COMPONENTS ---
 
 // Image Viewer Component
 const ImageViewer = ({ src, onClose }) => {
@@ -175,7 +115,7 @@ const App = () => {
   const [activeScreen, setActiveScreen] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [displayBeta, setDisplayBeta] = useState(0);
-  const [displayROI, setDisplayROI] = useState(0);
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [language, setLanguage] = useState('TC');
   const scrollRef = useRef(null);
@@ -190,7 +130,10 @@ const App = () => {
     trackEvent('view_screen', { screen: screenName, screen_index: activeScreen });
   }, [activeScreen]);
 
+  const location = useLocation();
+  const isPro = location.pathname.includes('/pro');
   const t = translations[language];
+  const campaignContent = isPro ? t.campaign_paid : t.campaign_free;
 
   const colors = {
     primary: '#95B1FF',
@@ -202,7 +145,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (activeScreen === 0) animateValue(0, 50.8, setDisplayROI, 1000);
     if (activeScreen === 4) animateValue(0, 1.22, setDisplayBeta, 1000);
   }, [activeScreen]);
 
@@ -242,7 +184,7 @@ const App = () => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [activeScreen]);
 
-  // Auto-advance for Story Transition (Screen 5)
+  // Auto-advance for Intro (Screen 0) and Story Transition (Screen 5)
   useEffect(() => {
     if (activeScreen === 5) {
       const timer = setTimeout(() => {
@@ -271,71 +213,121 @@ const App = () => {
   };
 
   const screens = [
-    // 1. Overall
+    // 1. Intro Story (REPLACED ROI)
     {
-      id: 'overall',
+      id: 'intro-story',
       content: (
-        <div className="flex flex-col min-h-full pb-10 fade-in">
-          <div className="mt-12 mb-6 flex justify-between items-start">
-            <span className="text-xs font-bold px-3 py-1.5 rounded-full border border-[#404040] text-white tracking-widest uppercase bg-[#282828] shadow-sm">
-              {t.overall.badge}
-            </span>
-            {/* Language Toggle */}
-            <div className="flex bg-[#282828] rounded-full p-1 border border-[#404040]">
-              <button
-                onClick={() => { setLanguage('TC'); trackEvent('change_language', { lang: 'TC' }); }}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'TC' ? 'bg-[#95B1FF] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
-              >
-                繁中
-              </button>
-              <button
-                onClick={() => { setLanguage('SC'); trackEvent('change_language', { lang: 'SC' }); }}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'SC' ? 'bg-[#ff95b1] text-[#141414]' : 'text-[#808080] hover:text-white'}`}
-              >
-                简中
-              </button>
-            </div>
+        <div className="flex flex-col h-full justify-center items-center px-6 pb-20 fade-in text-center relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#111827] to-[#000000]">
+          {/* Ambient Light Orbs - Subtler & Cleaner */}
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-2 text-white leading-tight">{t.overall.titlePrefix}</h1>
-          <h1 className="text-4xl md:text-5xl font-black mb-6" style={{ background: colors.primaryGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            {t.overall.titleMain}
-          </h1>
-          <p className="text-[#B0B0B0] text-sm md:text-base mb-8 leading-relaxed">{t.overall.description}</p>
 
-          <div className="bg-[#242424] rounded-[32px] p-6 md:p-8 mb-6 border border-white/5 relative overflow-hidden shadow-2xl scale-in">
-            <div className="absolute -top-10 -right-10 opacity-5">
-              <TrendingUp size={200} color={colors.primary} />
+          {/* Language Selection Buttons - Appear after animation */}
+          <div className="absolute bottom-20 flex flex-col gap-8 z-50 fade-in opacity-0 items-center" style={{ animationDelay: '6.5s', animationFillMode: 'forwards' }}>
+            <p className="text-white/80 text-lg font-bold tracking-widest mb-3">請選擇您的語言</p>
+            <button
+              onClick={() => { setLanguage('TC'); trackEvent('change_language', { lang: 'TC' }); nextScreen(); }}
+              className="group relative px-8 py-3 rounded-full bg-[#1a1a1a] border border-[#95B1FF]/30 overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(149,177,255,0.2)] hover:shadow-[0_0_30px_rgba(149,177,255,0.4)]"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-[#95B1FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative text-[#95B1FF] font-black text-lg tracking-widest">繁體中文</span>
+            </button>
+
+            <button
+              onClick={() => { setLanguage('SC'); trackEvent('change_language', { lang: 'SC' }); nextScreen(); }}
+              className="group relative px-8 py-3 rounded-full bg-[#1a1a1a] border border-[#ff95b1]/30 overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,149,177,0.2)] hover:shadow-[0_0_30px_rgba(255,149,177,0.4)]"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-[#ff95b1]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative text-[#ff95b1] font-black text-lg tracking-widest">简体中文</span>
+            </button>
+
+          </div>
+
+          <div className="relative w-full max-w-lg h-60 flex items-center justify-center mt-20 z-10">
+            {/* Group 1: 投資TALK君 / 2025 / 年度復盤 */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-white text-4xl md:text-5xl font-black uppercase tracking-widest clip-text drop-shadow-lg" style={{ animationDelay: '0.7s' }}>
+                投資TALK君
+              </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e2e2e2] to-[#999] text-6xl md:text-7xl font-black uppercase tracking-tighter clip-text my-2 drop-shadow-2xl" style={{ animationDelay: '0.6s' }}>
+                2025
+              </span>
+              <span className="text-[#95B1FF] text-4xl md:text-5xl font-black uppercase clip-text drop-shadow-[0_0_15px_rgba(149,177,255,0.3)]" style={{ animationDelay: '0.5s' }}>
+                {language === 'TC' ? '年度復盤' : '年度复盘'}
+              </span>
             </div>
-            <div className="relative z-10">
-              <div className="flex flex-col items-start mb-2">
-                <div>
-                  <p className="text-[#B0B0B0] text-sm font-medium mb-1">{t.overall.returnLabel}</p>
-                  <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-3">
-                    +{displayROI.toFixed(2)}%
-                  </h2>
-                </div>
-                <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 backdrop-blur-sm">
-                  <p className="text-[#666] text-xs font-bold uppercase">{t.overall.sp500Label}</p>
-                  <div className="w-px h-3 bg-[#404040]"></div>
-                  <h3 className="text-sm md:text-base font-bold text-[#808080] tracking-tight">
-                    +17.88%
-                  </h3>
-                </div>
-              </div>
-              <ComparisonLineChart data={chartData} />
-              <div className="flex justify-between text-[10px] text-[#666] mt-4 font-bold uppercase tracking-wider px-1">
-                {t.overall.months.map((m, i) => <span key={i}>{m}</span>)}
-              </div>
+
+            {/* Group 2: 準備好一起回顧 / 2025 / 了嗎? */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-white text-3xl md:text-4xl font-bold uppercase tracking-wide clip-text drop-shadow-lg" style={{ animationDelay: '4.2s' }}>
+                {language === 'TC' ? '準備好一起回顧' : '准备好一起回顾'}
+              </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e2e2e2] to-[#999] text-6xl md:text-7xl font-black uppercase tracking-tighter clip-text my-2 drop-shadow-2xl" style={{ animationDelay: '4.1s' }}>
+                2025
+              </span>
+              <span className="text-[#95B1FF] text-3xl md:text-4xl font-bold uppercase clip-text drop-shadow-[0_0_15px_rgba(149,177,255,0.3)]" style={{ animationDelay: '4.0s' }}>
+                {language === 'TC' ? '了嗎?' : '了吗?'}
+              </span>
             </div>
           </div>
-          <p className="text-[#fff] text-xs font-base text-center opacity-50">
-            {t.overall.disclaimer}
-          </p>
+
+          {/* Immediate Skip Button (Bottom) */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveScreen(screens.length - 1);
+              trackEvent('skip_to_campaign');
+            }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[60] text-white/30 hover:text-white/90 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-white/50 pb-1"
+          >
+            SKIP INTRO
+          </button>
         </div>
       )
     },
 
-    // 2. Trading (FIXED: ImageViewer + Full Width Readability)
+
+
+    // 2. Trajectory
+    {
+      id: 'trajectory',
+      content: (
+        <div className="flex flex-col min-h-full pb-10">
+          <div className="fade-in mt-6">
+            <h2 className="text-3xl font-black text-white flex items-center gap-3 mb-3">
+              <Calendar size={32} color={colors.primary} />
+              {t.trajectory.title}
+            </h2>
+          </div>
+          <div className="space-y-12 relative">
+            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
+            {t.trajectory.items.map((item, idx) => {
+              // Map colors based on index to preserve design
+              const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
+              const color = itemColors[idx] || colors.primary;
+
+              return (
+                <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                  <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <p className="text-sm font-black" style={{ color: color }}>{item.date}</p>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
+                  </div>
+                  <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
+                  <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
+                </div>
+              )
+            })}
+          </div>
+
+        </div>
+      )
+    },
+    // 3. Trading (FIXED: ImageViewer + Full Width Readability)
     {
       id: 'trading',
       content: (
@@ -404,44 +396,6 @@ const App = () => {
               }}
             />
           </a>
-        </div>
-      )
-    },
-
-    // 3. Trajectory
-    {
-      id: 'trajectory',
-      content: (
-        <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white flex items-center gap-3 mb-3">
-              <Calendar size={32} color={colors.primary} />
-              {t.trajectory.title}
-            </h2>
-          </div>
-          <div className="space-y-12 relative">
-            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
-            {t.trajectory.items.map((item, idx) => {
-              // Map colors based on index to preserve design
-              const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
-              const color = itemColors[idx] || colors.primary;
-
-              return (
-                <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
-                  <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
-                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                  </div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <p className="text-sm font-black" style={{ color: color }}>{item.date}</p>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#404040] text-white font-bold uppercase">{item.tag}</span>
-                  </div>
-                  <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
-                  <p className="text-[#B0B0B0] text-base leading-relaxed">{item.desc}</p>
-                </div>
-              )
-            })}
-          </div>
-
         </div>
       )
     },
@@ -703,10 +657,10 @@ const App = () => {
       id: 'campaign',
       content: (
         <div className="flex flex-col min-h-full pb-10">
-          <div className="fade-in mt-6">
-            <h2 className="text-2xl font-black text-white mb-4 flex items-center gap-2">
+          <div className="fade-in mt-6 pb-6">
+            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
               <Gift size={24} className="text-[#FF69B4]" />
-              {t.campaign.title}
+              {campaignContent.title}
             </h2>
           </div>
 
@@ -716,9 +670,9 @@ const App = () => {
             </div>
 
             <div className="relative z-10 mb-4">
-              <p className="text-white text-lg font-black mb-1">{t.campaign.subtitle}</p>
+              <p className="text-white text-lg font-black mb-1">{campaignContent.subtitle}</p>
               <p className="text-[#B0B0B0] text-sm leading-relaxed">
-                {t.campaign.desc}
+                {campaignContent.desc}
               </p>
             </div>
 
@@ -728,7 +682,7 @@ const App = () => {
                   <Camera size={16} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-md">{t.campaign.task1}</h4>
+                  <h4 className="text-white font-bold text-md">{campaignContent.task1}</h4>
                 </div>
               </div>
 
@@ -737,109 +691,140 @@ const App = () => {
                   <MessageSquare size={16} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-md">{t.campaign.task2}</h4>
+                  <h4 className="text-white font-bold text-md">{campaignContent.task2}</h4>
                 </div>
-
               </div>
-              <p className='text-sm text-[#afafaf] pb-1'>{t.campaign.hint}</p>
-
+              <p className='text-sm text-[#afafaf] pb-1'>{campaignContent.hint}</p>
             </div>
 
             <div className="mb-6 pb-6 group text-center">
               <div className="inline-block relative">
-                <img
-                  src={`${import.meta.env.BASE_URL}images/club_example.png`}
-                  alt="分享範例預覽"
-                  className="w-[60%] mx-auto h-auto rounded-lg border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity cursor-pointer shadow-lg group-hover:shadow-[#FF69B4]/20 group-hover:scale-105 duration-300"
-                  onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/club_example.png`)}
-                />
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
+                <div className="w-[45%] mx-auto h-32 overflow-hidden rounded-lg border border-white/20 shadow-lg group-hover:shadow-[#FF69B4]/20 group-hover:scale-105 transition-all duration-300">
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/club_example.png`}
+                    alt="分享範例預覽"
+                    className="w-full h-auto object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/club_example.png`)}
+                  />
+                </div>
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md z-10">
                   <Share2 size={10} className="text-[#FF69B4]" />
-                  <span className="text-white text-[10px] whitespace-nowrap">{t.campaign.preview}</span>
+                  <span className="text-white text-[10px] whitespace-nowrap">{campaignContent.preview}</span>
                 </div>
               </div>
             </div>
 
-            {/* Sexy Reward Ticket Section - REFINED SHAPE (Restored) */}
-            <div className="relative mt-auto group cursor-pointer mb-8 transform hover:-translate-y-1 transition-transform duration-300">
-              {/* Ticket Container */}
-              <div className="relative w-full max-w-sm mx-auto filter drop-shadow-2xl">
-
-                {/* Top Section (Main) */}
-                <div className="bg-[#1a1a1a] rounded-t-[32px] p-6 pb-5 relative overflow-hidden border-t border-x border-white/10">
-                  {/* Corner Notches (Top Lefft/Right) */}
-                  <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-[#141414] border-b border-r border-white/10 z-20"></div>
-                  <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-[#141414] border-b border-l border-white/10 z-20"></div>
-
-                  {/* Gradient Shine */}
-                  <div className="absolute top-0 right-0 w-[150%] h-full bg-gradient-to-l from-white/5 to-transparent skew-x-12 opacity-50 pointer-events-none"></div>
-                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#FF69B4] via-[#FFD700] to-[#FF69B4]"></div>
-
-                  <div className="flex flex-col items-center relative z-10">
-                    <span className="bg-[#FFD700] text-black text-[12px] font-black px-4 py-1 rounded-sm uppercase tracking-widest mb-6 shadow-md transform -skew-x-12">
-                      {t.campaign.shareTag}
-                    </span>
-                    <div className="w-full flex justify-center py-3 mb-2">
-                      <div className="relative transform transition-transform group-hover:scale-110 duration-500">
-                        <div className="absolute inset-0 bg-[#FF69B4] blur-2xl opacity-20 rounded-full animate-pulse"></div>
-                        <Mic size={64} className="text-white relative z-10 drop-shadow-xl" />
-                        <Crown size={32} className="text-[#FFD700] absolute -top-4 -right-2 z-20 rotate-[15deg] drop-shadow-lg" weight="fill" />
+            {/* CONDITIONAL LAYOUT: PAID vs FREE */}
+            {campaignContent.rewards ? (
+              // PAID VERSION: Dual Rewards + Main Share CTA
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  {campaignContent.rewards.map((reward, idx) => (
+                    <div key={idx} className="bg-[#1a1a1a] rounded-2xl p-4 border border-white/10 flex items-center gap-4 relative overflow-hidden group hover:border-[#FF69B4] transition-colors">
+                      {/* Icon */}
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#FF69B4]/20 to-[#FFD700]/10 flex items-center justify-center shrink-0 border border-white/5 relative">
+                        {reward.icon === 'Mic' ? (
+                          <Mic size={24} className="text-white" />
+                        ) : (
+                          <Crown size={24} className="text-[#FFD700]" weight="fill" />
+                        )}
+                      </div>
+                      {/* Texts */}
+                      <div className="flex-1">
+                        <span className="bg-[#FFD700] text-black text-[10px] font-black px-2 py-0.5 rounded-sm uppercase tracking-wider mb-1 inline-block">{reward.tag}</span>
+                        <h4 className="text-white font-bold text-base leading-tight">{reward.title}</h4>
+                        {reward.subtitle && <p className="text-[#95B1FF] text-xs font-medium mt-0.5">{reward.subtitle}</p>}
                       </div>
                     </div>
-
-                    <h4 className="text-white font-black text-3xl italic tracking-tighter leading-none mb-4 text-center drop-shadow-sm flex flex-col items-center">
-                      <span>{t.campaign.ticketTitle}</span>
-                      <span className="text-[#FF69B4] text-4xl pt-2">{t.campaign.ticketSubtitle}</span>
-                    </h4>
-
-                    <p className="text-[#B0B0B0] text-sm font-bold tracking-wide uppercase">{t.campaign.ticketSession}</p>
-                  </div>
-
+                  ))}
                 </div>
 
-                {/* Deep Notch / Perforation Area */}
-                <div className="relative h-6 bg-[#1a1a1a] border-x border-white/10 flex items-center mb-[-1px] z-10">
-                  {/* The Deep Side Notches */}
-                  <div className="absolute -left-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-r border-white/10 z-20 shadow-inner"></div>
-                  <div className="absolute -right-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-l border-white/10 z-20 shadow-inner"></div>
-                  {/* The Dashed Line */}
-                  <div className="w-full h-[2px] border-t-2 border-dashed border-[#444] mx-5 opacity-50"></div>
-                </div>
-
-                {/* Bottom Section (Stub) */}
-                <div className="bg-[#1a1a1a] rounded-b-[32px] p-6 pt-4 border-b border-x border-white/10 relative overflow-hidden flex flex-col items-center">
-                  {/* Corner Notches (Bottom Left/Right) */}
-                  <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
-                  <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
-
-                  <a
-                    href="https://www.cmoney.tw/r/245/rb8xim"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    <ShieldCheck size={24} />
-                    {t.campaign.cta}
-                  </a>
-
+                {/* Main Action for Paid */}
+                <div className="bg-[#1a1a1a] rounded-2xl p-5 border border-white/10 flex flex-col items-center">
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 text-[#95B1FF] bg-[#95B1FF]/5 hover:bg-[#95B1FF]/15 rounded-xl transition-colors mb-4 border border-[#95B1FF]/20"
+                    onClick={handleShare}
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-[#FF69B4] to-[#FF8C69] text-white font-black text-lg shadow-[0_4px_20px_rgba(255,105,180,0.4)] hover:shadow-[0_6px_25px_rgba(255,105,180,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-3"
                   >
-                    <Share2 size={16} />
-                    <span className="text-xs font-bold tracking-wider">{t.campaign.shareBtn}</span>
+                    <Zap size={20} className="fill-current animate-pulse" />
+                    {campaignContent.cta}
                   </button>
-
-                  <div className="flex justify-center items-center text-[#afafaf] text-[10px] font-bold uppercase tracking-[0.2em]">
-                    <span>{t.campaign.ends}</span>
+                  <div className="flex items-center gap-2 text-[#afafaf] text-[10px] font-bold uppercase tracking-widest">
+                    <span>{campaignContent.ends}</span>
                   </div>
                 </div>
-
               </div>
+            ) : (
+              // FREE VERSION: Single Ticket Layout
+              <div className="relative mt-auto group cursor-pointer mb-8 transform hover:-translate-y-1 transition-transform duration-300">
+                <div className="relative w-full max-w-sm mx-auto filter drop-shadow-2xl">
+                  {/* Top Section */}
+                  <div className="bg-[#1a1a1a] rounded-t-[32px] p-6 pb-5 relative overflow-hidden border-t border-x border-white/10">
+                    {/* Notches */}
+                    <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-[#141414] border-b border-r border-white/10 z-20"></div>
+                    <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-[#141414] border-b border-l border-white/10 z-20"></div>
+                    {/* Gradient */}
+                    <div className="absolute top-0 right-0 w-[150%] h-full bg-gradient-to-l from-white/5 to-transparent skew-x-12 opacity-50 pointer-events-none"></div>
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#FF69B4] via-[#FFD700] to-[#FF69B4]"></div>
 
-              <p className="text-[#666] text-[10px] text-center mt-3">{t.campaign.copyright}</p>
-            </div>
+                    <div className="flex flex-col items-center relative z-10">
+                      <span className="bg-[#FFD700] text-black text-[12px] font-black px-4 py-1 rounded-sm uppercase tracking-widest mb-6 shadow-md transform -skew-x-12">
+                        {campaignContent.shareTag}
+                      </span>
+                      <div className="w-full flex justify-center py-3 mb-2">
+                        <div className="relative transform transition-transform group-hover:scale-110 duration-500">
+                          <div className="absolute inset-0 bg-[#FF69B4] blur-2xl opacity-20 rounded-full animate-pulse"></div>
+                          <Mic size={64} className="text-white relative z-10 drop-shadow-xl" />
+                          <Crown size={32} className="text-[#FFD700] absolute -top-4 -right-2 z-20 rotate-[15deg] drop-shadow-lg" weight="fill" />
+                        </div>
+                      </div>
+                      <h4 className="text-white font-black text-3xl italic tracking-tighter leading-none mb-4 text-center drop-shadow-sm flex flex-col items-center">
+                        <span>{campaignContent.ticketTitle}</span>
+                        <span className="text-[#FF69B4] text-4xl pt-2">{campaignContent.ticketSubtitle}</span>
+                      </h4>
+                      <p className="text-[#B0B0B0] text-sm font-bold tracking-wide uppercase">{campaignContent.ticketSession}</p>
+                    </div>
+                  </div>
+
+                  {/* Perforation */}
+                  <div className="relative h-6 bg-[#1a1a1a] border-x border-white/10 flex items-center mb-[-1px] z-10">
+                    <div className="absolute -left-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-r border-white/10 z-20 shadow-inner"></div>
+                    <div className="absolute -right-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-l border-white/10 z-20 shadow-inner"></div>
+                    <div className="w-full h-px border-t-2 border-dashed border-[#404040]"></div>
+                  </div>
+
+                  {/* Bottom Section */}
+                  <div className="bg-[#1a1a1a] rounded-b-[32px] p-6 pt-4 border-b border-x border-white/10 relative overflow-hidden flex flex-col items-center">
+                    <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
+                    <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
+
+                    <a
+                      href="https://www.cmoney.tw/r/245/rb8xim"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                      <ShieldCheck size={24} />
+                      {campaignContent.cta}
+                    </a>
+
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleShare(); }}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 text-[#95B1FF] bg-[#95B1FF]/5 hover:bg-[#95B1FF]/15 rounded-xl transition-colors mb-4 border border-[#95B1FF]/20"
+                    >
+                      <Share2 size={16} />
+                      <span className="text-xs font-bold tracking-wider">{campaignContent.shareBtn}</span>
+                    </button>
+
+                    <div className="flex justify-center items-center text-[#afafaf] text-[10px] font-bold uppercase tracking-[0.2em]">
+                      <span>{campaignContent.ends}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <p className="text-[#666] text-[10px] text-center mt-3">{campaignContent.copyright}</p>
           </div>
         </div>
       )
@@ -852,11 +837,13 @@ const App = () => {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="fixed top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
-        {screens.map((_, idx) => (
-          <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
-        ))}
-      </div>
+      {activeScreen !== 0 && (
+        <div className="fixed top-0 left-0 right-0 z-50 pt-10 pb-6 bg-gradient-to-b from-[#141414] via-[#141414]/90 to-transparent flex justify-center gap-2.5 pointer-events-none">
+          {screens.map((_, idx) => (
+            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${activeScreen === idx ? 'w-10 bg-[#95B1FF]' : 'w-2.5 bg-[#404040]'}`} />
+          ))}
+        </div>
+      )}
 
       <button
         onClick={handleShare}
@@ -873,26 +860,28 @@ const App = () => {
 
       {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
 
-      <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
-        <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
-          <button
-            onClick={prevScreen}
-            disabled={activeScreen === 0}
-            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white/10 text-white'}`}
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="w-px h-6 bg-white/10"></div>
-          <button
-            onClick={nextScreen}
-            disabled={activeScreen === screens.length - 1}
-            className={`h-12 px-6 rounded-full flex items-center gap-2 font-bold transition-all ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient text-white shadow-lg active:scale-95'}`}
-          >
-            <span className="text-sm">下一頁</span>
-            <ArrowRight size={18} />
-          </button>
+      {activeScreen !== 0 && (
+        <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
+          <div className="bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-auto">
+            <button
+              onClick={prevScreen}
+              disabled={activeScreen === 0}
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${activeScreen === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white/10 text-white'}`}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="w-px h-6 bg-white/10"></div>
+            <button
+              onClick={nextScreen}
+              disabled={activeScreen === screens.length - 1}
+              className={`h-12 px-6 rounded-full flex items-center gap-2 font-bold transition-all ${activeScreen === screens.length - 1 ? 'opacity-20 pointer-events-none bg-[#242424]' : 'bg-primary-gradient text-white shadow-lg active:scale-95'}`}
+            >
+              <span className="text-sm">下一頁</span>
+              <ArrowRight size={18} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <style>{`
         .bg-primary-gradient { background: linear-gradient(135deg, #95B1FF 0%, #346AFF 100%); }
