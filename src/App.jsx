@@ -8,6 +8,7 @@ import {
 import { translations } from './translations';
 import { initAnalytics, trackEvent, trackPageView } from './utils/analytics'; // Import Analytics
 import { useLocation } from 'react-router-dom';
+import ScrollReveal from './components/ScrollReveal';
 
 // --- HELPER COMPONENTS ---
 
@@ -168,6 +169,57 @@ const App = () => {
     }, 16);
   };
 
+  // Auto-scroll for Trajectory screen (index 1)
+  useEffect(() => {
+    if (activeScreen === 1 && scrollRef.current) {
+      // Reset scroll to top first
+      scrollRef.current.scrollTop = 0;
+
+      const duration = 8000; // 8 seconds sync with animation
+      const start = performance.now();
+      const startScroll = 0;
+      const endScroll = scrollRef.current.scrollHeight - scrollRef.current.clientHeight;
+
+      // If content fits, no need to scroll
+      if (endScroll <= 0) return;
+
+      let animationFrameId;
+
+      const animateScroll = (currentTime) => {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Linear scroll to match linear line growth
+        scrollRef.current.scrollTop = startScroll + (endScroll * progress);
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(animateScroll);
+        }
+      };
+
+      // Small delay to ensure content is rendered and height is correct
+      const timeoutId = setTimeout(() => {
+        animationFrameId = requestAnimationFrame(animateScroll);
+      }, 100);
+
+      return () => {
+        cancelAnimationFrame(animationFrameId);
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [activeScreen]);
+
+  // Auto-advance for Trajectory (Screen 1) -> Trading (Screen 2)
+  // Animation duration is 8s, adding 2s buffer = 10s
+  useEffect(() => {
+    if (activeScreen === 1) {
+      const timer = setTimeout(() => {
+        nextScreen();
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeScreen]);
+
   const nextScreen = () => {
     if (activeScreen < screens.length - 1) setActiveScreen(activeScreen + 1);
   };
@@ -308,14 +360,30 @@ const App = () => {
             </h2>
           </div>
           <div className="space-y-12 relative">
-            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#95B1FF] to-transparent"></div>
+            {/* Timeline Vertical Line Container */}
+            <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-white/10 rounded-full overflow-hidden">
+              {/* Animated Fill Line */}
+              <div
+                className="absolute top-0 left-0 w-full bg-gradient-to-b from-[#95B1FF] to-[#95B1FF]"
+                style={{
+                  height: '100%',
+                  animation: 'growHeight 8s linear forwards',
+                  transformOrigin: 'top'
+                }}
+              ></div>
+            </div>
+
             {t.trajectory.items.map((item, idx) => {
               // Map colors based on index to preserve design
               const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
               const color = itemColors[idx] || colors.primary;
 
+              // Calculate delay based on 8s total duration
+              // Distribute items across the timeframe (e.g., 0.5s, 2.5s, 4.5s, 6.5s)
+              const delay = 0.5 + (idx * 2.0);
+
               return (
-                <div key={idx} className="relative pl-24 slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                <div key={idx} className="relative pl-24 opacity-0" style={{ animation: `zoomOutFadeIn 0.8s ease-out forwards ${delay}s` }}>
                   <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
                     <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
                   </div>
@@ -348,8 +416,12 @@ const App = () => {
             {t.trading.records.map((stock, idx) => {
               const imgs = ['GE.png', 'INTC.png', 'TSLA.png'];
               const imgSrc = `${import.meta.env.BASE_URL}images/${imgs[idx]}`;
+
+              // NOTE: Delays are removed in favor of ScrollReveal
+              // animationDelay style is also removed
+
               return (
-                <div key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl slide-up opacity-0" style={{ animationDelay: `${idx * 0.15}s`, animationFillMode: 'forwards' }}>
+                <ScrollReveal key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl">
                   <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <span className="text-sm px-3 py-1 rounded-xl bg-black text-[#95B1FF] font-black border border-white/10 uppercase tracking-widest">{stock.code}</span>
@@ -371,7 +443,8 @@ const App = () => {
                   <p className="text-[#95B1FF] text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
                     <Activity size={14} /> {stock.metric}
                   </p>
-                </div>
+                </ScrollReveal>
+
               )
             })}
           </div>
@@ -649,7 +722,7 @@ const App = () => {
             </div>
 
             <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
-              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '5s', animationDuration: '3s' }}>
+              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '5s', animationDuration: '4.5s' }}>
                 {t.story.p3}
               </p>
             </div>
