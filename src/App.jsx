@@ -111,6 +111,12 @@ const AutoFeatureCard = ({ item, onImageClick }) => {
 
 // --- MAIN APP COMPONENT ---
 
+const Toast = ({ message }) => (
+  <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-[#333]/90 text-white px-6 py-2 rounded-full backdrop-blur-md border border-white/20 shadow-2xl z-[70] animate-fade-in flex items-center gap-2 pointer-events-none">
+    <span className="text-sm font-bold tracking-wide">{message}</span>
+  </div>
+);
+
 const App = () => {
   const [activeScreen, setActiveScreen] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
@@ -199,8 +205,8 @@ const App = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: t.campaign.shareTextTitle,
-          text: t.campaign.shareTextBody,
+          title: campaignContent.shareTextTitle,
+          text: campaignContent.shareTextBody,
           url: window.location.href,
         });
       } catch (error) {
@@ -296,7 +302,7 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6">
-            <h2 className="text-3xl font-black text-white flex items-center gap-3 mb-3">
+            <h2 className="text-3xl font-bold text-white flex items-center gap-3 mb-3">
               <Calendar size={32} color={colors.primary} />
               {t.trajectory.title}
             </h2>
@@ -333,7 +339,7 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in my-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3 mb-10">
+            <h2 className="text-3xl font-bold text-white mb-3 flex items-center gap-3 mb-10">
               <Award size={32} color={colors.primary} />
               {t.trading.title}
             </h2>
@@ -406,7 +412,7 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in my-6">
-            <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
+            <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
               <Rocket size={32} className="text-[#95B1FF]" />
               {t.appIteration.title}
             </h2>
@@ -492,7 +498,7 @@ const App = () => {
           {/* --- MOVED: Beta Value & CTA --- */}
           <div>
             <div className="fade-in my-6">
-              <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+              <h2 className="text-3xl font-bold text-white mb-3 flex items-center gap-3">
                 <ShieldCheck size={32} color={colors.primary} />
                 {t.calendar.title1}
               </h2>
@@ -585,7 +591,7 @@ const App = () => {
           {/* New Section: 3 Feature Cards */}
           <div className="mt-12 slide-up" style={{ animationDelay: '0.5s' }}>
             <div className="flex items-center gap-2 mb-4 px-2 opacity-80">
-              <h3 className="text-xl font-black text-white py-3 flex items-center gap-3">
+              <h3 className="text-xl font-bold text-white py-3 flex items-center gap-3">
                 <AlarmClock size={32} color={colors.primary} />
                 {t.calendar.title3}</h3>
             </div>
@@ -631,13 +637,13 @@ const App = () => {
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#95B1FF] rounded-full blur-[100px] opacity-10 animate-pulse pointer-events-none"></div>
 
             <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
-              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '0s', animationDuration: '3s' }}>
+              <p className="text-[#95B1FF] text-3xl font-bold leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '0s', animationDuration: '3s' }}>
                 {t.story.p1}
               </p>
             </div>
 
             <div className="absolute inset-0 flex items-start justify-center pt-12 mt-6">
-              <p className="text-[#95B1FF] text-3xl font-black leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '2.5s', animationDuration: '2.5s' }}>
+              <p className="text-[#95B1FF] text-3xl font-bold leading-relaxed opacity-0 animate-fade-in-out" style={{ animationDelay: '2.5s', animationDuration: '2.5s' }}>
                 {t.story.p2}
               </p>
             </div>
@@ -658,7 +664,7 @@ const App = () => {
       content: (
         <div className="flex flex-col min-h-full pb-10">
           <div className="fade-in mt-6 pb-6">
-            <h2 className="text-3xl font-black text-white mb-3 flex items-center gap-3">
+            <h2 className="text-3xl font-bold text-white mb-3 flex items-center gap-3">
               <Gift size={24} className="text-[#FF69B4]" />
               {campaignContent.title}
             </h2>
@@ -701,13 +707,16 @@ const App = () => {
 
               {/* Main Action for Paid */}
               <div className="bg-[#1a1a1a] rounded-2xl p-5 border border-white/10 flex flex-col items-center">
-                <button
-                  onClick={handleShare}
+                <a
+                  href="https://www.cmoney.tw/r/245/oc8i7g"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('click_external_link', { link: 'campaign_paid_cta' })}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-[#FF69B4] to-[#FF8C69] text-white font-black text-lg shadow-[0_4px_20px_rgba(255,105,180,0.4)] hover:shadow-[0_6px_25px_rgba(255,105,180,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-3"
                 >
                   <Zap size={20} className="fill-current animate-pulse" />
                   {campaignContent.cta}
-                </button>
+                </a>
                 <div className="flex items-center gap-2 text-[#afafaf] text-[10px] font-bold uppercase tracking-widest">
                   <span>{campaignContent.ends}</span>
                 </div>
@@ -720,7 +729,7 @@ const App = () => {
                 href="https://www.cmoney.tw/r/245/rb8xim"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-lg hover:shadow-[#FF69B4]/40 active:scale-95 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
+                className="w-full py-4 rounded-2xl font-bold text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-lg hover:shadow-[#FF69B4]/40 active:scale-95 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                 <ShieldCheck size={24} />
