@@ -664,169 +664,86 @@ const App = () => {
             </h2>
           </div>
 
-          <div className="bg-[#2a2a2a] rounded-[24px] p-5 border border-white/5 shadow-2xl relative overflow-hidden scale-in">
-            <div className="absolute top-0 right-0 p-3 opacity-5">
-              <Gift size={80} className="text-[#FF69B4]" />
-            </div>
-
-            <div className="relative z-10 mb-4">
-              <p className="text-white text-lg font-black mb-1">{campaignContent.subtitle}</p>
-              <p className="text-[#B0B0B0] text-sm leading-relaxed">
-                {campaignContent.desc}
-              </p>
-            </div>
-
-            <div className="space-y-2 relative z-10 mb-4">
-              <div className="bg-[#141414]/80 backdrop-blur-sm rounded-xl p-3 border border-white/10 flex gap-3 items-center">
-                <div className="bg-[#95B1FF]/20 p-2 rounded-full text-[#95B1FF] shrink-0">
-                  <Camera size={16} />
-                </div>
-                <div>
-                  <h4 className="text-white font-bold text-md">{campaignContent.task1}</h4>
-                </div>
-              </div>
-
-              <div className="bg-[#141414]/80 backdrop-blur-sm rounded-xl p-3 border border-white/10 flex gap-3 items-center">
-                <div className="bg-[#95B1FF]/20 p-2 rounded-full text-[#95B1FF] shrink-0">
-                  <MessageSquare size={16} />
-                </div>
-                <div>
-                  <h4 className="text-white font-bold text-md">{campaignContent.task2}</h4>
-                </div>
-              </div>
-              <p className='text-sm text-[#afafaf] pb-1'>{campaignContent.hint}</p>
-            </div>
-
-            <div className="mb-6 pb-6 group text-center">
-              <div className="inline-block relative">
-                <div className="w-[45%] mx-auto h-32 overflow-hidden rounded-lg border border-white/20 shadow-lg group-hover:shadow-[#FF69B4]/20 group-hover:scale-105 transition-all duration-300">
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/club_example.png`}
-                    alt="分享範例預覽"
-                    className="w-full h-auto object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity cursor-pointer"
-                    onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/club_example.png`)}
-                  />
-                </div>
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md z-10">
-                  <Share2 size={10} className="text-[#FF69B4]" />
-                  <span className="text-white text-[10px] whitespace-nowrap">{campaignContent.preview}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* CONDITIONAL LAYOUT: PAID vs FREE */}
-            {campaignContent.rewards ? (
-              // PAID VERSION: Dual Rewards + Main Share CTA
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  {campaignContent.rewards.map((reward, idx) => (
-                    <div key={idx} className="bg-[#1a1a1a] rounded-2xl p-4 border border-white/10 flex items-center gap-4 relative overflow-hidden group hover:border-[#FF69B4] transition-colors">
-                      {/* Icon */}
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#FF69B4]/20 to-[#FFD700]/10 flex items-center justify-center shrink-0 border border-white/5 relative">
-                        {reward.icon === 'Mic' ? (
-                          <Mic size={24} className="text-white" />
-                        ) : (
-                          <Crown size={24} className="text-[#FFD700]" weight="fill" />
-                        )}
-                      </div>
-                      {/* Texts */}
-                      <div className="flex-1">
-                        <span className="bg-[#FFD700] text-black text-[10px] font-black px-2 py-0.5 rounded-sm uppercase tracking-wider mb-1 inline-block">{reward.tag}</span>
-                        <h4 className="text-white font-bold text-base leading-tight">{reward.title}</h4>
-                        {reward.subtitle && <p className="text-[#95B1FF] text-xs font-medium mt-0.5">{reward.subtitle}</p>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Main Action for Paid */}
-                <div className="bg-[#1a1a1a] rounded-2xl p-5 border border-white/10 flex flex-col items-center">
-                  <button
-                    onClick={handleShare}
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-[#FF69B4] to-[#FF8C69] text-white font-black text-lg shadow-[0_4px_20px_rgba(255,105,180,0.4)] hover:shadow-[0_6px_25px_rgba(255,105,180,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-3"
-                  >
-                    <Zap size={20} className="fill-current animate-pulse" />
-                    {campaignContent.cta}
-                  </button>
-                  <div className="flex items-center gap-2 text-[#afafaf] text-[10px] font-bold uppercase tracking-widest">
-                    <span>{campaignContent.ends}</span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // FREE VERSION: Single Ticket Layout
-              <div className="relative mt-auto group cursor-pointer mb-8 transform hover:-translate-y-1 transition-transform duration-300">
-                <div className="relative w-full max-w-sm mx-auto filter drop-shadow-2xl">
-                  {/* Top Section */}
-                  <div className="bg-[#1a1a1a] rounded-t-[32px] p-6 pb-5 relative overflow-hidden border-t border-x border-white/10">
-                    {/* Notches */}
-                    <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-[#141414] border-b border-r border-white/10 z-20"></div>
-                    <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-[#141414] border-b border-l border-white/10 z-20"></div>
-                    {/* Gradient */}
-                    <div className="absolute top-0 right-0 w-[150%] h-full bg-gradient-to-l from-white/5 to-transparent skew-x-12 opacity-50 pointer-events-none"></div>
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#FF69B4] via-[#FFD700] to-[#FF69B4]"></div>
-
-                    <div className="flex flex-col items-center relative z-10">
-                      <span className="bg-[#FFD700] text-black text-[12px] font-black px-4 py-1 rounded-sm uppercase tracking-widest mb-6 shadow-md transform -skew-x-12">
-                        {campaignContent.shareTag}
-                      </span>
-                      <div className="w-full flex justify-center py-3 mb-2">
-                        <div className="relative transform transition-transform group-hover:scale-110 duration-500">
-                          <div className="absolute inset-0 bg-[#FF69B4] blur-2xl opacity-20 rounded-full animate-pulse"></div>
-                          <Mic size={64} className="text-white relative z-10 drop-shadow-xl" />
-                          <Crown size={32} className="text-[#FFD700] absolute -top-4 -right-2 z-20 rotate-[15deg] drop-shadow-lg" weight="fill" />
-                        </div>
-                      </div>
-                      <h4 className="text-white font-black text-3xl italic tracking-tighter leading-none mb-4 text-center drop-shadow-sm flex flex-col items-center">
-                        <span>{campaignContent.ticketTitle}</span>
-                        <span className="text-[#FF69B4] text-4xl pt-2">{campaignContent.ticketSubtitle}</span>
-                      </h4>
-                      <p className="text-[#B0B0B0] text-sm font-bold tracking-wide uppercase">{campaignContent.ticketSession}</p>
-                    </div>
-                  </div>
-
-                  {/* Perforation */}
-                  <div className="relative h-6 bg-[#1a1a1a] border-x border-white/10 flex items-center mb-[-1px] z-10">
-                    <div className="absolute -left-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-r border-white/10 z-20 shadow-inner"></div>
-                    <div className="absolute -right-5 w-10 h-10 rounded-full bg-[#2a2a2a] border-l border-white/10 z-20 shadow-inner"></div>
-                    <div className="w-full h-px border-t-2 border-dashed border-[#404040]"></div>
-                  </div>
-
-                  {/* Bottom Section */}
-                  <div className="bg-[#1a1a1a] rounded-b-[32px] p-6 pt-4 border-b border-x border-white/10 relative overflow-hidden flex flex-col items-center">
-                    <div className="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-r border-white/10 z-20"></div>
-                    <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-[#2a2a2a] border-t border-l border-white/10 z-20"></div>
-
-                    <a
-                      href="https://www.cmoney.tw/r/245/rb8xim"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-xl shadow-[#FF69B4]/30 active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:brightness-110 overflow-hidden relative mb-3"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                      <ShieldCheck size={24} />
-                      {campaignContent.cta}
-                    </a>
-
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 text-[#95B1FF] bg-[#95B1FF]/5 hover:bg-[#95B1FF]/15 rounded-xl transition-colors mb-4 border border-[#95B1FF]/20"
-                    >
-                      <Share2 size={16} />
-                      <span className="text-xs font-bold tracking-wider">{campaignContent.shareBtn}</span>
-                    </button>
-
-                    <div className="flex justify-center items-center text-[#afafaf] text-[10px] font-bold uppercase tracking-[0.2em]">
-                      <span>{campaignContent.ends}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <p className="text-[#666] text-[10px] text-center mt-3">{campaignContent.copyright}</p>
+          <div className="w-full max-w-md mx-auto mb-6 scale-in relative group">
+            <div className="absolute inset-0 bg-[#FF69B4]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+            <img
+              src={`${import.meta.env.BASE_URL}images/${isPro ? 'paid' : 'free'}_${language}.png`}
+              alt={campaignContent.title}
+              className="w-full h-auto rounded-2xl shadow-2xl cursor-pointer relative z-10 border border-white/10"
+              onClick={() => setSelectedImage(`${import.meta.env.BASE_URL}images/${isPro ? 'paid' : 'free'}_${language}.png`)}
+            />
           </div>
+
+          {/* CONDITIONAL LAYOUT: PAID vs FREE */}
+          {campaignContent.rewards ? (
+            // PAID VERSION: Dual Rewards + Main Share CTA
+            <div className="space-y-6">
+              <div className="space-y-3">
+                {campaignContent.rewards.map((reward, idx) => (
+                  <div key={idx} className="bg-[#1a1a1a] rounded-2xl p-4 border border-white/10 flex items-center gap-4 relative overflow-hidden group hover:border-[#FF69B4] transition-colors">
+                    {/* Icon */}
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#FF69B4]/20 to-[#FFD700]/10 flex items-center justify-center shrink-0 border border-white/5 relative">
+                      {reward.icon === 'Mic' ? (
+                        <Mic size={24} className="text-white" />
+                      ) : (
+                        <Crown size={24} className="text-[#FFD700]" weight="fill" />
+                      )}
+                    </div>
+                    {/* Texts */}
+                    <div className="flex-1">
+                      <span className="bg-[#FFD700] text-black text-[10px] font-black px-2 py-0.5 rounded-sm uppercase tracking-wider mb-1 inline-block">{reward.tag}</span>
+                      <h4 className="text-white font-bold text-base leading-tight">{reward.title}</h4>
+                      {reward.subtitle && <p className="text-[#95B1FF] text-xs font-medium mt-0.5">{reward.subtitle}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Main Action for Paid */}
+              <div className="bg-[#1a1a1a] rounded-2xl p-5 border border-white/10 flex flex-col items-center">
+                <button
+                  onClick={handleShare}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#FF69B4] to-[#FF8C69] text-white font-black text-lg shadow-[0_4px_20px_rgba(255,105,180,0.4)] hover:shadow-[0_6px_25px_rgba(255,105,180,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-3"
+                >
+                  <Zap size={20} className="fill-current animate-pulse" />
+                  {campaignContent.cta}
+                </button>
+                <div className="flex items-center gap-2 text-[#afafaf] text-[10px] font-bold uppercase tracking-widest">
+                  <span>{campaignContent.ends}</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // FREE VERSION: Simplified Buttons Only
+            <div className="w-full max-w-sm mx-auto mt-8 space-y-4">
+              <a
+                href="https://www.cmoney.tw/r/245/rb8xim"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-4 rounded-2xl font-black text-xl text-white bg-gradient-to-r from-[#FF69B4] to-[#FF8A8A] shadow-lg hover:shadow-[#FF69B4]/40 active:scale-95 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                <ShieldCheck size={24} />
+                {campaignContent.cta}
+              </a>
+
+              <button
+                onClick={(e) => { e.stopPropagation(); handleShare(); }}
+                className="w-full flex items-center justify-center gap-2 py-3 text-[#95B1FF] bg-[#95B1FF]/5 hover:bg-[#95B1FF]/15 rounded-xl transition-colors border border-[#95B1FF]/20"
+              >
+                <Share2 size={16} />
+                <span className="text-sm font-bold tracking-wider">{campaignContent.shareBtn}</span>
+              </button>
+
+              <div className="flex justify-center items-center text-[#afafaf] text-[10px] font-bold uppercase tracking-[0.2em] pt-2">
+                <span>{campaignContent.ends}</span>
+              </div>
+            </div>
+          )}
+
+          <p className="text-[#666] text-[10px] text-center mt-3">{campaignContent.copyright}</p>
         </div>
+
       )
     }
   ];
@@ -852,7 +769,7 @@ const App = () => {
         <Share2 size={20} />
       </button>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pt-20 pb-32 custom-scrollbar relative">
+      <div ref={scrollRef} className={`flex-1 overflow-y-auto custom-scrollbar relative ${activeScreen === 0 ? 'p-0' : 'px-6 pt-20 pb-32'}`}>
         <div key={activeScreen} className="min-h-full">
           {screens[activeScreen].content}
         </div>

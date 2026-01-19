@@ -11,7 +11,7 @@ export const translations = {
             months: ["May", "Jul", "Sep", "Nov", "Dec"]
         },
         trajectory: {
-            title: "那些我們並肩走過的重要時刻",
+            title: "2025，那些我們並肩走過的重要時刻",
             items: [
                 { date: '04/09', tag: '解放日', title: '關稅風暴後：多頭確立', desc: '多頭確立｜堅定不交籌碼，加倉 QQQ 與特斯拉' },
                 { date: '05/07', tag: '宏觀定調', title: '聯準會的耐心測試', desc: '策略性配置 30% SHY 短債觀望' },
@@ -20,7 +20,7 @@ export const translations = {
             ]
         },
         trading: {
-            title: "2025，我們做對了什麼？",
+            title: "回頭看，我做出了哪些對的決策？",
             records: [
                 {
                     code: 'GE', name: '奇異航太', roi: '+139.1%',
@@ -142,12 +142,12 @@ export const translations = {
             // Multiple rewards support
             rewards: [
                 { tag: "分享禮", title: "Talk君語音問答重點整理", subtitle: "Email 寄送", icon: "Mic" },
-                { tag: "加碼抽", title: "1 個月 APP 權限", subtitle: "15% 名額獲得", icon: "Crown" }
+                { tag: "加碼抽", title: "1 個月 APP 權限 (價值 US$99)", subtitle: "每 10 人就抽出 1 名", icon: "Crown" }
             ],
             cta: "1分鐘分享領好禮",
             shareBtn: "分享給親朋好友一起領",
             ends: "截止日： 1/31 23:59（美東）止",
-            copyright: "主辦單位保有最終詮釋權",
+            copyright: "主辦單位保有最終的活動詮釋權",
             shareTextTitle: "Talk君 2025 Wrapped",
             shareTextBody: "分享給你一個免費體驗算 Beta 風險值，現在還有送語音入場券活動"
         }
