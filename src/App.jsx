@@ -217,7 +217,7 @@ const App = () => {
     if (activeScreen === 1) {
       const timer = setTimeout(() => {
         nextScreen();
-      }, 5000); // 4s animation + 1s buffer
+      }, 5500); // 4s animation + 1s buffer
       return () => clearTimeout(timer);
     }
   }, [activeScreen]);
@@ -413,7 +413,7 @@ const App = () => {
               const delay = 0.2 + (idx * 1.0);
 
               return (
-                <div key={idx} className="relative pl-24 opacity-0" style={{ animation: `zoomOutFadeIn 0.8s ease-out forwards ${delay}s` }}>
+                <div key={idx} className="relative pl-24 opacity-0" style={{ animation: `softEntrance 0.8s ease-out forwards ${delay}s` }}>
                   <div className="absolute left-4 top-1 w-8 h-8 rounded-full border-4 border-[#141414] z-10 flex items-center justify-center shadow-lg transform transition-transform hover:scale-110" style={{ backgroundColor: color }}>
                     <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
                   </div>
@@ -451,7 +451,7 @@ const App = () => {
               // animationDelay style is also removed
 
               return (
-                <ScrollReveal key={idx} className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl">
+                <ScrollReveal key={idx} animation="softEntrance" className="bg-[#242424] border border-white/5 rounded-[32px] p-7 shadow-xl">
                   <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <span className="text-sm px-3 py-1 rounded-xl bg-black text-[#95B1FF] font-black border border-white/10 uppercase tracking-widest">{stock.code}</span>
