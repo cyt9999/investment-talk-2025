@@ -125,6 +125,8 @@ const App = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [language, setLanguage] = useState('TC');
+  const [introAnimFinished, setIntroAnimFinished] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null); // New State
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -175,7 +177,7 @@ const App = () => {
       // Reset scroll to top first
       scrollRef.current.scrollTop = 0;
 
-      const duration = 8000; // 8 seconds sync with animation
+      const duration = 4000; // 4 seconds (Faster)
       const start = performance.now();
       const startScroll = 0;
       const endScroll = scrollRef.current.scrollHeight - scrollRef.current.clientHeight;
@@ -215,7 +217,7 @@ const App = () => {
     if (activeScreen === 1) {
       const timer = setTimeout(() => {
         nextScreen();
-      }, 10000);
+      }, 5000); // 4s animation + 1s buffer
       return () => clearTimeout(timer);
     }
   }, [activeScreen]);
@@ -254,19 +256,30 @@ const App = () => {
 
   const handleShare = async () => {
     trackEvent('click_share');
+    const shareData = {
+      title: campaignContent.shareTextTitle,
+      text: campaignContent.shareTextBody,
+      url: window.location.href,
+    };
+
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: campaignContent.shareTextTitle,
-          text: campaignContent.shareTextBody,
-          url: window.location.href,
-        });
+        await navigator.share(shareData);
       } catch (error) {
         console.log('Error sharing', error);
       }
     } else {
-      // Fallback
-      alert('您的瀏覽器不支援原生分享，請截圖分享！');
+      // Fallback: Copy to Clipboard
+      try {
+        const textToCopy = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+        await navigator.clipboard.writeText(textToCopy);
+        setToastMessage(language === 'TC' ? '連結已複製！' : '链接已复制！');
+        setTimeout(() => setToastMessage(null), 3000);
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+        setToastMessage('Copy failed');
+        setTimeout(() => setToastMessage(null), 3000);
+      }
     }
   };
 
@@ -278,12 +291,15 @@ const App = () => {
         <div className="flex flex-col min-h-[100dvh] justify-center items-center px-6 pb-20 fade-in text-center relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#111827] to-[#000000]">
           {/* Ambient Light Orbs - Subtler & Cleaner */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none" >
-            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+            <div className={`absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse ${introAnimFinished ? 'hidden' : ''}`}></div>
+            <div className={`absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] animate-pulse ${introAnimFinished ? 'hidden' : ''}`} style={{ animationDelay: '2s' }}></div>
           </div >
 
-          {/* Language Selection Buttons - Appear after animation */}
-          < div className="absolute bottom-100 flex flex-col gap-8 z-50 fade-in opacity-0 items-center" style={{ animationDelay: '6.5s', animationFillMode: 'forwards' }}>
+          {/* Language Selection Buttons */}
+          < div
+            className={`absolute bottom-100 flex flex-col gap-8 z-50 items-center transition-opacity duration-1000 ${introAnimFinished ? 'opacity-100' : 'fade-in opacity-0'}`}
+            style={{ animationDelay: introAnimFinished ? '0.5s' : '6.5s', animationFillMode: 'forwards' }}
+          >
             <p className="text-white/80 text-lg font-bold tracking-widest mb-3">請選擇您的語言</p>
             <button
               onClick={() => { setLanguage('TC'); trackEvent('change_language', { lang: 'TC' }); nextScreen(); }}
@@ -301,9 +317,20 @@ const App = () => {
               <span className="relative text-[#ff95b1] font-black text-lg tracking-widest">简体中文</span>
             </button>
 
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveScreen(screens.length - 1);
+                trackEvent('skip_to_campaign');
+              }}
+              className="mt-4 text-white/30 hover:text-white/90 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-white/50 pb-1"
+            >
+              直接跳到活動頁
+            </button>
+
           </div >
 
-          <div className="relative w-full max-w-lg h-60 flex items-center justify-center mt-20 z-10">
+          <div className={`relative w-full max-w-lg h-60 flex items-center justify-center mt-20 z-10 transition-opacity duration-500 ${introAnimFinished ? 'opacity-0' : 'opacity-100'}`}>
             {/* Group 1: 投資TALK君 / 2025 / 年度復盤 */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-white text-4xl md:text-5xl font-black uppercase tracking-widest clip-text drop-shadow-lg" style={{ animationDelay: '0.7s' }}>
@@ -332,16 +359,19 @@ const App = () => {
           </div>
 
           {/* Immediate Skip Button (Bottom) */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveScreen(screens.length - 1);
-              trackEvent('skip_to_campaign');
-            }}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[60] text-white/30 hover:text-white/90 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-white/50 pb-1"
-          >
-            SKIP INTRO
-          </button>
+          {/* Immediate Skip Button (Bottom) - Only show if animation not finished */}
+          {!introAnimFinished && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIntroAnimFinished(true);
+                trackEvent('skip_intro_animation');
+              }}
+              className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[60] text-white/30 hover:text-white/90 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors border-b border-transparent hover:border-white/50 pb-1"
+            >
+              略過動畫
+            </button>
+          )}
         </div >
       )
     },
@@ -367,7 +397,7 @@ const App = () => {
                 className="absolute top-0 left-0 w-full bg-gradient-to-b from-[#95B1FF] to-[#95B1FF]"
                 style={{
                   height: '100%',
-                  animation: 'growHeight 8s linear forwards',
+                  animation: 'growHeight 4s linear forwards',
                   transformOrigin: 'top'
                 }}
               ></div>
@@ -378,9 +408,9 @@ const App = () => {
               const itemColors = ['#FF8A8A', colors.primary, '#ADC4FF', colors.primary];
               const color = itemColors[idx] || colors.primary;
 
-              // Calculate delay based on 8s total duration
-              // Distribute items across the timeframe (e.g., 0.5s, 2.5s, 4.5s, 6.5s)
-              const delay = 0.5 + (idx * 2.0);
+              // Calculate delay based on 4s total duration
+              // Distribute items faster (0.2s, 1.2s, 2.2s, 3.2s)
+              const delay = 0.2 + (idx * 1.0);
 
               return (
                 <div key={idx} className="relative pl-24 opacity-0" style={{ animation: `zoomOutFadeIn 0.8s ease-out forwards ${delay}s` }}>
@@ -823,7 +853,17 @@ const App = () => {
             </div>
           )}
 
-          <p className="text-[#666] text-[10px] text-center mt-3">{campaignContent.copyright}</p>
+          <p className="text-[#666] text-[10px] text-center mt-3 text-white/30">{campaignContent.copyright}</p>
+
+          <div className="flex justify-center mt-6 mb-2">
+            <button
+              onClick={() => { setActiveScreen(0); setIntroAnimFinished(false); }}
+              className="px-4 py-2 rounded-full border border-white/10 text-[#666] text-[10px] hover:text-white hover:border-white/30 transition-colors flex items-center gap-2"
+            >
+              <ArrowLeft size={12} />
+              Replay 2025 Wrapped
+            </button>
+          </div>
         </div>
 
       )
@@ -859,6 +899,8 @@ const App = () => {
         </div>
 
         {selectedImage && <ImageViewer src={selectedImage} onClose={() => setSelectedImage(null)} />}
+
+        {toastMessage && <Toast message={toastMessage} />}
 
         {activeScreen !== 0 && (
           <div className="absolute bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
